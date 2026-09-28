@@ -372,6 +372,58 @@ html.lang-in #langToggleText { animation: lang-flip 420ms var(--ease); }
   to   { transform: rotateY(0deg); }
 }
 
+/* ---- The morph ----------------------------------------------------------
+   The second half of the same click, running underneath the first. The page
+   still leaves and returns; what changes is that the copy re-letters itself on
+   the way, a character at a time, instead of arriving already changed.
+
+   The churn is written into both spans of a pair, not just the visible one, so
+   this rule is applied to both. That is safe: only one of the two is ever laid
+   out, and `display` here cannot reveal the hidden one because
+   `html[lang] .lang-*` — two classes and an attribute — outranks a single
+   class, and this declaration has no `!important` to beat it with.
+
+   `overflow-x: clip` rather than `hidden` is deliberate. `hidden` would force
+   the other axis to `auto`, which can shave descenders off; `clip` leaves
+   `overflow-y` visible, so a box that is briefly narrower than its text never
+   cuts the bottom off a g or a y. What is clipped is churning noise, so
+   nothing legible is ever hidden by it. `white-space: nowrap` keeps a box that
+   is briefly too narrow from wrapping the string onto a second line and moving
+   everything below it — the churn is the longer of the two strings, so this
+   is the common case, not the rare one.
+
+   No duration here. main.js sets it inline from the same number it schedules
+   the settling against, so the box cannot finish moving at a different time
+   from the text — the drift that `returnMs()` exists to prevent on the other
+   half of the switch. */
+.lang-scramble {
+  display: inline-block;
+  white-space: nowrap;
+  overflow-x: clip;
+  transition-property: width;
+  transition-timing-function: var(--ease);
+}
+
+/* Copy that wraps in either language is held still by the element around it
+   instead, and neither span is touched at all. Holding a paragraph on one line
+   would clip it to its first line and collapse everything under it; and giving
+   the spans any display other than `inline` moves the baseline of every line
+   box they sit in, which grows each of those paragraphs by whole lines for as
+   long as the effect runs. So the parent is pinned by height and the spans keep
+   the layout they already had.
+
+   Both axes are clipped here rather than just the horizontal one: what
+   overflows a pinned box is whole lines of churn, and they are the part that
+   must not be seen pushing the page around. `clip` and not `hidden` for the
+   same reason as above — `hidden` would make this a scroll container, and a
+   paragraph that briefly held more lines than it was pinned to would scroll
+   rather than simply being cut off. */
+.lang-scramble-box {
+  overflow: clip;
+  transition-property: height;
+  transition-timing-function: var(--ease);
+}
+
 /* ==========================================================================
    04  AMBIENT BACKGROUND
    Built from CSS only: three soft radial blobs plus an inline SVG grain.
