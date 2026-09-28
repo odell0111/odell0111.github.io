@@ -7,15 +7,14 @@
   Update <loc> together with the canonical URL in index.html and the Sitemap
   line in robots.txt when the site moves to its own domain.
 -->
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://odell0111.github.io/</loc>
     <lastmod>2026-09-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://odell0111.github.io/"/>
-    <xhtml:link rel="alternate" hreflang="es" href="https://odell0111.github.io/"/>
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://odell0111.github.io/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://odell0111.github.io/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://odell0111.github.io/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://odell0111.github.io/" />
   </url>
 </urlset>

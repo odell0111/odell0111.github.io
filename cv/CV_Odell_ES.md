@@ -19,7 +19,8 @@ Prefiero entender un sistema antes que entregar rápido sobre uno que no entiend
 ## Proyectos
 
 ### Account Manager — gestor de cuentas y contraseñas
-*Android y Windows · 2023–2025 · Apache-2.0*
+
+_Android y Windows · 2023–2025 · Apache-2.0_
 
 Aplicación de escritorio y móvil para reunir cuentas y contraseñas en un solo sitio.
 
@@ -30,7 +31,8 @@ Aplicación de escritorio y móvil para reunir cuentas y contraseñas en un solo
 - Código no publicado de forma deliberada, para que la aplicación no pueda bifurcarse en versiones inseguras que pongan en riesgo las credenciales de sus usuarios.
 
 ### Custom GUI SFX — empaquetador autoextraíble para Windows
-*C# / .NET 6 / WPF · 2023–2025*
+
+_C# / .NET 6 / WPF · 2023–2025_
 
 Herramienta de escritorio que empaqueta un archivo comprimido, información personalizada, enlaces e imágenes en un único `.exe` autoextraíble, capaz de ejecutarse en una máquina que no tiene ningún descompresor instalado.
 
@@ -39,7 +41,8 @@ Herramienta de escritorio que empaqueta un archivo comprimido, información pers
 - **334 descargas** de las versiones publicadas (GitHub, septiembre de 2026).
 
 ### Turnstile Solver — servidor de resolución de retos
-*Python · 2025 · GPL-3.0*
+
+_Python · 2025 · GPL-3.0_
 
 Servidor asíncrono que resuelve retos de Cloudflare Turnstile en un navegador real y devuelve el token a través de un endpoint REST local.
 
@@ -48,7 +51,8 @@ Servidor asíncrono que resuelve retos de Cloudflare Turnstile en un navegador r
 - **52 estrellas y 15 bifurcaciones** en GitHub.
 
 ### Image in Terminal — paquete Python publicado en PyPI
-*Python · 2023–2025 · MIT*
+
+_Python · 2023–2025 · MIT_
 
 Paquete y CLI que renderiza imágenes como texto Unicode en color dentro de la terminal.
 
@@ -57,7 +61,8 @@ Paquete y CLI que renderiza imágenes como texto Unicode en color dentro de la t
 - Publicado en **PyPI** como `image-in-terminal`.
 
 ### Automatización de procesos — trabajo privado
-*Python · 2024–2025*
+
+_Python · 2024–2025_
 
 Automatización desatendida de flujos de trabajo a escala: gestión de sesiones autenticadas, planificación de peticiones, concurrencia e integración con APIs no documentadas.
 
@@ -69,14 +74,14 @@ Automatización desatendida de flujos de trabajo a escala: gestión de sesiones 
 
 ## Stack tecnológico
 
-| | |
-|---|---|
-| **Lenguajes** | Python, C#, C++, C, Kotlin, JavaScript, Java |
-| **Frameworks y librerías** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest |
-| **Bases de datos** | PostgreSQL, SQL |
-| **Herramientas** | Git (avanzado), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh |
-| **Seguridad** | Análisis de redes y protocolos · TLS/HTTPS y cadenas de certificados · claves y túneles SSH · seguridad inalámbrica (WiFi) · manejo de proxies y sesiones autenticadas |
-| **Áreas** | Ingeniería inversa y análisis de protocolos · automatización e integración de sistemas · desarrollo de escritorio (WPF / .NET) · desarrollo Android (Kotlin, Jetpack Compose) · desarrollo web full stack |
+|                            |                                                                                                                                                                                                           |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lenguajes**              | Python, C#, C++, C, Kotlin, JavaScript, Java                                                                                                                                                              |
+| **Frameworks y librerías** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest                               |
+| **Bases de datos**         | PostgreSQL, SQL                                                                                                                                                                                           |
+| **Herramientas**           | Git (avanzado), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh                                                                                                           |
+| **Seguridad**              | Análisis de redes y protocolos · TLS/HTTPS y cadenas de certificados · claves y túneles SSH · seguridad inalámbrica (WiFi) · manejo de proxies y sesiones autenticadas                                    |
+| **Áreas**                  | Ingeniería inversa y análisis de protocolos · automatización e integración de sistemas · desarrollo de escritorio (WPF / .NET) · desarrollo Android (Kotlin, Jetpack Compose) · desarrollo web full stack |
 
 ---
 

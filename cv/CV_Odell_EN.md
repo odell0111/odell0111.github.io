@@ -19,7 +19,8 @@ I care more about understanding a system than about shipping quickly on top of o
 ## Projects
 
 ### Account Manager — account and password manager
-*Android and Windows · 2023–2025 · Apache-2.0*
+
+_Android and Windows · 2023–2025 · Apache-2.0_
 
 Desktop and mobile application that keeps accounts and passwords in one place.
 
@@ -30,7 +31,8 @@ Desktop and mobile application that keeps accounts and passwords in one place.
 - Source withheld deliberately, so the app can't be forked into insecure builds that put users' credentials at risk.
 
 ### Custom GUI SFX — self-extracting archive builder for Windows
-*C# / .NET 6 / WPF · 2023–2025*
+
+_C# / .NET 6 / WPF · 2023–2025_
 
 Desktop tool that packages an archive, custom info, links and images into a single self-extracting `.exe` that runs on a machine with no unzip utility installed.
 
@@ -39,7 +41,8 @@ Desktop tool that packages an archive, custom info, links and images into a sing
 - **334 downloads** of the published builds (GitHub, September 2026).
 
 ### Turnstile Solver — challenge-solving server
-*Python · 2025 · GPL-3.0*
+
+_Python · 2025 · GPL-3.0_
 
 Async server that solves Cloudflare Turnstile challenges in a real browser and returns the token over a local REST endpoint.
 
@@ -48,7 +51,8 @@ Async server that solves Cloudflare Turnstile challenges in a real browser and r
 - **52 stars and 15 forks** on GitHub.
 
 ### Image in Terminal — Python package published on PyPI
-*Python · 2023–2025 · MIT*
+
+_Python · 2023–2025 · MIT_
 
 Package and CLI that renders images as coloured Unicode text in the terminal.
 
@@ -57,7 +61,8 @@ Package and CLI that renders images as coloured Unicode text in the terminal.
 - Published on **PyPI** as `image-in-terminal`.
 
 ### Process automation — private work
-*Python · 2024–2025*
+
+_Python · 2024–2025_
 
 Unattended automation of workflows at scale: authenticated session management, request scheduling, concurrency, and integration with undocumented APIs.
 
@@ -69,14 +74,14 @@ Unattended automation of workflows at scale: authenticated session management, r
 
 ## Technical skills
 
-| | |
-|---|---|
-| **Languages** | Python, C#, C++, C, Kotlin, JavaScript, Java |
-| **Frameworks & libraries** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest |
-| **Databases** | PostgreSQL, SQL |
-| **Tools** | Git (advanced), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh |
-| **Security** | Network and protocol analysis · TLS/HTTPS and certificate chains · SSH keys and tunnelling · wireless (WiFi) security · proxy handling and authenticated sessions |
-| **Areas** | Reverse engineering and protocol analysis · automation and systems integration · desktop development (WPF / .NET) · Android development (Kotlin, Jetpack Compose) · full-stack web development |
+|                            |                                                                                                                                                                                                |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Languages**              | Python, C#, C++, C, Kotlin, JavaScript, Java                                                                                                                                                   |
+| **Frameworks & libraries** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest                    |
+| **Databases**              | PostgreSQL, SQL                                                                                                                                                                                |
+| **Tools**                  | Git (advanced), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh                                                                                                |
+| **Security**               | Network and protocol analysis · TLS/HTTPS and certificate chains · SSH keys and tunnelling · wireless (WiFi) security · proxy handling and authenticated sessions                              |
+| **Areas**                  | Reverse engineering and protocol analysis · automation and systems integration · desktop development (WPF / .NET) · Android development (Kotlin, Jetpack Compose) · full-stack web development |
 
 ---
 
