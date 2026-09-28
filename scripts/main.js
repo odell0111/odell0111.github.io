@@ -351,6 +351,171 @@
 		else if (wide.addListener) wide.addListener(onWide);
 	}
 
+	/* The selection box follows the section on screen.
+
+     It used to be painted onto the Contact link permanently, which claimed the
+     visitor was in Contact whatever they were reading. The box is the only
+     mark of "here" now, and it belongs to whichever section is in view.
+
+     The sections are read back from the links rather than listed here, so an
+     id that no longer resolves simply drops out instead of throwing. */
+	var navEntries = [];
+	var navHeader = $(".site-header");
+	if (navList) {
+		$$(".nav-link", navList).forEach(function (link) {
+			var id = (link.getAttribute("href") || "").replace(/^#/, "");
+			var sec = id ? document.getElementById(id) : null;
+			if (sec) navEntries.push({ link: link, sec: sec });
+		});
+	}
+
+	if (navEntries.length) {
+		var navCurrent = null;
+		/* Set while a click is being honoured, so the box goes straight to the
+       section the click named instead of racing the smooth scroll through
+       every section in between. Cleared the moment that section arrives. */
+		var navPending = 0;
+		var navPendingUntil = 0;
+		var navPendingTimer = 0;
+		var navTick = false;
+
+		function navAtFoot() {
+			return (
+				window.scrollY + window.innerHeight >=
+				document.documentElement.scrollHeight - 2
+			);
+		}
+
+		/* The line a section has to reach to count as current. It is the same
+       `scroll-padding-top` a click lands on, so arriving by click and
+       arriving by hand agree about where "there" is — plus the one pixel that
+       stops a strict comparison from dropping the state the click just set.
+       Read from the used style, so a change to --header-h carries. */
+		function navLine() {
+			var pad = parseFloat(
+				window.getComputedStyle(document.documentElement).scrollPaddingTop
+			);
+			if (!(pad > 0)) {
+				pad = navHeader ? navHeader.getBoundingClientRect().height : 64;
+			}
+			return pad + 1;
+		}
+
+		function navIndexOfCurrent() {
+			var y = window.scrollY + navLine();
+			var best = -1;
+			navEntries.forEach(function (entry, i) {
+				if (entry.sec.getBoundingClientRect().top + window.scrollY <= y) {
+					best = i;
+				}
+			});
+			/* The last section can be too short to ever reach the line on a tall
+         screen, which would leave the foot of the page with nothing
+         selected. */
+			return navAtFoot() ? navEntries.length - 1 : best;
+		}
+
+		/* Puts the box on entry `index`, or hides it for -1. The guard is what
+       makes this cheap enough to call on every frame of a scroll: it
+       re-measures four rects, so it must not run when nothing has moved. */
+		function navApply(index) {
+			if (index === navCurrent) return;
+			navCurrent = index;
+
+			navEntries.forEach(function (entry, i) {
+				if (i === index) entry.link.setAttribute("aria-current", "true");
+				else entry.link.removeAttribute("aria-current");
+			});
+
+			if (index < 0) {
+				navList.classList.remove("has-current");
+				return;
+			}
+
+			/* Measured against the list's border box. It has no border, so that
+         is also the padding box the pseudo-element is positioned in. */
+			var lr = navEntries[index].link.getBoundingClientRect();
+			var nr = navList.getBoundingClientRect();
+			navList.style.setProperty("--nav-x", lr.left - nr.left + "px");
+			navList.style.setProperty("--nav-y", lr.top - nr.top + "px");
+			navList.style.setProperty("--nav-w", lr.width + "px");
+			navList.style.setProperty("--nav-h", lr.height + "px");
+			navList.classList.add("has-current");
+		}
+
+		/* Re-measure without reconsidering which section is current. Needed
+       whenever a label changes size under a box that is already placed. */
+		function navRemeasure() {
+			if (navCurrent === null || navCurrent < 0) return;
+			var held = navCurrent;
+			navCurrent = null;
+			navApply(held);
+		}
+
+		function navSync() {
+			navTick = false;
+			if (Date.now() < navPendingUntil) {
+				/* Still riding the scroll the click started. Hand back as soon as
+           the section it named has arrived, so that a scroll the visitor
+           takes over is never left holding a box pointing somewhere else —
+           and so the lock cannot outlive the animation by much if the scroll
+           never arrives at all. */
+				var top = navEntries[navPending].sec.getBoundingClientRect().top;
+				if (top > navLine() && !navAtFoot()) return;
+				navPendingUntil = 0;
+				window.clearTimeout(navPendingTimer);
+			}
+			navApply(navIndexOfCurrent());
+		}
+
+		window.addEventListener("scroll", function () {
+			if (navTick) return;
+			navTick = true;
+			window.requestAnimationFrame(navSync);
+		});
+
+		navEntries.forEach(function (entry, i) {
+			entry.link.addEventListener("click", function () {
+				navApply(i);
+				navPending = i;
+				navPendingUntil = Date.now() + 1200;
+				/* The lock has to expire on its own, not on the next scroll event.
+           A click the visitor interrupts — or one that never travels, because
+           the section is already on screen — can leave the page perfectly
+           still with nothing left to wake the spy, and the box stranded on a
+           section that is not the one in view. */
+				window.clearTimeout(navPendingTimer);
+				navPendingTimer = window.setTimeout(function () {
+					navPendingUntil = 0;
+					navApply(navIndexOfCurrent());
+				}, 1200);
+			});
+		});
+
+		/* Anything that changes a label's width moves the box with it. The
+       observer covers the language switch, the webfont landing and the window
+       resizing in one rule rather than one hook each. It cannot feed back:
+       the box is absolutely positioned, so its width moves no layout. */
+		var navRelayout = function () {
+			window.requestAnimationFrame(navRemeasure);
+		};
+		if (window.ResizeObserver) {
+			var navRO = new ResizeObserver(navRelayout);
+			navEntries.forEach(function (entry) {
+				navRO.observe(entry.link);
+			});
+		}
+		window.addEventListener("resize", navRelayout);
+		if (document.fonts && document.fonts.ready) {
+			document.fonts.ready.then(navRemeasure);
+		}
+
+		/* The first placement happens before the transition is armed, so the
+       box is simply there. Every move after it animates. */
+		navApply(navIndexOfCurrent());
+		navList.classList.add("is-ready");
+	}
+
 	/* ========================================================================
      5  HEADER SCROLL STATE
      ======================================================================== */

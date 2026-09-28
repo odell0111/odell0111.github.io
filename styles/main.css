@@ -671,6 +671,11 @@ html.lang-in #langToggleText {
 }
 
 .nav-list {
+  position: relative;
+  /* Own stacking context, so the selection box below can sit at z-index -1 —
+     behind the labels, in front of the page. Without this it would escape to
+     the header and paint underneath it, which is to say nowhere. */
+  isolation: isolate;
   display: flex;
   align-items: center;
   gap: 0.15rem;
@@ -693,14 +698,67 @@ html.lang-in #langToggleText {
   background: var(--accent-soft);
 }
 
+/* Still the primary destination, so it keeps the accent and the roomier
+   padding. It no longer carries a border: that box is the proof of being
+   selected now, and a link cannot be permanently selected. */
 .nav-link-cta {
   color: var(--accent);
-  border: 1px solid var(--accent-line);
   padding-inline: 0.85rem;
 }
 
 .nav-link-cta:hover {
   background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---- The selection box -------------------------------------------------
+   It used to be painted onto the Contact link for good, which told every
+   visitor they were in Contact whatever they were actually reading. There is
+   one box now, owned by the list rather than by any link, and it slides to
+   whichever section is on screen.
+
+   The geometry arrives as custom properties from the script — the link's
+   offset inside the list, and its size. Measured rather than computed,
+   because the labels change width with the language, the Contact link is a
+   different size from the rest, and the font arrives after first paint.
+
+   z-index -1 inside .nav-list's own stacking context puts it behind the
+   labels, so the tint never washes over the text it belongs to. */
+.nav-list::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: var(--nav-w, 0);
+  height: var(--nav-h, 0);
+  transform: translate(var(--nav-x, 0), var(--nav-y, 0));
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Armed only once the script has placed it once. Before that it is a
+   zero-width box at the list's origin, and transitioning that into position
+   would slide it in from the corner on every page load. */
+.nav-list.is-ready::before {
+  transition: transform 0.3s var(--ease), width 0.3s var(--ease),
+    height 0.3s var(--ease), opacity 0.2s var(--ease);
+}
+
+/* The hero is not a nav destination, so at the top of the page no section is
+   current and the box steps out rather than pointing at the wrong thing. */
+.nav-list.has-current::before {
+  opacity: 1;
+}
+
+/* The label itself, so the selected item reads even where the box cannot
+   follow — see the narrow-screen block. Placed after :hover deliberately:
+   the two have equal specificity, so order is what lets this one hold its
+   colour under the pointer. */
+.nav-link[aria-current="true"] {
   color: var(--accent);
 }
 
@@ -883,6 +941,18 @@ html.lang-in #langToggleText {
   .nav-link-cta {
     text-align: center;
     margin-top: 0.35rem;
+  }
+
+  /* The panel is a vertical list, so a box that slides sideways has nowhere
+     to go. It is dropped here and the current section is marked on the label
+     instead — the panel closes on tap, so this is mostly for the visitor who
+     opens it to see where they are. */
+  .nav-list::before {
+    display: none;
+  }
+
+  .nav-link[aria-current="true"] {
+    background: var(--accent-soft);
   }
 
   /* The tools are pushed right from here rather than by the list.
