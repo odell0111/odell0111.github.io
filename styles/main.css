@@ -1138,10 +1138,6 @@ html.lang-in #langToggleText {
   color: var(--muted);
 }
 
-.terminal-out .t-key {
-  color: var(--accent-2);
-}
-
 .terminal-out .t-ok {
   color: var(--accent);
 }
@@ -1152,6 +1148,23 @@ html.lang-in #langToggleText {
 
 .terminal-out .t-err {
   color: #e11d48;
+}
+
+/* Addresses in the transcript are destinations, not scenery. They used to be
+   printed as plain text, which left the visitor reading one off the screen and
+   typing it out by hand — the one thing a transcript is bad at. Underlined as
+   well as coloured, so the affordance does not rest on telling two accents
+   apart. */
+.terminal-out .t-link {
+  color: var(--accent-2);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+  text-underline-offset: 0.18em;
+}
+
+.terminal-out .t-link:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
 }
 
 .terminal-fallback pre {
@@ -1691,16 +1704,10 @@ html.lang-in #langToggleText {
    13  ABOUT
    ========================================================================== */
 
-/* The bio runs full width and the four profile links sit beneath it, two to a
-   row. They used to be a narrow side column — and the same four destinations
-   appeared a second time as ghost buttons in Get in Touch. Get in Touch keeps
-   the email and the CVs; the profiles live here, once. */
-.about-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(1.6rem, 3.5vw, 2.2rem);
-}
-
+/* The bio, and only the bio. The four profile cards that used to sit beneath it
+   are in Contact now, which is where someone looking for a way to make contact
+   actually goes — the visitor who clicked "Get in Touch" used to land on a
+   single email address. */
 .about-body {
   display: flex;
   flex-direction: column;
@@ -1710,54 +1717,6 @@ html.lang-in #langToggleText {
 .about-body p {
   color: var(--muted);
   max-width: 68ch;
-}
-
-/* Two per row is the ceiling asked for. Below ~37rem a card stops being wider
-   than its own URL, so they stack rather than squeeze. */
-.about-facts {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem;
-}
-
-@media (max-width: 599px) {
-  .about-facts {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.about-link {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  padding: 0.9rem 1rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  text-decoration: none;
-  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
-}
-
-.about-link:hover {
-  border-color: var(--accent-line);
-  background: var(--accent-soft);
-}
-
-.about-link .icon {
-  font-size: 1.35rem;
-  color: var(--muted);
-}
-
-.about-link strong {
-  display: block;
-  font-size: 0.92rem;
-}
-
-.about-link small {
-  display: block;
-  font-size: 0.79rem;
-  color: var(--faint);
 }
 
 /* ==========================================================================
@@ -1808,6 +1767,82 @@ html.lang-in #langToggleText {
   gap: 0.6rem;
 }
 
+/* Every way of reaching him, in one place. These four cards were in About,
+   which meant the visitor who clicked "Get in Touch" — the visitor with the
+   question this section exists to answer — found one email address and no
+   other option. The section that says how to make contact is the section that
+   should hold the ways of making it. */
+.contact-social {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Two per row is the ceiling asked for. Below ~37rem a card stops being wider
+   than its own URL, so they stack rather than squeeze. */
+@media (max-width: 599px) {
+  .contact-social {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.contact-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-right: 0.35rem;
+}
+
+.contact-social .contact-label {
+  grid-column: 1 / -1;
+  margin-right: 0;
+}
+
+/* The card these destinations have always used. It keeps --surface and shows
+   its edge with a border instead, which is what the ghost buttons below it do
+   inside this same card — and the hover is theirs exactly: --surface-2 and a
+   stronger border. The first attempt tinted the fill with --accent-soft on a
+   --surface-2 base; measured, that put the subtitle at 4.43:1 in the light
+   theme, under AA, where the fill it had in About had been 4.83. */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.profile-card:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.profile-card .icon {
+  font-size: 1.35rem;
+  color: var(--muted);
+}
+
+.profile-card strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.profile-card small {
+  display: block;
+  font-size: 0.79rem;
+  color: var(--faint);
+}
+
 /* The CVs get a row of their own. They are documents to take away rather than
    another way to send a message, so they do not belong in the row of actions
    above. */
@@ -1819,15 +1854,6 @@ html.lang-in #langToggleText {
   gap: 0.6rem;
   padding-top: 1.15rem;
   border-top: 1px solid var(--border);
-}
-
-.contact-docs-label {
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--faint);
-  margin-right: 0.35rem;
 }
 
 /* The copy button swaps icon and label together once the address is on the

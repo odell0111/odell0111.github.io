@@ -453,6 +453,29 @@
 			return line("");
 		}
 
+		/* Writes a line whose content is a destination rather than a sentence.
+       The addresses the contact command prints used to be plain text, which
+       left the visitor reading one off the screen and typing it out by hand.
+       Web destinations open in a new tab, because the terminal is something
+       the visitor is in the middle of using and navigating away would take
+       the transcript with it. mailto: is deliberately left untargeted —
+       there is no page to open, and pairing it with target=_blank leaves a
+       blank tab behind once the mail client takes over. */
+		function link(href, label) {
+			var el = line("");
+			el.appendChild(document.createTextNode("  "));
+			var a = document.createElement("a");
+			a.className = "t-link";
+			a.href = href;
+			a.textContent = label;
+			if (href.indexOf("http") === 0) {
+				a.target = "_blank";
+				a.rel = "noopener noreferrer";
+			}
+			el.appendChild(a);
+			return el;
+		}
+
 		/* Types text into a freshly created line, one character per tick. */
 		function typeLine(text, cls, done) {
 			var el = line("", cls);
@@ -678,10 +701,13 @@
 					),
 					"t-ok",
 				);
-				line("  odellgm11012001@gmail.com", "t-key");
-				line("  t.me/odell0111");
-				line("  github.com/odell0111");
-				line("  linkedin.com/in/odell0111");
+				link("mailto:odellgm11012001@gmail.com", "odellgm11012001@gmail.com");
+				blank();
+				line(t("Elsewhere:", "En otros sitios:"), "t-dim");
+				link("https://github.com/odell0111", "github.com/odell0111");
+				link("https://linkedin.com/in/odell0111", "linkedin.com/in/odell0111");
+				link("https://www.instagram.com/odell.dev", "instagram.com/odell.dev");
+				link("https://t.me/odell0111", "t.me/odell0111");
 				blank();
 			},
 
@@ -949,6 +975,14 @@
 			screenBox.addEventListener("click", function (e) {
 				if (window.getSelection && String(window.getSelection()).length) return;
 				if (e.target === inputEl) return;
+				/* A link in the transcript is a destination, not a prompt.
+           Following it should not also pull focus back into the input the
+           visitor is leaving behind. */
+				var node = e.target;
+				while (node && node !== screenBox) {
+					if (node.tagName === "A") return;
+					node = node.parentNode;
+				}
 				inputEl.focus();
 			});
 		}
