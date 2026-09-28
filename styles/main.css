@@ -301,6 +301,77 @@ a { color: var(--accent); }
 html[lang="en"] .lang-es { display: none; }
 html[lang="es"] .lang-en { display: none; }
 
+/* ---- The switch ---------------------------------------------------------
+   The copy does not swap in place. The page leaves, the language flips while
+   nothing is on screen, and the page returns. <html> carries `lang-out` for
+   the first half and `lang-in` for the second, and main.js performs the swap
+   between them — so the script still owns every language decision, and there
+   is still only one place that decides what language the document is in.
+
+   Two classes rather than one because the halves want opposite timings.
+   Everything leaves together on a quick ease-in; it returns on a slower
+   ease-out staggered by section, so the page reads as re-lettering itself
+   rather than as a jump cut. `:nth-of-type` finds the sections, so nothing
+   has to be tagged in the markup and a seventh section would slot in on its
+   own without a rule to add.
+
+   Only opacity and transform are animated. Both are composited, neither
+   triggers layout, and the stagger is small enough that six sections are
+   never individually expensive. Under reduced motion the global rule in
+   section 17 pins these durations to nothing, and main.js skips the sequence
+   outright so not even the wait before the swap is felt. */
+html.lang-out #main > section,
+html.lang-out .site-footer {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 140ms ease-in, transform 140ms ease-in;
+}
+
+html.lang-in #main > section,
+html.lang-in .site-footer {
+  opacity: 1;
+  transform: none;
+  transition: opacity 300ms var(--ease), transform 300ms var(--ease);
+}
+
+html.lang-in #main > section:nth-of-type(2) { transition-delay: 35ms; }
+html.lang-in #main > section:nth-of-type(3) { transition-delay: 70ms; }
+html.lang-in #main > section:nth-of-type(4) { transition-delay: 105ms; }
+html.lang-in #main > section:nth-of-type(5) { transition-delay: 140ms; }
+html.lang-in #main > section:nth-of-type(6) { transition-delay: 175ms; }
+html.lang-in .site-footer { transition-delay: 210ms; }
+
+/* The navigation is the one exception to the header holding still. Those five
+   words are the only other bilingual text in the frame, so swapping them in
+   place would put a hard cut in the one part of the page that is still fully
+   lit — the rest of the header is dark and the page behind it is fading, so
+   the eye has nowhere else to be. The brand and the two tool buttons do hold,
+   which keeps the header reading as a frame whose words re-letter rather than
+   as a thing that blinks. Out slightly quicker than the sections, so the
+   words are gone before the swap lands. */
+html.lang-out .nav-link {
+  opacity: 0;
+  transition: opacity 120ms ease-in;
+}
+
+html.lang-in .nav-link {
+  opacity: 1;
+  transition: opacity 260ms var(--ease) 60ms;
+}
+
+/* The button's own label arrives by turning into place rather than by being
+   relabelled. main.js performs the swap while `lang-out` has the page hidden,
+   so by the time this starts the text is already the new one — the turn
+   begins edge-on, which is exactly where a swap cannot be seen. The header
+   is deliberately not faded, so this is the one piece of the transition the
+   visitor is looking at when it happens. */
+html.lang-in #langToggleText { animation: lang-flip 420ms var(--ease); }
+
+@keyframes lang-flip {
+  from { transform: rotateY(-88deg); }
+  to   { transform: rotateY(0deg); }
+}
+
 /* ==========================================================================
    04  AMBIENT BACKGROUND
    Built from CSS only: three soft radial blobs plus an inline SVG grain.
@@ -526,6 +597,9 @@ html[lang="es"] .lang-en { display: none; }
 .lang-btn {
   width: auto;
   min-width: 38px;
+  /* Gives the label's turn in "The switch" something to turn into. Without
+     it the flip is a flat horizontal squash; with it the label has depth. */
+  perspective: 240px;
   padding-inline: 0.55rem;
   font-size: 0.78rem;
   font-weight: 700;

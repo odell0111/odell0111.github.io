@@ -141,12 +141,94 @@
     if (announce && TERMINAL) TERMINAL.refresh();
   }
 
-  if (langToggle) {
-    langToggle.addEventListener('click', function () {
-      var next = root.lang === 'es' ? 'en' : 'es';
-      store('lang', next);
-      applyLanguage(next, true);
+  /* Only the backstop is a guess. It is a ceiling on how long to wait for the
+     fade to report finishing, and it only ever applies if that report never
+     arrives. Everything else is read off the page. */
+  var SWAP_BACKSTOP_MS = 400;
+  var switching        = false;
+
+  /* How long the return takes, read off the page rather than written down here
+     a second time. The longest section-plus-delay wins. Removing `lang-in` too
+     early would cut the fade short and snap the sections the rest of the way,
+     so retiming the stylesheet must not be able to leave this timer behind. */
+  function returnMs() {
+    var longest = 0;
+    var nodes = document.querySelectorAll('#main > section, .site-footer');
+    [].forEach.call(nodes, function (n) {
+      var cs = getComputedStyle(n);
+      var s = (parseFloat(cs.transitionDuration) || 0) + (parseFloat(cs.transitionDelay) || 0);
+      if (s > longest) longest = s;
     });
+    return longest * 1000 + 80;   /* seconds to ms, plus a frame of slack */
+  }
+
+  function switchLanguage() {
+    /* A second click mid-transition would land its swap inside the first
+       one's, so it is dropped rather than queued. The window is well under a
+       second and this is not a control anyone holds down. */
+    if (switching) return;
+
+    var next = root.lang === 'es' ? 'en' : 'es';
+    store('lang', next);
+
+    /* Reduced motion gets the new language without the theatre. The
+       stylesheet would collapse the transition to nothing anyway, but the
+       wait before the swap is JavaScript's, and it would still be felt. */
+    if (reduceMotion.matches) { applyLanguage(next, true); return; }
+
+    switching = true;
+    root.classList.add('lang-out');
+
+    var target  = $('#main');
+    var done    = false;
+    var backstop;
+
+    function onFadeEnd(e) {
+      /* Six sections each end their own opacity transition, so this arrives
+         repeatedly; `done` makes the first one the only one that counts. */
+      if (e.propertyName !== 'opacity') return;
+      if (!e.target.matches || !e.target.matches('#main > section')) return;
+      swap();
+    }
+
+    /* The fade is what hides the page, so the fade's own end event is the
+       honest signal to swap on. A fixed timer was tried first and was wrong:
+       when the main thread is busy the transition starts late, and the swap
+       landed with the page still a quarter visible — enough to watch the
+       language change. Waiting for the event means the swap lands on a page
+       that is genuinely at zero, however long that took. */
+    function swap() {
+      if (done) return;
+      done = true;
+      if (target) target.removeEventListener('transitionend', onFadeEnd);
+      window.clearTimeout(backstop);
+
+      /* `finally`, because `lang-out` is what holds the page at opacity 0 —
+         anything thrown that skipped its removal would leave a blank page
+         behind. The reset is scheduled from inside the same `finally` so that
+         a throw cannot also leave the button permanently dead. */
+      try {
+        applyLanguage(next, true);
+      } finally {
+        root.classList.remove('lang-out');
+        root.classList.add('lang-in');
+        window.setTimeout(function () {
+          root.classList.remove('lang-in');
+          switching = false;
+        }, returnMs());
+      }
+    }
+
+    if (target) target.addEventListener('transitionend', onFadeEnd);
+
+    /* Only for the case where the event never arrives: a backgrounded tab, or
+       a stylesheet that sets no transition for those elements at all. It is
+       deliberately longer than the fade, so it can never win the race. */
+    backstop = window.setTimeout(swap, SWAP_BACKSTOP_MS);
+  }
+
+  if (langToggle) {
+    langToggle.addEventListener('click', switchLanguage);
   }
 
   /* The <head> script has already written the starting value into html[lang]:
