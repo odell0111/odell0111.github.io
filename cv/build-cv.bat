@@ -30,7 +30,8 @@ echo.
 echo   The page links straight to cv\CV_Odell_EN.pdf and cv\CV_Odell_ES.pdf,
 echo   so there is nothing to copy anywhere - just refresh the browser.
 echo.
-pause
+echo   Closing in 4 seconds...
+timeout /t 4 >nul
 exit /b 0
 
 

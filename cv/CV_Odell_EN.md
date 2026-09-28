@@ -2,6 +2,8 @@
 
 ## Software developer — automation, integration and reverse engineering
 
+[Portfolio — odell0111.github.io](https://odell0111.github.io/)
+
 odellgm11012001@gmail.com · [t.me/odell0111](https://t.me/odell0111) · [github.com/odell0111](https://github.com/odell0111) · [linkedin.com/in/odell0111](https://linkedin.com/in/odell0111) · [instagram.com/odell.dev](https://www.instagram.com/odell.dev)
 
 ---
