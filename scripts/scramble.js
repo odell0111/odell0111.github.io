@@ -42,10 +42,14 @@
 	var root = document.documentElement;
 
 	var SCRAMBLE = (function () {
-		/* The off switch. False and the language switch behaves exactly as it did
-       before this block existed: the page fades, the language flips, the page
-       returns, and not one span is touched. Everything below goes inert. */
-		var ENABLED = true;
+		/* The off switch, and it ships off. False and the language switch behaves
+       exactly as it did before this block existed: the page fades, the language
+       flips, the page returns, and not one span is touched. Everything below
+       goes inert.
+
+       Kept rather than deleted, and kept working, so the effect is one word
+       away: set this true and the switch churns again. */
+		var ENABLED = false;
 
 		/* All of the feel, in one place. Retiming it should never mean editing
        anything past this block. */
