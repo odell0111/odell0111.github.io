@@ -1,0 +1,14 @@
+# Everything in this folder is published. Nothing private goes here.
+
+# markdown-pdf and its PhantomJS binary: ~32 MB, used only to rebuild the CV
+# PDFs locally. The PDFs themselves are committed, so the site never needs it.
+cv/node_modules/
+
+# OS noise
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Python bytecode from tools/*.py - regenerated on every run, never published
+__pycache__/
+*.pyc

@@ -1,0 +1,134 @@
+/* Stylesheet for the CV PDFs (markdown-pdf -> PhantomJS).
+   PhantomJS is an old WebKit, so this sticks to CSS 2.1-era layout:
+   no flexbox, no grid, no custom properties. Tables and page-break rules only.
+
+   NOTE: passing -s to markdown-pdf REPLACES its bundled css/pdf.css, and this
+   file is injected after html5bp/css/main.css. Equal-specificity rules here
+   therefore win over html5bp's — which is what the link override below relies on.
+*/
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9.6pt;
+  line-height: 1.4;
+  color: #1a1a1a;
+  margin: 0;
+}
+
+/* ---- Kill html5bp's print rule that appends " (https://...)" after every link.
+   Without this, every contact link renders twice: the readable form plus the
+   raw URL in parentheses. ---- */
+a[href]:after,
+a:after {
+  content: none !important;
+}
+
+h1 {
+  font-size: 21pt;
+  letter-spacing: -0.4pt;
+  margin: 0 0 1pt 0;
+  color: #111;
+}
+
+/* No letter-spacing here, deliberately. PhantomJS's WebKit mis-advances when
+   text-transform and letter-spacing are applied together, and the PDF's text
+   layer ends up with a space inside the word: the Spanish CV rendered
+   "Formación" as "FORM ACIÓN", "Idiomas" as "IDIOM AS" and "Competencias
+   técnicas" as "COM PETENCIAS TÉCNICAS". The pixels looked right, so it is
+   invisible on screen — but the text layer is what Ctrl+F, copy-paste and an
+   ATS parser read, and section-heading recognition is exactly how an ATS
+   segments a CV. Adding letter-spacing back reintroduces it.
+
+   That third heading now reads "Stack tecnológico" rather than "Competencias
+   técnicas" (renamed 2026-09-27). The example above is left as it was
+   recorded, because it is the string the bug actually produced — grepping
+   this file for the current heading will not find it, and that is expected. */
+
+h2 {
+  font-size: 10.5pt;
+  margin: 13pt 0 5pt 0;
+  padding-bottom: 2pt;
+  border-bottom: 1px solid #d0d0d0;
+  color: #111;
+  text-transform: uppercase;
+}
+
+/* The role line sits directly under the name: h2 immediately after h1. */
+h1 + h2 {
+  border: 0;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 10.8pt;
+  font-weight: normal;
+  color: #555;
+  margin: 0 0 5pt 0;
+  padding: 0;
+}
+
+h3 {
+  font-size: 10.2pt;
+  margin: 9pt 0 1pt 0;
+  color: #111;
+}
+
+/* Project meta lines (the italic "Android and Windows · 2023-2025 · Apache-2.0"). */
+p em {
+  color: #555;
+  font-size: 8.8pt;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #e4e4e4;
+  margin: 9pt 0;
+}
+
+p {
+  margin: 3pt 0;
+}
+
+ul {
+  margin: 3pt 0 0 0;
+  padding-left: 13pt;
+}
+
+li {
+  margin-bottom: 1.5pt;
+}
+
+a {
+  color: #1a4d8f;
+  text-decoration: none;
+}
+
+/* ---- Skills table ---- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 3pt;
+}
+
+td {
+  vertical-align: top;
+  padding: 2.5pt 6pt 2.5pt 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+td:first-child {
+  width: 19%;
+  white-space: nowrap;
+  color: #444;
+}
+
+/* ---- Pagination: keep headings with their content, never split an item ---- */
+h2, h3 {
+  page-break-after: avoid;
+}
+
+h3, h3 + p, h3 + p + ul {
+  page-break-inside: avoid;
+}
+
+li {
+  page-break-inside: avoid;
+}

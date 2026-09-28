@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Odell — Software Developer: Automation &amp; Systems Integration</title>
+<meta name="description" content="Self-taught software developer working in automation, systems integration and reverse engineering. Python, C#, C++. Selected work with verifiable numbers.">
+
+<!-- Change both of these together when the site moves to its own domain. -->
+<link rel="canonical" href="https://odell0111.github.io/">
+<meta property="og:url" content="https://odell0111.github.io/">
+<meta property="og:image" content="https://odell0111.github.io/assets/og-image.png">
+<meta name="twitter:image" content="https://odell0111.github.io/assets/og-image.png">
+
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="assets/favicon.png">
+
+<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0b0f17" media="(prefers-color-scheme: dark)">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Odell — Software Developer: Automation &amp; Systems Integration">
+<meta property="og:description" content="Self-taught software developer working in automation, systems integration and reverse engineering.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<!-- No og:locale: the OG locale format requires a territory (es_ES, es_MX …),
+     and naming one would assert a country. The hreflang tags below carry the
+     language signal without it. -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Odell — Software Developer: Automation &amp; Systems Integration">
+<meta name="twitter:description" content="Self-taught software developer working in automation, systems integration and reverse engineering.">
+
+<!-- One URL serves both languages; these declare that, they do not split it. -->
+<link rel="alternate" hreflang="en" href="https://odell0111.github.io/">
+<link rel="alternate" hreflang="es" href="https://odell0111.github.io/">
+<link rel="alternate" hreflang="x-default" href="https://odell0111.github.io/">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/main.css">
+
+<!-- Runs before first paint: applies the saved theme, picks the starting
+     language, and marks JS as available. All three jobs have to happen here —
+     any later and the wrong theme and the wrong language each paint once
+     before being corrected. .no-js stays until this runs, so the content is
+     visible when scripting is unavailable. -->
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.remove('no-js');
+  root.classList.add('js');
+
+  var get = function (key) {
+    try { return localStorage.getItem(key); } catch (e) { return null; }
+  };
+
+  var theme = get('theme');
+  if (theme === 'light' || theme === 'dark') {
+    root.setAttribute('data-theme', theme);
+    root.style.colorScheme = theme;
+  } else {
+    /* Nothing saved — the system preference, via the stylesheet, decides. */
+  }
+
+  /* Language, in order of authority: a choice the visitor made here before,
+     then what the browser says it prefers, then English.
+
+     Only the bare "en" and "es" are ever written. The stylesheet keys off
+     html[lang="en"] and html[lang="es"] exactly, so a regional tag such as
+     es-MX would match neither rule and print both languages at once. */
+  var lang = get('lang');
+  if (lang !== 'en' && lang !== 'es') {
+    var prefs = [];
+    if (navigator.languages && navigator.languages.length) {
+      prefs = navigator.languages;
+    } else if (navigator.language) {
+      prefs = [navigator.language];
+    }
+    lang = 'en';
+    for (var i = 0; i < prefs.length; i++) {
+      var base = String(prefs[i]).toLowerCase().split(/[-_]/)[0];
+      if (base === 'en' || base === 'es') { lang = base; break; }
+    }
+  }
+  root.setAttribute('lang', lang);
+})();
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "dateModified": "2026-09-27",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Odell",
+    "alternateName": "odell0111",
+    "description": "Self-taught software developer working in automation, systems integration and reverse engineering.",
+    "knowsLanguage": ["en", "es"],
+    "knowsAbout": [
+      "Python", "C#", "C++", "Java", "Kotlin", "JavaScript",
+      "Automation", "Systems Integration", "Reverse Engineering",
+      "Desktop Application Development", "Cross-platform Development"
+    ],
+    "sameAs": [
+      "https://github.com/odell0111",
+      "https://linkedin.com/in/odell0111",
+      "https://www.instagram.com/odell.dev",
+      "https://t.me/odell0111"
+    ]
+  }
+}
+</script>
+</head>
+<body>
+
+<!-- Icon sprite. Kept inline so the site loads with no third-party icon font. -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+  </symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </symbol>
+  <symbol id="i-github" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.71.08-.71 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.8 1.19 1.83 1.19 3.09 0 4.43-2.7 5.41-5.26 5.69.41.35.78 1.05.78 2.12v3.14c0 .31.2.68.8.56C20.22 21.39 23.5 17.08 23.5 12 23.5 5.73 18.27.5 12 .5z"/>
+  </symbol>
+  <symbol id="i-linkedin" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+  </symbol>
+  <symbol id="i-instagram" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 100 12.324 6.162 6.162 0 100-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 01-2.88 0 1.44 1.44 0 012.88 0z"/>
+  </symbol>
+  <!-- PyPI mark, generated from assets/PyPI.svg by tools/build-pypi-mark.py —
+       do not hand-edit; re-run that script and paste its output here.
+
+       The vendor file is 53 KB of nested groups and per-path style attributes,
+       which is not a reasonable price for a 16-pixel icon. Every transform in
+       it is a uniform translate+scale and every path is only moves, lines and
+       closes, so the geometry flattens exactly into viewBox space: 5.3 KB, with
+       every emitted path landing within 0.054px of where the vendor file puts
+       it.
+
+       The colours are gone rather than greyed. The logo is a two-material
+       isometric object, and a luminance conversion would collapse the blue and
+       the yellow — which at this size is the only contrast that survives — into
+       one blob. Instead each original fill became a fill-opacity over
+       currentColor, so the mark takes the colour of whatever it sits in and
+       still reads as the same object in either theme. A baked-in grey would
+       work on the light theme and vanish on the dark one.
+
+       The opacities are deliberately not the faces' own greys. The faces sit on
+       one another, so each was solved against what is actually painted under
+       it; using the plain greys leaves every stacked face 5-9/255 too dark.
+       The ghost cubes' white faces are the exception — white has to be lighter
+       than its backdrop, which no opacity over ink can be, so they are painted
+       in --pypi-page (set next to .icon-pypi, in main.css).
+
+       Three fills are dropped rather than mapped: the back and bottom faces of
+       the ghost cubes. They are opaque and fully covered in the original, but
+       they only stay hidden because the faces over them are opaque too — here
+       those faces are 5-10% alpha, so an opaque face behind one shows straight
+       through it. Removing each was measured to change 12 pixels of
+       antialiasing, so dropping them costs nothing. -->
+<symbol id="i-pypi" viewBox="0 0 65.812 58" fill="currentColor">
+  <path fill-opacity="0.046" d="M9.47 22.27L18.79 25.66L28.25 22.22L18.93 18.83Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M18.79 25.66L18.79 36.62L28.25 33.18L28.25 22.22Z"/>
+  <path fill-opacity="0.093" d="M9.47 22.27L18.79 25.66L18.79 36.62L9.47 33.23Z"/>
+  <path fill-opacity="0.046" d="M18.84 14.61L28.16 18.00L37.62 14.56L28.29 11.16Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M28.16 18.00L28.16 28.96L37.62 25.51L37.62 14.56Z"/>
+  <path fill-opacity="0.093" d="M18.84 14.61L28.16 18.00L28.16 28.96L18.83 25.56Z"/>
+  <path fill-opacity="0.046" d="M0.11 36.74L9.43 40.13L18.89 36.69L9.57 33.30Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M9.43 40.13L9.43 51.09L18.89 47.65L18.89 36.69Z"/>
+  <path fill-opacity="0.093" d="M0.11 36.74L9.43 40.13L9.43 51.09L0.11 47.70Z"/>
+  <path fill-opacity="0.046" d="M9.47 40.15L18.79 43.54L28.25 40.09L18.93 36.70Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M18.79 43.54L18.79 54.50L28.25 51.05L28.25 40.09Z"/>
+  <path fill-opacity="0.093" d="M9.47 40.15L18.79 43.54L18.79 54.50L9.47 51.10Z"/>
+  <path fill-opacity="0.046" d="M9.47 29.08L18.79 32.47L28.25 29.03L18.93 25.63Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M18.79 32.47L18.79 43.43L28.25 39.98L28.25 29.03Z"/>
+  <path fill-opacity="0.093" d="M9.47 29.08L18.79 32.47L18.79 43.43L9.47 40.03Z"/>
+  <path fill-opacity="0.046" d="M46.93 33.34L56.25 36.73L65.71 33.28L56.38 29.89Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M56.25 36.73L56.25 47.69L65.71 44.24L65.71 33.28Z"/>
+  <path fill-opacity="0.093" d="M46.93 33.34L56.25 36.73L56.25 47.69L46.92 44.29Z"/>
+  <path fill-opacity="0.046" d="M37.56 36.74L46.88 40.13L56.34 36.69L47.02 33.29Z"/>
+  <path fill-opacity="0.215" d="M46.88 40.13L46.88 51.09L56.34 47.64L56.34 36.69Z"/>
+  <path fill-opacity="0.093" d="M37.56 36.74L46.88 40.13L46.88 51.09L37.56 47.69Z"/>
+  <g fill="var(--pypi-page,#fff)" transform="translate(-1683.66 -513.275)scale(.65177)"><circle cx="2835.218" cy="1823.899" r="2.967" transform="scale(.9397 1)skewY(-18.882)"/></g>
+  <path fill-opacity="0.046" d="M28.20 40.15L37.52 43.54L46.98 40.09L37.66 36.70Z"/>
+  <path fill-opacity="0.215" d="M37.52 43.54L37.52 54.50L46.98 51.05L46.98 40.09Z"/>
+  <path fill-opacity="0.093" d="M28.20 40.15L37.52 43.54L37.52 54.50L28.20 51.10Z"/>
+  <path fill-opacity="0.046" d="M18.84 43.55L28.16 46.94L37.62 43.50L28.29 40.11Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M28.16 46.94L28.16 57.90L37.62 54.46L37.62 43.50Z"/>
+  <path fill-opacity="0.093" d="M18.84 43.55L28.16 46.94L28.16 57.90L18.83 54.51Z"/>
+  <path fill-opacity="0.046" d="M46.93 22.27L56.25 25.66L65.71 22.22L56.38 18.83Z"/>
+  <path fill-opacity="0.215" d="M56.25 25.66L56.25 36.62L65.71 33.18L65.71 22.22Z"/>
+  <path fill-opacity="0.093" d="M46.93 22.27L56.25 25.66L56.25 36.62L46.92 33.23Z"/>
+  <path fill-opacity="0.27" d="M46.93 11.21L56.25 14.60L65.71 11.15L56.38 7.76Z"/>
+  <path fill-opacity="0.215" d="M56.25 14.60L56.25 25.55L65.71 22.11L65.71 11.15Z"/>
+  <path fill-opacity="0.093" d="M46.93 11.21L56.25 14.60L56.25 25.55L46.92 22.16Z"/>
+  <path fill-opacity="0.046" d="M37.56 25.68L46.88 29.07L56.34 25.62L47.02 22.23Z"/>
+  <path fill-opacity="0.215" d="M46.88 29.07L46.88 40.02L56.34 36.58L56.34 25.62Z"/>
+  <path fill-opacity="0.093" d="M37.56 25.68L46.88 29.07L46.88 40.02L37.56 36.63Z"/>
+  <path fill-opacity="0.046" d="M37.56 14.61L46.88 18.00L56.34 14.56L47.02 11.16Z"/>
+  <path fill-opacity="0.813" d="M46.88 18.00L46.88 28.96L56.34 25.51L56.34 14.56Z"/>
+  <path fill-opacity="0.093" d="M37.56 14.61L46.88 18.00L46.88 28.96L37.56 25.56Z"/>
+  <path fill-opacity="0.919" d="M37.56 3.54L46.88 6.94L56.34 3.49L47.02 0.10Z"/>
+  <path fill-opacity="0.813" d="M46.88 6.94L46.88 17.89L56.34 14.45L56.34 3.49Z"/>
+  <path fill-opacity="0.093" d="M37.56 3.54L46.88 6.94L46.88 17.89L37.56 14.50Z"/>
+  <path fill-opacity="0.046" d="M28.20 29.08L37.52 32.47L46.98 29.03L37.66 25.63Z"/>
+  <path fill-opacity="0.215" d="M37.52 32.47L37.52 43.43L46.98 39.98L46.98 29.03Z"/>
+  <path fill-opacity="0.093" d="M28.20 29.08L37.52 32.47L37.52 43.43L28.20 40.03Z"/>
+  <path fill-opacity="0.046" d="M28.20 18.02L37.52 21.41L46.98 17.96L37.66 14.57Z"/>
+  <path fill-opacity="0.813" d="M37.52 21.41L37.52 32.36L46.98 28.92L46.98 17.96Z"/>
+  <path fill-opacity="0.093" d="M28.20 18.02L37.52 21.41L37.52 32.36L28.20 28.97Z"/>
+  <path fill-opacity="0.046" d="M18.84 32.49L28.16 35.88L37.62 32.43L28.29 29.04Z"/>
+  <path fill-opacity="0.813" d="M28.16 35.88L28.16 46.83L37.62 43.39L37.62 32.43Z"/>
+  <path fill-opacity="0.919" d="M18.84 32.49L28.16 35.88L28.16 46.83L18.83 43.44Z"/>
+  <path fill-opacity="0.919" d="M18.84 21.42L28.16 24.81L37.62 21.37L28.29 17.97Z"/>
+  <path fill-opacity="0.813" d="M28.16 24.81L28.16 35.77L37.62 32.32L37.62 21.37Z"/>
+  <path fill-opacity="0.919" d="M18.84 21.42L28.16 24.81L28.16 35.77L18.83 32.37Z"/>
+  <path fill-opacity="0.919" d="M28.20 6.95L37.52 10.34L46.98 6.90L37.65 3.50Z"/>
+  <path fill-opacity="0.813" d="M37.52 10.34L37.52 21.30L46.98 17.85L46.98 6.90Z"/>
+  <path fill-opacity="0.919" d="M28.20 6.95L37.52 10.34L37.52 21.30L28.19 17.90Z"/>
+  <g fill="var(--pypi-page,#fff)" transform="translate(-1683.66 -513.275)scale(.65177)"><circle cx="2816.017" cy="1772.922" r="2.967" transform="scale(.9397 1)skewY(-18.882)"/></g>
+</symbol>
+  <!-- Uptodown official mark, taken from their own icon-logo.svg rather than
+       redrawn by hand, so the geometry is theirs. Their file is a 100x100
+       viewBox with the artwork positioned by per-path transforms; those are
+       kept verbatim. Recoloured to currentColor to match the other brand
+       marks in this sprite (they ship it in their brand blue #00aad5). -->
+  <symbol id="i-uptodown" viewBox="0 0 100 100" fill="currentColor">
+    <path d="M166.094 117.861a4.06 4.06 0 0 0 5.742 0l11.485-11.485a4.06 4.06 0 0 0 0-5.742l-11.485-11.485a4.06 4.06 0 0 0-5.742 0l-11.485 11.485a4.06 4.06 0 0 0 0 5.742Z" transform="translate(-118.956 -87.96)"/>
+    <path d="m213.1 139.754-11.485-11.485a4.06 4.06 0 0 0-5.742 0l-11.485 11.485a4.06 4.06 0 0 1-5.742 0l-11.485-11.485a4.06 4.06 0 0 0-5.742 0l-11.485 11.485a4.06 4.06 0 0 1-5.742 0l-11.485-11.485a4.06 4.06 0 0 0-5.742 0l-11.485 11.485a4.06 4.06 0 0 0 0 5.742l14.356 14.356 17.227 17.227 14.356 14.356a4.06 4.06 0 0 0 5.742 0l14.356-14.356 17.227-17.227L213.1 145.5a4.06 4.06 0 0 0 0-5.746" transform="translate(-114.29 -92.625)"/>
+  </symbol>
+  <symbol id="i-telegram" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+  </symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="4" width="20" height="16" rx="2"/>
+    <path d="m2 7 10 6 10-6"/>
+  </symbol>
+  <symbol id="i-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+    <path d="m7 10 5 5 5-5"/>
+    <path d="M12 15V3"/>
+  </symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="9" width="11" height="11" rx="2"/>
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+  </symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 6 9 17l-5-5"/>
+  </symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12h14M13 5l7 7-7 7"/>
+  </symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="18" height="11" rx="2"/>
+    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+  </symbol>
+  <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 6 6 18M6 6l12 12"/>
+  </symbol>
+</svg>
+
+<a class="skip-link" href="#main">
+  <span class="lang-en" lang="en">Skip to content</span>
+  <span class="lang-es" lang="es">Ir al contenido</span>
+</a>
+
+<!-- Ambient background: purely decorative, hidden from assistive tech. -->
+<div class="backdrop" aria-hidden="true">
+  <span class="orb orb-a"></span>
+  <span class="orb orb-b"></span>
+  <span class="orb orb-c"></span>
+</div>
+
+<header class="site-header">
+  <nav class="nav" aria-labelledby="navLabel">
+    <!-- aria-labelledby rather than aria-label, because CSS can hide one of
+         these two spans but cannot touch an attribute's value. This is the
+         only way the landmark name follows the page language. -->
+    <span class="visually-hidden" id="navLabel">
+      <span class="lang-en" lang="en">Primary</span>
+      <span class="lang-es" lang="es">Principal</span>
+    </span>
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">odell.dev</span>
+    </a>
+
+    <ul class="nav-list" id="navList">
+      <li><a class="nav-link" href="#work"><span class="lang-en" lang="en">Work</span><span class="lang-es" lang="es">Trabajo</span></a></li>
+      <li><a class="nav-link" href="#capabilities"><span class="lang-en" lang="en">Capabilities</span><span class="lang-es" lang="es">Capacidades</span></a></li>
+      <li><a class="nav-link" href="#approach"><span class="lang-en" lang="en">Approach</span><span class="lang-es" lang="es">Enfoque</span></a></li>
+      <li><a class="nav-link" href="#about"><span class="lang-en" lang="en">About</span><span class="lang-es" lang="es">Sobre mí</span></a></li>
+      <li><a class="nav-link nav-link-cta" href="#contact"><span class="lang-en" lang="en">Contact</span><span class="lang-es" lang="es">Contacto</span></a></li>
+    </ul>
+
+    <div class="nav-tools">
+      <!-- The name states what the button controls, and aria-pressed states
+           whether it is on — the pattern a toggle button is supposed to
+           follow. Naming it after the action instead ("Switch theme") would
+           make aria-pressed mean nothing. -->
+      <button class="icon-btn" id="themeToggle" type="button" aria-pressed="false">
+        <svg class="icon icon-sun" aria-hidden="true"><use href="#i-sun"></use></svg>
+        <svg class="icon icon-moon" aria-hidden="true"><use href="#i-moon"></use></svg>
+        <span class="visually-hidden" id="themeLabel">
+          <span class="lang-en" lang="en">Dark theme</span>
+          <span class="lang-es" lang="es">Tema oscuro</span>
+        </span>
+      </button>
+
+      <!-- No aria-pressed here: this button's accessible name changes with the
+           action it performs, so a pressed state on top of that would just be
+           a second, contradictory signal. -->
+      <button class="lang-btn" id="langToggle" type="button" lang="es">
+        <span id="langToggleText" aria-hidden="true">ES</span>
+        <span class="visually-hidden" id="langToggleLabel">Cambiar a español</span>
+      </button>
+
+      <button class="hamburger" id="navToggle" type="button" aria-expanded="false" aria-controls="navList">
+        <span class="hamburger-box" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="visually-hidden"><span class="lang-en" lang="en">Menu</span><span class="lang-es" lang="es">Menú</span></span>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <h1 class="hero-title">
+          <span class="lang-en" lang="en">Hi, I'm <span class="grad">Odell</span></span>
+          <span class="lang-es" lang="es">Hola, soy <span class="grad">Odell</span></span>
+        </h1>
+
+        <p class="hero-lede">
+          <span class="lang-en" lang="en">I don't just consume APIs; I reverse engineer them</span>
+          <span class="lang-es" lang="es">No solo consumo APIs; hago ingeniería inversa</span>
+        </p>
+
+        <p class="hero-sub">
+          <span class="lang-en" lang="en">Self-taught since 2018. I build automation, integrations and desktop tools — and I read the protocol underneath before I trust it.</span>
+          <span class="lang-es" lang="es">Autodidacta desde 2018. Construyo automatizaciones, integraciones y herramientas de escritorio, y leo el protocolo que hay debajo antes de confiar en él.</span>
+        </p>
+
+        <!-- The label sits outside the list it names. Inside, it was an <li>,
+             and .visually-hidden clips rather than removes, so it stayed in
+             the accessibility tree and counted as a seventh item -- a screen
+             reader announced "Primary languages, list, 7 items" and then read
+             the label back as though it were one of the languages. -->
+        <p class="visually-hidden" id="heroStackLabel">
+          <span class="lang-en" lang="en">Primary languages</span>
+          <span class="lang-es" lang="es">Lenguajes principales</span>
+        </p>
+        <!-- The alternative the linter wants -- dropping the ARIA name -- would
+             leave the list anonymous, so the two errors are traded, not fixed:
+             <ul> is simply outside the rule's allowlist. A list's accessible
+             name is never computed from its items, so the rule's stated risks
+             (hiding child text, conflicting information) do not arise here. -->
+        <!-- [html-validate-disable-next aria-label-misuse -- <ul> is outside the rule's allowlist; naming a list hides nothing, since its name never derives from its items] -->
+        <ul class="hero-stack" aria-labelledby="heroStackLabel">
+          <li>Python</li><li>C#</li><li>C++</li><li>Java</li><li>Kotlin</li><li>JavaScript</li>
+        </ul>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#work">
+            <span class="lang-en" lang="en">See my work</span>
+            <span class="lang-es" lang="es">Ver mi trabajo</span>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+          </a>
+
+          <!-- Points at the English PDF in the markup so it still works with
+               scripting off; applyLanguage() swaps it to match the reader.
+               Both PDFs are linked explicitly in the contact section, so the
+               other language is never more than a scroll away. -->
+          <a class="btn btn-ghost" id="heroCv" href="cv/CV_Odell_EN.pdf"
+             type="application/pdf" hreflang="en">
+            <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+            <span class="lang-en" lang="en">Download CV</span>
+            <span class="lang-es" lang="es">Descargar CV</span>
+          </a>
+
+          <a class="btn btn-ghost" href="#contact">
+            <span class="lang-en" lang="en">Get in touch</span>
+            <span class="lang-es" lang="es">Contactar</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- The terminal replaces what used to be a static, invented code block.
+           Its content is a convenience index: every answer it gives also exists
+           as a real section on this page, so nothing depends on it running. -->
+      <div class="terminal" id="terminal">
+        <div class="terminal-bar" aria-hidden="true">
+          <span class="terminal-dot"></span><span class="terminal-dot"></span><span class="terminal-dot"></span>
+          <span class="terminal-bar-title">odell@portfolio</span>
+        </div>
+        <div class="terminal-screen">
+          <div class="terminal-out" id="terminalOut" aria-live="off"></div>
+
+          <div class="terminal-fallback">
+            <pre><code>$ whoami
+Self-taught software developer since 2018.
+
+$ cat focus.txt
+Automation, systems integration, reverse engineering.
+Python, C#, C++.
+
+$ ls projects/
+account-manager  custom-gui-sfx  turnstile-solver
+image-in-terminal  workflow-automation</code></pre>
+          </div>
+
+          <div class="terminal-form">
+            <label class="visually-hidden" for="terminalInput">
+              <span class="lang-en" lang="en">Terminal command</span>
+              <span class="lang-es" lang="es">Comando de terminal</span>
+            </label>
+            <span class="terminal-prompt" aria-hidden="true">$</span>
+            <input class="terminal-input" id="terminalInput" type="text"
+                   autocomplete="off" autocapitalize="off" spellcheck="false"
+                   placeholder="help" aria-describedby="terminalHint">
+            <span class="visually-hidden" id="terminalHint">
+              <span class="lang-en" lang="en">Type help and press Enter for available commands.</span>
+              <span class="lang-es" lang="es">Escribe help y pulsa Enter para ver los comandos disponibles.</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ WORK ============================ -->
+  <section class="section" id="work">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 class="section-title">
+          <span class="lang-en" lang="en">Selected Work</span>
+          <span class="lang-es" lang="es">Trabajo seleccionado</span>
+        </h2>
+        <p class="section-sub">
+          <span class="lang-en" lang="en">Five things I've built and shipped. Every figure below is verifiable at the link</span>
+          <span class="lang-es" lang="es">Cinco cosas que he construido y publicado. Cada cifra es verificable en el enlace</span>
+        </p>
+      </header>
+
+      <div class="work-grid">
+
+        <!-- 1 — Account Manager -->
+        <article class="project project-featured">
+          <div class="project-top">
+            <h3 class="project-title">Account Manager</h3>
+            <span class="pill pill-flag">
+              <span class="lang-en" lang="en">Closed source</span>
+              <span class="lang-es" lang="es">Código cerrado</span>
+            </span>
+          </div>
+
+          <p class="project-desc">
+            <span class="lang-en" lang="en">A password and account manager for Android and Windows. Built around multiple account types and password import from file, with a fully bilingual English and Spanish interface.</span>
+            <span class="lang-es" lang="es">Un gestor de cuentas y contraseñas para Android y Windows. Organizado en torno a varios tipos de cuenta e importación de contraseñas desde archivo, con una interfaz totalmente bilingüe en inglés y español.</span>
+          </p>
+
+          <!-- Each number carries its own baked-in value. The script swaps the
+               text once a live figure arrives; if that never happens, what is
+               written here is what stays on screen. -->
+          <ul class="facts">
+            <li class="fact fact-strong"><span class="stat" data-stat="am-apk" data-value="449">449</span> <span class="lang-en" lang="en">Android release downloads</span><span class="lang-es" lang="es">descargas de la versión Android</span></li>
+            <li class="fact fact-strong"><span class="stat" data-stat="up-dl" data-value="361">361</span> <span class="lang-en" lang="en">Windows downloads on Uptodown</span><span class="lang-es" lang="es">descargas Windows en Uptodown</span></li>
+            <li class="fact"><span class="lang-en" lang="en">Never goes online</span><span class="lang-es" lang="es">Nunca se conecta a internet</span></li>
+            <li class="fact">2023 <span class="lang-en" lang="en">first release</span><span class="lang-es" lang="es">primera versión</span></li>
+            <li class="fact">Android + Windows</li>
+            <li class="fact">EN / ES</li>
+            <li class="fact">Apache-2.0</li>
+          </ul>
+
+          <p class="project-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+            <span class="lang-en" lang="en"><strong>Source not published.</strong> Withheld deliberately, so the app can't be forked into insecure builds that put users' credentials at risk.</span>
+            <span class="lang-es" lang="es"><strong>Código no publicado.</strong> Retenido a propósito, para que la aplicación no pueda bifurcarse en versiones inseguras que pongan en riesgo las credenciales de los usuarios.</span>
+          </p>
+
+          <div class="project-links">
+            <a class="link" href="https://account-manager.en.uptodown.com/windows" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" aria-hidden="true"><use href="#i-uptodown"></use></svg>
+              <span class="lang-en" lang="en">Windows version on Uptodown</span>
+              <span class="lang-es" lang="es">Versión Windows en Uptodown</span>
+            </a>
+          </div>
+        </article>
+
+        <!-- 2 — Custom GUI SFX -->
+        <article class="project">
+          <div class="project-top">
+            <h3 class="project-title">Custom GUI SFX</h3>
+          </div>
+
+          <p class="project-desc">
+            <span class="lang-en" lang="en">A Windows desktop tool that packages an archive, custom info, links and images into a single self-extracting <code>.exe</code> that runs on a machine with no unzip utility installed. Structured as MVVM over .NET 6 and WPF.</span>
+            <span class="lang-es" lang="es">Una herramienta de escritorio para Windows que empaqueta un archivo comprimido, información personalizada, enlaces e imágenes en un único <code>.exe</code> autoextraíble que funciona en una máquina sin descompresor instalado. Estructurada como MVVM sobre .NET 6 y WPF.</span>
+          </p>
+
+          <ul class="facts">
+            <li class="fact fact-strong"><span class="stat" data-stat="cgs-dl" data-value="334">334</span> <span class="lang-en" lang="en">release downloads</span><span class="lang-es" lang="es">descargas totales</span></li>
+            <li class="fact">C# · .NET 6 · WPF</li>
+            <li class="fact">Windows x64</li>
+          </ul>
+
+          <p class="project-aside">
+            <span class="lang-en" lang="en">The finished executable has to stay under 4 GB. The limit is in the Win64 format itself: the in-memory image is capped at 2 GB because AMD64 relative addressing keeps its offsets in a dword, and everything merged onto the binary pushes the file toward that ceiling. The constraint applies to the output binary, not the archive going in.</span>
+            <span class="lang-es" lang="es">El ejecutable final debe quedarse por debajo de 4 GB. El límite está en el propio formato Win64: la imagen en memoria está topada en 2 GB porque el direccionamiento relativo de AMD64 guarda los desplazamientos en un dword, y todo lo que se fusiona sobre el binario acerca el archivo a ese techo. La restricción aplica al binario de salida, no al archivo que se introduce.</span>
+          </p>
+
+          <div class="project-links">
+            <a class="link" href="https://github.com/odell0111/custom-gui-sfx" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg> GitHub
+            </a>
+          </div>
+        </article>
+
+        <!-- 3 — Turnstile Solver (kept deliberately understated) -->
+        <article class="project">
+          <div class="project-top">
+            <h3 class="project-title">Turnstile Solver</h3>
+          </div>
+
+          <p class="project-desc">
+            <span class="lang-en" lang="en">An async Python server that solves Cloudflare Turnstile challenges in a real browser and returns the token over a local REST endpoint. Proxy handling is first-class — global, via environment, or rotated per browser context.</span>
+            <span class="lang-es" lang="es">Un servidor asíncrono en Python que resuelve retos de Cloudflare Turnstile en un navegador real y devuelve el token a través de un endpoint REST local. El manejo de proxies es de primera clase — global, por variables de entorno o rotado por contexto de navegador.</span>
+          </p>
+
+          <ul class="facts">
+            <li class="fact fact-strong"><span class="stat" data-stat="ts-stars" data-value="52">52</span> ★ · <span class="stat" data-stat="ts-forks" data-value="15">15</span> <span class="lang-en" lang="en">forks</span><span class="lang-es" lang="es">bifurcaciones</span></li>
+            <li class="fact">Python · Quart · patchright</li>
+            <li class="fact">GPL-3.0</li>
+            <li class="fact">Docker + pytest</li>
+          </ul>
+
+          <div class="project-links">
+            <a class="link" href="https://github.com/odell0111/turnstile_solver" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg> GitHub
+            </a>
+          </div>
+        </article>
+
+        <!-- 4 — Image in Terminal -->
+        <article class="project">
+          <div class="project-top">
+            <h3 class="project-title">image-in-terminal</h3>
+          </div>
+
+          <p class="project-desc">
+            <span class="lang-en" lang="en">A Python package and CLI that renders images as coloured Unicode text in the terminal. Takes local files, HTTP/HTTPS URLs, or a whole directory. Two tuning thresholds decide which pixels get inverted, so images stay legible against either a light or a dark terminal.</span>
+            <span class="lang-es" lang="es">Un paquete y CLI de Python que renderiza imágenes como texto Unicode en color dentro de la terminal. Acepta archivos locales, URLs HTTP/HTTPS o un directorio completo. Dos umbrales de ajuste deciden qué píxeles se invierten, para que las imágenes sigan siendo legibles tanto en una terminal clara como oscura.</span>
+          </p>
+
+          <ul class="facts">
+            <li class="fact fact-strong"><span class="stat" data-stat="iit-dl" data-value="205">205</span> <span class="lang-en" lang="en">downloads a month</span><span class="lang-es" lang="es">descargas al mes</span></li>
+            <li class="fact fact-strong"><span class="lang-en" lang="en">Published on PyPI</span><span class="lang-es" lang="es">Publicado en PyPI</span> · v<span class="stat" data-stat="iit-ver" data-value="1.32">1.32</span></li>
+            <li class="fact">MIT</li>
+            <li class="fact"><span class="lang-en" lang="en">CLI + importable library</span><span class="lang-es" lang="es">CLI + librería importable</span></li>
+          </ul>
+
+          <div class="project-links">
+            <a class="link" href="https://github.com/odell0111/image-in-terminal" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg> GitHub
+            </a>
+            <a class="link" href="https://pypi.org/project/image-in-terminal/" target="_blank" rel="noopener noreferrer">
+              <svg class="icon icon-pypi" aria-hidden="true"><use href="#i-pypi"></use></svg> PyPI
+            </a>
+          </div>
+        </article>
+
+        <!-- 5 — Automation work (private) -->
+        <article class="project project-private">
+          <div class="project-top">
+            <h3 class="project-title">
+              <span class="lang-en" lang="en">Workflow Automation</span>
+              <span class="lang-es" lang="es">Automatización de flujos de trabajo</span>
+            </h3>
+            <span class="pill">
+              <span class="lang-en" lang="en">Private client work</span>
+              <span class="lang-es" lang="es">Trabajo privado</span>
+            </span>
+          </div>
+
+          <p class="project-desc">
+            <span class="lang-en" lang="en">Built unattended automation at scale for social platforms: authenticated session management, request scheduling, and integration with undocumented APIs. It is work I took on when I needed it, and it sits in a gray area I won't pretend otherwise about. It also taught me more about identity handling, concurrency and anti-abuse systems than anything I've built since.</span>
+            <span class="lang-es" lang="es">Construí automatización desatendida a escala para plataformas sociales: gestión de sesiones autenticadas, planificación de peticiones e integración con APIs no documentadas. Es un trabajo que acepté cuando lo necesitaba, y está en una zona gris sobre la que no voy a pretender otra cosa. También me enseñó más sobre gestión de identidad, concurrencia y sistemas antiabuso que cualquier cosa que haya construido después.</span>
+          </p>
+
+          <ul class="facts">
+            <li class="fact">Python</li>
+            <li class="fact"><span class="lang-en" lang="en">Session &amp; identity handling</span><span class="lang-es" lang="es">Gestión de sesiones e identidad</span></li>
+            <li class="fact"><span class="lang-en" lang="en">Undocumented APIs</span><span class="lang-es" lang="es">APIs no documentadas</span></li>
+          </ul>
+
+          <p class="project-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-lock"></use></svg>
+            <span class="lang-en" lang="en"><strong>Source not published.</strong></span>
+            <span class="lang-es" lang="es"><strong>Código no publicado.</strong></span>
+          </p>
+        </article>
+
+      </div>
+
+      <!-- The date is the moment the numbers were last checked by hand. With
+           scripting off that is all this says, and it is true as written. The
+           script fills .stats-state in only once it knows whether the live
+           figures actually arrived, so the page never claims a freshness it
+           did not get. tools/update-stats.py rewrites both the date and the
+           data-value attributes above. -->
+      <p class="stats-note" id="statsNote" data-snapshot="2026-09-27">
+        <span class="lang-en" lang="en">Figures verified <time class="stats-date" datetime="2026-09-27">2026-09-27</time><span class="stats-state"></span></span>
+        <span class="lang-es" lang="es">Cifras verificadas el <time class="stats-date" datetime="2026-09-27">2026-09-27</time><span class="stats-state"></span></span>
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================= CAPABILITIES ========================= -->
+  <section class="section section-alt" id="capabilities">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 class="section-title">
+          <span class="lang-en" lang="en">Capabilities</span>
+          <span class="lang-es" lang="es">Capacidades técnicas</span>
+        </h2>
+        <p class="section-sub">
+          <span class="lang-en" lang="en">Every bar names the work behind it — public where it can be shown, private where it can't.</span>
+          <span class="lang-es" lang="es">Cada barra nombra el trabajo que tiene detrás — público cuando puede mostrarse, privado cuando no.</span>
+        </p>
+      </header>
+
+      <div class="cap-grid">
+
+        <div class="cap-col">
+          <h3 class="cap-title">
+            <span class="lang-en" lang="en">Languages</span>
+            <span class="lang-es" lang="es">Lenguajes</span>
+          </h3>
+          <ul class="skills" id="skills">
+            <li class="skill">
+              <span class="skill-name">Python</span>
+              <span class="skill-track"><span class="skill-bar" style="--level:92%"></span></span>
+              <span class="skill-src">turnstile_solver · image-in-terminal · <span class="skill-src--private"><span class="lang-en" lang="en">private client work</span><span class="lang-es" lang="es">trabajo privado con clientes</span></span></span>
+            </li>
+            <li class="skill">
+              <span class="skill-name">C#</span>
+              <span class="skill-track"><span class="skill-bar" style="--level:88%"></span></span>
+              <span class="skill-src">custom-gui-sfx · Account Manager</span>
+            </li>
+            <li class="skill">
+              <span class="skill-name">Java / Kotlin</span>
+              <span class="skill-track"><span class="skill-bar" style="--level:76%"></span></span>
+              <span class="skill-src"><span class="skill-src--private"><span class="lang-en" lang="en">private client work</span><span class="lang-es" lang="es">trabajo privado con clientes</span></span></span>
+            </li>
+            <li class="skill">
+              <span class="skill-name">C / C++</span>
+              <span class="skill-track"><span class="skill-bar" style="--level:74%"></span></span>
+              <span class="skill-src"><span class="skill-src--private"><span class="lang-en" lang="en">private client work</span><span class="lang-es" lang="es">trabajo privado con clientes</span></span></span>
+            </li>
+            <li class="skill">
+              <span class="skill-name">JavaScript</span>
+              <span class="skill-track"><span class="skill-bar" style="--level:70%"></span></span>
+              <span class="skill-src"><span class="skill-src--private"><span class="lang-en" lang="en">private client work</span><span class="lang-es" lang="es">trabajo privado con clientes</span></span></span>
+            </li>
+          </ul>
+          <p class="cap-foot">
+            <span class="lang-en" lang="en">Bars show relative strength, not a measured score. Two name repositories you can open; the rest is client work I can't publish.</span>
+            <span class="lang-es" lang="es">Las barras muestran fuerza relativa, no una puntuación medida. Dos nombran repositorios que puedes abrir; el resto es trabajo de cliente que no puedo publicar.</span>
+          </p>
+        </div>
+
+        <div class="cap-col">
+          <h3 class="cap-title">
+            <span class="lang-en" lang="en">Platforms &amp; tools</span>
+            <span class="lang-es" lang="es">Plataformas y herramientas</span>
+          </h3>
+          <ul class="tags">
+            <li class="tag">.NET 6 / WPF</li>
+            <li class="tag">MVVM</li>
+            <li class="tag">Visual Studio</li>
+            <li class="tag">Unity</li>
+            <li class="tag">Android</li>
+            <li class="tag">Jetpack Compose</li>
+            <li class="tag">Java / Kotlin</li>
+            <li class="tag">HTML / CSS</li>
+            <li class="tag">JavaScript</li>
+            <li class="tag">Docker</li>
+            <li class="tag">Docker Compose</li>
+            <li class="tag">Git</li>
+            <li class="tag">GitHub</li>
+            <li class="tag">Linux</li>
+            <li class="tag">PostgreSQL</li>
+            <li class="tag">SQL</li>
+            <li class="tag">REST APIs</li>
+            <li class="tag">SSH</li>
+            <li class="tag">TLS / HTTPS</li>
+            <li class="tag">Flask</li>
+            <li class="tag">FastAPI</li>
+            <li class="tag">Django</li>
+            <li class="tag">SQLAlchemy</li>
+            <li class="tag">Quart <span class="tag-note">(async HTTP)</span></li>
+            <li class="tag">patchright</li>
+            <li class="tag">Playwright</li>
+            <li class="tag">Selenium</li>
+            <li class="tag">Scrapy</li>
+            <li class="tag">BeautifulSoup</li>
+            <li class="tag">aiohttp / httpx</li>
+            <li class="tag">requests</li>
+            <li class="tag">asyncio</li>
+            <li class="tag">NumPy</li>
+            <li class="tag">Pandas</li>
+            <li class="tag">Matplotlib</li>
+            <li class="tag">OpenCV</li>
+            <li class="tag">Pillow</li>
+            <li class="tag">Tkinter</li>
+            <li class="tag">PyQt / PySide</li>
+            <li class="tag">PyInstaller</li>
+            <li class="tag">Rich</li>
+            <li class="tag">rich-argparse</li>
+            <li class="tag">argparse</li>
+            <li class="tag">python-dotenv</li>
+            <li class="tag">Faker</li>
+            <li class="tag">pyngrok</li>
+            <li class="tag">pytest</li>
+            <li class="tag">Ruff / Black / mypy</li>
+            <li class="tag">setuptools</li>
+            <li class="tag">PyPI</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="cap-specs">
+        <h3 class="cap-title cap-title-spaced">
+          <span class="lang-en" lang="en">Specialties</span>
+          <span class="lang-es" lang="es">Especialidades</span>
+        </h3>
+        <ul class="spec-list">
+          <li class="spec">
+            <h4><span class="lang-en" lang="en">Reverse engineering &amp; protocol analysis</span><span class="lang-es" lang="es">Ingeniería inversa y análisis de protocolos</span></h4>
+            <p><span class="lang-en" lang="en">Reading undocumented formats, binaries and APIs directly, instead of guessing at the wrapper.</span><span class="lang-es" lang="es">Leer formatos, binarios y APIs no documentados directamente, en lugar de adivinar sobre el envoltorio.</span></p>
+          </li>
+          <li class="spec">
+            <h4><span class="lang-en" lang="en">Network &amp; security</span><span class="lang-es" lang="es">Redes y seguridad</span></h4>
+            <p><span class="lang-en" lang="en">Network and protocol analysis, TLS/HTTPS and certificate chains, SSH keys and tunnelling, and wireless (WiFi) security — together with the proxy rotation and authenticated-session handling that automating on top of them demands.</span><span class="lang-es" lang="es">Análisis de redes y protocolos, TLS/HTTPS y cadenas de certificados, claves y túneles SSH y seguridad inalámbrica (WiFi) — junto con el manejo de proxies y sesiones autenticadas que exige automatizar por encima de ellas.</span></p>
+          </li>
+          <li class="spec">
+            <h4><span class="lang-en" lang="en">Automation &amp; integration</span><span class="lang-es" lang="es">Automatización e integración</span></h4>
+            <p><span class="lang-en" lang="en">Systems that keep running unwatched: session handling, scheduling, and retry logic that survives the failure cases.</span><span class="lang-es" lang="es">Sistemas que siguen funcionando sin supervisión: gestión de sesiones, planificación y lógica de reintentos que sobrevive a los casos de fallo.</span></p>
+          </li>
+          <li class="spec">
+            <h4><span class="lang-en" lang="en">Desktop &amp; cross-platform applications</span><span class="lang-es" lang="es">Aplicaciones de escritorio y multiplataforma</span></h4>
+            <p><span class="lang-en" lang="en">Windows tooling in C# and .NET, Android in Kotlin and Jetpack Compose, and Unity builds that target both.</span><span class="lang-es" lang="es">Herramientas Windows en C# y .NET, Android en Kotlin y Jetpack Compose, y builds de Unity para ambas.</span></p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================== APPROACH =========================== -->
+  <section class="section" id="approach">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 class="section-title">
+          <span class="lang-en" lang="en">How I Work</span>
+          <span class="lang-es" lang="es">Cómo trabajo</span>
+        </h2>
+      </header>
+
+      <div class="approach-grid">
+        <div class="statement">
+          <h3 class="statement-title">
+            <span class="lang-en" lang="en">Fundamentals first</span>
+            <span class="lang-es" lang="es">Los fundamentos primero</span>
+          </h3>
+          <p>
+            <span class="lang-en" lang="en">I started in 2018, and I shipped Account Manager in March 2023 — nearly two years before the term <em>vibe coding</em> was coined, and with no AI writing any of it. That background is in memory management, protocol analysis and system architecture: the parts of software that don't have a shortcut. I use modern tooling deliberately, and I can tell you exactly what I would do without it.</span>
+            <span class="lang-es" lang="es">Empecé en 2018, y publiqué Account Manager en marzo de 2023 — casi dos años antes de que se acuñara el término <em>vibe coding</em>, y sin que ninguna IA escribiera nada de él. Esa base está en gestión de memoria, análisis de protocolos y arquitectura de sistemas: las partes del software que no tienen atajo. Uso herramientas modernas de forma deliberada, y puedo decirte exactamente qué haría sin ellas.</span>
+          </p>
+        </div>
+
+        <ol class="principles">
+          <li class="principle">
+            <h3><span class="lang-en" lang="en">Understand it before I use it</span><span class="lang-es" lang="es">Entenderlo antes de usarlo</span></h3>
+            <p><span class="lang-en" lang="en">I read the protocol, the binary or the schema before building on top of it. Most of my hardest bugs were assumptions I hadn't checked.</span><span class="lang-es" lang="es">Leo el protocolo, el binario o el esquema antes de construir encima. La mayoría de mis bugs más difíciles fueron suposiciones que no había comprobado.</span></p>
+          </li>
+          <li class="principle">
+            <h3><span class="lang-en" lang="en">Depth over speed</span><span class="lang-es" lang="es">Profundidad antes que velocidad</span></h3>
+            <p><span class="lang-en" lang="en">I learn things all the way down, which is why I can take on whatever a project needs — not only what I already know. Quality and reputation come before the money.</span><span class="lang-es" lang="es">Aprendo las cosas hasta el fondo, y por eso puedo asumir lo que un proyecto necesite — no solo lo que ya sé. La calidad y la reputación van antes que el dinero.</span></p>
+          </li>
+          <li class="principle">
+            <h3><span class="lang-en" lang="en">The code has to explain itself</span><span class="lang-es" lang="es">El código tiene que explicarse solo</span></h3>
+            <p><span class="lang-en" lang="en">Naming, structure and comments that let someone else — or me in a year — pick it up without a guided tour.</span><span class="lang-es" lang="es">Nombres, estructura y comentarios que permitan a otra persona — o a mí dentro de un año — retomarlo sin una visita guiada.</span></p>
+          </li>
+          <li class="principle">
+            <h3><span class="lang-en" lang="en">Ship something that runs</span><span class="lang-es" lang="es">Entregar algo que funcione</span></h3>
+            <p><span class="lang-en" lang="en">A smaller thing that works beats a bigger thing that nearly does. I'd rather hand over one finished module than three half-finished ones.</span><span class="lang-es" lang="es">Algo más pequeño que funciona vale más que algo más grande que casi funciona. Prefiero entregar un módulo terminado que tres a medias.</span></p>
+          </li>
+          <li class="principle">
+            <h3><span class="lang-en" lang="en">Say what I don't know</span><span class="lang-es" lang="es">Decir lo que no sé</span></h3>
+            <p><span class="lang-en" lang="en">If I haven't worked with a technology, I'll tell you — then tell you how long I need to learn it. You get a real estimate instead of an optimistic one.</span><span class="lang-es" lang="es">Si no he trabajado con una tecnología, te lo digo — y después te digo cuánto necesito para aprenderla. Recibes una estimación real en lugar de una optimista.</span></p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================= ABOUT ============================= -->
+  <section class="section section-alt" id="about">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 class="section-title">
+          <span class="lang-en" lang="en">About</span>
+          <span class="lang-es" lang="es">Sobre mí</span>
+        </h2>
+      </header>
+
+      <div class="about-grid">
+        <div class="about-body">
+          <p>
+            <span class="lang-en" lang="en">I'm a self-taught developer. I started in 2018 and never really stopped — courses and technical books gave me the theory, building things put it into practice, and taking apart software that already worked is how I check I actually understood it.</span>
+            <span class="lang-es" lang="es">Soy desarrollador autodidacta. Empecé en 2018 y nunca he parado del todo — los cursos y los libros técnicos me dieron la teoría, construir cosas la puso en práctica, y desarmar software que ya funcionaba es mi forma de comprobar que la entendí de verdad.</span>
+          </p>
+          <p>
+            <span class="lang-en" lang="en">I work mainly in Python and C#, with C and C++ where the problem calls for them. My projects tend to be tools: something that automates a process, packages a build, or reaches data that isn't exposed cleanly.</span>
+            <span class="lang-es" lang="es">Trabajo principalmente en Python y C#, con C y C++ cuando el problema lo pide. Mis proyectos suelen ser herramientas: algo que automatiza un proceso, empaqueta una build u obtiene datos que no están expuestos de forma limpia.</span>
+          </p>
+        </div>
+
+        <aside class="about-facts" aria-labelledby="aboutFactsLabel">
+          <p class="visually-hidden" id="aboutFactsLabel">
+            <span class="lang-en" lang="en">Repositories and profiles</span>
+            <span class="lang-es" lang="es">Repositorios y perfiles</span>
+          </p>
+          <a class="about-link" href="https://github.com/odell0111" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg>
+            <span>
+              <strong>github.com/odell0111</strong>
+              <small><span class="lang-en" lang="en">Public repositories and source</span><span class="lang-es" lang="es">Repositorios públicos y código</span></small>
+            </span>
+          </a>
+          <a class="about-link" href="https://linkedin.com/in/odell0111" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-linkedin"></use></svg>
+            <span>
+              <strong>linkedin.com/in/odell0111</strong>
+              <small><span class="lang-en" lang="en">Professional profile</span><span class="lang-es" lang="es">Perfil profesional</span></small>
+            </span>
+          </a>
+          <a class="about-link" href="https://www.instagram.com/odell.dev" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-instagram"></use></svg>
+            <span>
+              <strong>instagram.com/odell.dev</strong>
+              <small><span class="lang-en" lang="en">Another place to find me</span><span class="lang-es" lang="es">Otro lugar donde encontrarme</span></small>
+            </span>
+          </a>
+          <a class="about-link" href="https://t.me/odell0111" target="_blank" rel="noopener noreferrer">
+            <svg class="icon" aria-hidden="true"><use href="#i-telegram"></use></svg>
+            <span>
+              <strong>t.me/odell0111</strong>
+              <small><span class="lang-en" lang="en">Message me directly</span><span class="lang-es" lang="es">Escríbeme directamente</span></small>
+            </span>
+          </a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ CONTACT ============================ -->
+  <section class="section" id="contact">
+    <div class="wrap">
+      <header class="section-head">
+        <h2 class="section-title">
+          <span class="lang-en" lang="en">Get in Touch</span>
+          <span class="lang-es" lang="es">Contacto</span>
+        </h2>
+        <p class="section-sub">
+          <span class="lang-en" lang="en">Email is the fastest way to reach me</span>
+          <span class="lang-es" lang="es">El correo es la vía más rápida para contactarme</span>
+        </p>
+      </header>
+
+      <div class="contact-card">
+        <a class="contact-mail" href="mailto:odellgm11012001@gmail.com">
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg>
+          <span class="contact-mail-text">odellgm11012001@gmail.com</span>
+        </a>
+
+        <div class="contact-actions">
+          <button class="btn btn-primary" id="copyEmail" type="button" data-email="odellgm11012001@gmail.com">
+            <svg class="icon icon-copy" aria-hidden="true"><use href="#i-copy"></use></svg>
+            <svg class="icon icon-done" aria-hidden="true"><use href="#i-check"></use></svg>
+            <span class="copy-label">
+              <span class="lang-en" lang="en">Copy address</span>
+              <span class="lang-es" lang="es">Copiar dirección</span>
+            </span>
+            <span class="copy-done">
+              <span class="lang-en" lang="en">Copied</span>
+              <span class="lang-es" lang="es">Copiado</span>
+            </span>
+          </button>
+
+          <!-- No social buttons here. The same four destinations sat both here
+               and in the About cards directly above: same links, different
+               clothes, which read as a repeated section rather than a second
+               chance to click. About owns the profiles; this section owns
+               starting a conversation. -->
+        </div>
+
+        <!-- Both languages are offered explicitly here rather than following
+             the page. A CV is a document you send to someone else, and the
+             language they want is not always the language they are reading
+             this page in. hreflang says which is which to anything that
+             crawls it. No `download` attribute: letting the browser open the
+             PDF in its viewer means it can be read before it is saved, which
+             is what most people actually want to do with a CV. -->
+        <div class="contact-docs">
+          <p class="contact-docs-label" id="cvLabel">
+            <span class="lang-en" lang="en">Résumé</span>
+            <span class="lang-es" lang="es">Currículum</span>
+          </p>
+          <a class="btn btn-ghost" href="cv/CV_Odell_EN.pdf" hreflang="en"
+             type="application/pdf" aria-describedby="cvLabel">
+            <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+            <span class="lang-en" lang="en">CV · English</span>
+            <span class="lang-es" lang="es">CV · Inglés</span>
+          </a>
+          <a class="btn btn-ghost" href="cv/CV_Odell_ES.pdf" hreflang="es"
+             type="application/pdf" aria-describedby="cvLabel">
+            <svg class="icon" aria-hidden="true"><use href="#i-download"></use></svg>
+            <span class="lang-en" lang="en">CV · Spanish</span>
+            <span class="lang-es" lang="es">CV · Español</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-copy">
+      &copy; <span id="year">2026</span> Odell.
+      <span class="lang-en" lang="en">All rights reserved.</span>
+      <span class="lang-es" lang="es">Todos los derechos reservados.</span>
+    </p>
+    <ul class="footer-links">
+      <li><a href="https://github.com/odell0111" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><svg class="icon" aria-hidden="true"><use href="#i-github"></use></svg></a></li>
+      <li><a href="https://linkedin.com/in/odell0111" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"></use></svg></a></li>
+      <li><a href="https://www.instagram.com/odell.dev" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg class="icon" aria-hidden="true"><use href="#i-instagram"></use></svg></a></li>
+      <li><a href="https://t.me/odell0111" target="_blank" rel="noopener noreferrer" aria-label="Telegram"><svg class="icon" aria-hidden="true"><use href="#i-telegram"></use></svg></a></li>
+      <li><a href="mailto:odellgm11012001@gmail.com" aria-label="Email"><svg class="icon" aria-hidden="true"><use href="#i-mail"></use></svg></a></li>
+    </ul>
+  </div>
+</footer>
+
+<!-- Live-region notice for the project figures. It ships empty in the markup
+     rather than being created on demand: a live region has to be in the
+     document before anything is put into it, or the change is not announced.
+     main.js only ever writes into it. -->
+<div class="toast" id="toast" role="status" aria-live="polite">
+  <p class="toast-text" id="toastText"></p>
+  <button class="toast-close" id="toastClose" type="button">
+    <svg class="icon" aria-hidden="true"><use href="#i-close"></use></svg>
+    <span class="visually-hidden">
+      <span class="lang-en" lang="en">Dismiss</span>
+      <span class="lang-es" lang="es">Cerrar</span>
+    </span>
+  </button>
+</div>
+
+<script src="scripts/main.js" defer></script>
+</body>
+</html>

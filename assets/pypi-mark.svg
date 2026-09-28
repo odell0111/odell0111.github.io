@@ -1,0 +1,64 @@
+<!-- Generated from PyPI.svg by tools/build-pypi-mark.py — do not hand-edit.
+     The paths are flattened into viewBox space and the fills replaced with
+     opacity over currentColor. -->
+<symbol id="i-pypi" viewBox="0 0 65.812 58" fill="currentColor">
+  <path fill-opacity="0.046" d="M9.47 22.27L18.79 25.66L28.25 22.22L18.93 18.83Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M18.79 25.66L18.79 36.62L28.25 33.18L28.25 22.22Z"/>
+  <path fill-opacity="0.093" d="M9.47 22.27L18.79 25.66L18.79 36.62L9.47 33.23Z"/>
+  <path fill-opacity="0.046" d="M18.84 14.61L28.16 18.00L37.62 14.56L28.29 11.16Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M28.16 18.00L28.16 28.96L37.62 25.51L37.62 14.56Z"/>
+  <path fill-opacity="0.093" d="M18.84 14.61L28.16 18.00L28.16 28.96L18.83 25.56Z"/>
+  <path fill-opacity="0.046" d="M0.11 36.74L9.43 40.13L18.89 36.69L9.57 33.30Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M9.43 40.13L9.43 51.09L18.89 47.65L18.89 36.69Z"/>
+  <path fill-opacity="0.093" d="M0.11 36.74L9.43 40.13L9.43 51.09L0.11 47.70Z"/>
+  <path fill-opacity="0.046" d="M9.47 40.15L18.79 43.54L28.25 40.09L18.93 36.70Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M18.79 43.54L18.79 54.50L28.25 51.05L28.25 40.09Z"/>
+  <path fill-opacity="0.093" d="M9.47 40.15L18.79 43.54L18.79 54.50L9.47 51.10Z"/>
+  <path fill-opacity="0.046" d="M9.47 29.08L18.79 32.47L28.25 29.03L18.93 25.63Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M18.79 32.47L18.79 43.43L28.25 39.98L28.25 29.03Z"/>
+  <path fill-opacity="0.093" d="M9.47 29.08L18.79 32.47L18.79 43.43L9.47 40.03Z"/>
+  <path fill-opacity="0.046" d="M46.93 33.34L56.25 36.73L65.71 33.28L56.38 29.89Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M56.25 36.73L56.25 47.69L65.71 44.24L65.71 33.28Z"/>
+  <path fill-opacity="0.093" d="M46.93 33.34L56.25 36.73L56.25 47.69L46.92 44.29Z"/>
+  <path fill-opacity="0.046" d="M37.56 36.74L46.88 40.13L56.34 36.69L47.02 33.29Z"/>
+  <path fill-opacity="0.215" d="M46.88 40.13L46.88 51.09L56.34 47.64L56.34 36.69Z"/>
+  <path fill-opacity="0.093" d="M37.56 36.74L46.88 40.13L46.88 51.09L37.56 47.69Z"/>
+  <g fill="var(--pypi-page,#fff)" transform="translate(-1683.66 -513.275)scale(.65177)"><circle cx="2835.218" cy="1823.899" r="2.967" transform="scale(.9397 1)skewY(-18.882)"/></g>
+  <path fill-opacity="0.046" d="M28.20 40.15L37.52 43.54L46.98 40.09L37.66 36.70Z"/>
+  <path fill-opacity="0.215" d="M37.52 43.54L37.52 54.50L46.98 51.05L46.98 40.09Z"/>
+  <path fill-opacity="0.093" d="M28.20 40.15L37.52 43.54L37.52 54.50L28.20 51.10Z"/>
+  <path fill-opacity="0.046" d="M18.84 43.55L28.16 46.94L37.62 43.50L28.29 40.11Z"/>
+  <path fill="var(--pypi-page,#fff)" d="M28.16 46.94L28.16 57.90L37.62 54.46L37.62 43.50Z"/>
+  <path fill-opacity="0.093" d="M18.84 43.55L28.16 46.94L28.16 57.90L18.83 54.51Z"/>
+  <path fill-opacity="0.046" d="M46.93 22.27L56.25 25.66L65.71 22.22L56.38 18.83Z"/>
+  <path fill-opacity="0.215" d="M56.25 25.66L56.25 36.62L65.71 33.18L65.71 22.22Z"/>
+  <path fill-opacity="0.093" d="M46.93 22.27L56.25 25.66L56.25 36.62L46.92 33.23Z"/>
+  <path fill-opacity="0.27" d="M46.93 11.21L56.25 14.60L65.71 11.15L56.38 7.76Z"/>
+  <path fill-opacity="0.215" d="M56.25 14.60L56.25 25.55L65.71 22.11L65.71 11.15Z"/>
+  <path fill-opacity="0.093" d="M46.93 11.21L56.25 14.60L56.25 25.55L46.92 22.16Z"/>
+  <path fill-opacity="0.046" d="M37.56 25.68L46.88 29.07L56.34 25.62L47.02 22.23Z"/>
+  <path fill-opacity="0.215" d="M46.88 29.07L46.88 40.02L56.34 36.58L56.34 25.62Z"/>
+  <path fill-opacity="0.093" d="M37.56 25.68L46.88 29.07L46.88 40.02L37.56 36.63Z"/>
+  <path fill-opacity="0.046" d="M37.56 14.61L46.88 18.00L56.34 14.56L47.02 11.16Z"/>
+  <path fill-opacity="0.813" d="M46.88 18.00L46.88 28.96L56.34 25.51L56.34 14.56Z"/>
+  <path fill-opacity="0.093" d="M37.56 14.61L46.88 18.00L46.88 28.96L37.56 25.56Z"/>
+  <path fill-opacity="0.919" d="M37.56 3.54L46.88 6.94L56.34 3.49L47.02 0.10Z"/>
+  <path fill-opacity="0.813" d="M46.88 6.94L46.88 17.89L56.34 14.45L56.34 3.49Z"/>
+  <path fill-opacity="0.093" d="M37.56 3.54L46.88 6.94L46.88 17.89L37.56 14.50Z"/>
+  <path fill-opacity="0.046" d="M28.20 29.08L37.52 32.47L46.98 29.03L37.66 25.63Z"/>
+  <path fill-opacity="0.215" d="M37.52 32.47L37.52 43.43L46.98 39.98L46.98 29.03Z"/>
+  <path fill-opacity="0.093" d="M28.20 29.08L37.52 32.47L37.52 43.43L28.20 40.03Z"/>
+  <path fill-opacity="0.046" d="M28.20 18.02L37.52 21.41L46.98 17.96L37.66 14.57Z"/>
+  <path fill-opacity="0.813" d="M37.52 21.41L37.52 32.36L46.98 28.92L46.98 17.96Z"/>
+  <path fill-opacity="0.093" d="M28.20 18.02L37.52 21.41L37.52 32.36L28.20 28.97Z"/>
+  <path fill-opacity="0.046" d="M18.84 32.49L28.16 35.88L37.62 32.43L28.29 29.04Z"/>
+  <path fill-opacity="0.813" d="M28.16 35.88L28.16 46.83L37.62 43.39L37.62 32.43Z"/>
+  <path fill-opacity="0.919" d="M18.84 32.49L28.16 35.88L28.16 46.83L18.83 43.44Z"/>
+  <path fill-opacity="0.919" d="M18.84 21.42L28.16 24.81L37.62 21.37L28.29 17.97Z"/>
+  <path fill-opacity="0.813" d="M28.16 24.81L28.16 35.77L37.62 32.32L37.62 21.37Z"/>
+  <path fill-opacity="0.919" d="M18.84 21.42L28.16 24.81L28.16 35.77L18.83 32.37Z"/>
+  <path fill-opacity="0.919" d="M28.20 6.95L37.52 10.34L46.98 6.90L37.65 3.50Z"/>
+  <path fill-opacity="0.813" d="M37.52 10.34L37.52 21.30L46.98 17.85L46.98 6.90Z"/>
+  <path fill-opacity="0.919" d="M28.20 6.95L37.52 10.34L37.52 21.30L28.19 17.90Z"/>
+  <g fill="var(--pypi-page,#fff)" transform="translate(-1683.66 -513.275)scale(.65177)"><circle cx="2816.017" cy="1772.922" r="2.967" transform="scale(.9397 1)skewY(-18.882)"/></g>
+</symbol>
