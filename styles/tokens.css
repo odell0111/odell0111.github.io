@@ -90,10 +90,19 @@
      they are. 0.85 measures 4.4:1. */
   --ring: rgba(79, 70, 229, 0.85);
 
-  /* Type */
+  /* Type. Both faces come from the one Google Fonts request in <head>, and
+     each stack keeps the system faces behind it: those are what paints before
+     the webfont arrives and what paints if it never does.
+
+     The mono face used to be the system one. The system ones differ enough in
+     weight that the terminal read lighter than the page around it, and the
+     terminal is where a mono face is most of what you see. JetBrains Mono is
+     asked for as a weight range rather than as the two weights the stylesheet
+     names today — 400, and 600 on the stats, the skill names and the address
+     — so a weight added later cannot land on a synthesised bold. */
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+    Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* Geometry */
   --wrap: 1140px;

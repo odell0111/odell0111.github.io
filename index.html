@@ -50,8 +50,13 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Inter is the page's voice; JetBrains Mono is what the terminal, the
+         tag lists and the numbers in the cards are set in. Both families are
+         named in one request, so the second costs a font file and no extra
+         round trip. The URL cannot be wrapped — a newline inside an attribute
+         value is part of the value and would corrupt it. -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400..700&display=swap"
       rel="stylesheet">
     <!-- Eight files, one stylesheet. There is no build step, so the cascade
          order is this order and nothing else. The sections were a single file
