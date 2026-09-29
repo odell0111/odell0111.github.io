@@ -8,8 +8,7 @@
    any of this existed.
 
      "shatter"  the outgoing page is glass. It cracks from the point you
-                clicked, throws its pieces outward, holds them there for half a
-                second, and lets them fall.
+                clicked, throws its pieces outward, and lets them fall.
      "fall"     the outgoing page is a sheet pinned along its top edge: the pin
                 lets go, the sheet swings, turns and drops away.
 
@@ -59,6 +58,20 @@
        two. */
 		var RAYS = 11;
 		var RINGS = 6;
+
+		/* How far a spoke may wander off its own radius on the way out from the
+       impact, as a fraction of the angle between two spokes.
+
+       Eleven clean radii read as a star, which is the tell that the break was
+       drawn rather than happened. Glass kinks as it runs, so the angle is
+       re-drawn at every ring and each spoke comes out a polyline.
+
+       Kept small deliberately — this is the difference between a crack and a
+       starburst, and a few tenths is already past it. The bound it has to stay
+       under is 0.25: neighbouring spokes are half a step apart in the worst
+       case, so anything beyond that lets two of them cross and turns the cells
+       between them inside out. */
+		var SPOKE_WOBBLE = 0.1;
 
 		/* How far a piece is thrown when the pane lets go, in px: the least it
        is ever thrown, and the most. The push is proportional to the square
@@ -135,7 +148,7 @@
 		var busy = false;
 		var target = null; /* where the turn in flight is going */
 		var pending = null; /* a click that arrived while a turn was running */
-		var layers = []; /* the crack and every shard, only during a shatter */
+		var layers = []; /* the veil, the crack and every shard, during a shatter */
 		var bitmapUrl = null; /* the captured page, as an object URL */
 		var endTimer = null;
 		var fontCss = null; /* Google's @font-face rules, URLs inlined */
@@ -164,19 +177,68 @@
 			return /ms/.test(raw) ? n : n * 1000;
 		}
 
+		/* --bg for a theme that is not the one on screen, out of the stylesheet.
+
+       Nothing can read the other theme's tokens directly — they only resolve
+       for a root that is in that theme — so this puts the attribute on, reads,
+       and takes it off again, all inside one synchronous block. No paint can
+       land in the middle of that: the browser paints once this task has
+       returned, so the page is never shown in the theme it was asked about,
+       and the visitor never sees a flicker.
+
+       It is worth the trick to keep --bg as the one definition of the page's
+       background. The alternative is a second copy of the two hexes here,
+       which nothing would keep in step with the palette — and the pair in
+       <head> is already one copy more than anyone wanted.
+
+       Empty means the stylesheet has not resolved. Callers treat that as "no
+       colour to draw with" rather than inventing one. */
+		function bgOf(theme) {
+			if (theme !== "light" && theme !== "dark") return "";
+
+			var had = root.getAttribute("data-theme");
+			root.setAttribute("data-theme", theme);
+
+			var bg = "";
+			try {
+				bg = String(getComputedStyle(root).getPropertyValue("--bg") || "");
+			} catch (e) {
+				bg = "";
+			}
+
+			if (had === null) root.removeAttribute("data-theme");
+			else root.setAttribute("data-theme", had);
+
+			return bg.replace(/^\s+|\s+$/g, "");
+		}
+
+		/* Where in --pt-shatter the break is over: the 40% stop in pt-throw, and
+       the offset from which .pt-shard delays the fall.
+
+       A keyframe selector cannot take a var(), so the number is a literal in
+       the stylesheet and has to be repeated here. All three have to agree —
+       move the stop without moving this and the overlay comes off early or
+       late relative to the pieces leaving. */
+		var BREAK_SHARE = 0.4;
+
 		/* How long the whole shatter runs for, from the first piece letting go to
        the last one clearing the bottom of the frame.
 
        The last piece is the one with the longest delay, so LAG_MAX opens it;
-       the break is then over at 40% of the effect and the fall takes the
-       remaining 60%, which is one whole --pt-shatter however it is retimed;
-       and --pt-gap is the pause between the two. Nothing here is a number of
-       its own — retime the effect in motion.css and this follows, which is the
-       point of reading it back rather than writing it down twice. */
+       then the break, which is over at BREAK_SHARE of --pt-shatter; then
+       --pt-gap; then the fall, which is --pt-drop-ms long.
+
+       The fall used to be the rest of --pt-shatter, which is why this reads
+       like one duration split in two. It is not any more, and it must not go
+       back to being one: the whole point of --pt-drop-ms is that the two
+       motions are retimed apart, and a sum of them would silently stop
+       matching the moment either moved. Everything here is read back off the
+       page so retiming the effect in motion.css is all there is to it. */
 		function shatterMs() {
 			return LAG_MAX
-				+ durationMs("--pt-shatter", 1000)
-				+ durationMs("--pt-gap", 10);
+				+ durationMs("--pt-shatter", 1000) * BREAK_SHARE
+				+ durationMs("--pt-gap", 10)
+				+ durationMs("--pt-drop-ms", 300);
 		}
 
 		/* Run `fn` once the browser has actually painted. Two frames, not one:
@@ -498,6 +560,14 @@
        anything drawn in the same frame does not reach the screen until it is
        over. Two frames of grace is what puts the crack up first, which is both
        the right order for glass and the whole of what covers the wait.
+
+       The veil over the glass goes up in that same window, and for a second
+       reason on top of the first. It is the pieces that wear it — one
+       gradient each, pinned to the strike — but the pieces do not exist yet,
+       so without a stand-in the pane spends that whole second cracked and
+       perfectly clear, and only becomes glass at the mount. It arrives with
+       the crack instead: one element, the same gradient, the sheet the
+       pieces are about to be cut from.
        ==================================================================== */
 
 		function shatter(next, apply) {
@@ -514,9 +584,36 @@
 			var impact = impactPoint(W, H);
 			var fx = fracture(impact.x, impact.y, W, H);
 
-			var crack = crackCanvas(fx, W, H);
+			/* bgOf(next) and not the theme on screen: the trail stands for the
+         page arriving, which is the one the pieces are about to be showing
+         through. */
+			var crack = crackCanvas(fx, W, H, bgOf(next));
+
+			/* The coat the pieces will wear, on the page they are about to be
+         cut from.
+
+         The pieces carry the veil themselves — see .pt-shard::after — but
+         they do not exist until the capture is done with, and on a phone
+         that is over a second of cracked page with no light on it. The same
+         gradient on one element covering the viewport is the sheet already
+         being there, from the frame the crack arrives in.
+
+         Under the pieces (299 against their 300) rather than over them, so
+         it never has to be faded off in step with anything: at rest the
+         pieces tile the viewport exactly and cover it by construction, and
+         the frame the mount lands on paints the white the frame before it
+         painted. All that is left is to take it out, which done() does in
+         the same task as the mount. */
+			var glass = document.createElement("div");
+			glass.className = "pt-glass";
+			glass.style.width = W + "px";
+			glass.style.height = H + "px";
+			glass.style.setProperty("--veil-x", impact.x.toFixed(1) + "px");
+			glass.style.setProperty("--veil-y", impact.y.toFixed(1) + "px");
+
+			document.body.appendChild(glass);
 			document.body.appendChild(crack);
-			layers = [crack];
+			layers = [glass, crack];
 			flushLayout();
 			crack.classList.add("is-in");
 
@@ -558,6 +655,13 @@
 						bitmapUrl = url;
 
 						mount(url, fx, W, H, impact);
+
+						/* The pieces wear the same veil from that line onward,
+               and they are covering this one, so it is already invisible.
+               Out in the same task as the mount, before anything can
+               paint: left in, it would tint the new page through the gaps
+               as the pieces open. */
+						if (glass.parentNode) glass.parentNode.removeChild(glass);
 
 						/* Attached before the theme changes, so there is never a
                frame showing the new theme uncovered. */
@@ -653,11 +757,34 @@
 			var outY = Math.max(cy, H - cy);
 			var reach = Math.sqrt(outX * outX + outY * outY) * 1.06;
 
+			var base = [];
 			var ang = [];
 			var rad = [];
 			var i, j;
 
-			for (j = 0; j < RAYS; j++) ang[j] = j * step + (rnd() - 0.5) * step * 0.5;
+			for (j = 0; j < RAYS; j++) base[j] = j * step + (rnd() - 0.5) * step * 0.5;
+
+			/* One angle per spoke is one straight line per spoke, and glass
+         does not crack in straight lines. The angle is therefore a table
+         indexed by ring as well, so a spoke steps a little sideways at every
+         ring on its way out and arrives as a polyline.
+
+         It has to be a function of (ring, spoke) and of nothing else. The two
+         cells either side of a spoke are handed that corner and have to agree
+         on where it is; drawing the wobble per cell instead would leave the
+         network with a tear along every seam. Computing it once into the table
+         is also what lets the crack canvas stroke lines that lie exactly on
+         the boundaries the pieces are cut to.
+
+         The innermost ring is a point, so its angles are never used — it is
+         filled in anyway rather than special-cased, because a hole in the
+         table is a thing to remember and this is not. */
+			for (i = 0; i <= RINGS; i++) {
+				ang[i] = [];
+				for (j = 0; j < RAYS; j++) {
+					ang[i][j] = base[j] + (rnd() - 0.5) * step * SPOKE_WOBBLE * 2;
+				}
+			}
 
 			for (i = 0; i <= RINGS; i++) {
 				rad[i] = [];
@@ -676,7 +803,8 @@
          spoke. Both indices wrap rather than being stored twice, which is
          what keeps the seam at the top of the circle from opening. */
 			function at(ring, spoke) {
-				var a = ang[spoke % RAYS] + Math.floor(spoke / RAYS) * Math.PI * 2;
+				var a =
+					ang[ring][spoke % RAYS] + Math.floor(spoke / RAYS) * Math.PI * 2;
 				var r = rad[ring][spoke % RAYS];
 				return [cx + Math.cos(a) * r, cy + Math.sin(a) * r];
 			}
@@ -722,17 +850,30 @@
 
        Drawn once and then left alone: the canvas is faded by CSS rather than
        by redrawing it, so this costs one paint however long the effect runs,
-       where animating it here would cost one per frame for a second and a
-       half.
+       where animating it here would cost one per frame for the length of the
+       effect.
 
-       Every line is drawn twice — a wide bright one under a narrow dark one.
-       A single colour cannot work, because the page under it is light in one
-       direction and dark in the other, and whichever colour is picked vanishes
-       on one of them. Real glass reads this way too: a lit edge with a shadow
-       beside it.
+       ONE line, in the colour of the theme being switched TO. The crack is the
+       seam between pieces that have not moved apart yet, so what it stands for
+       is the incoming page showing through — and that is literally what it is
+       painted with, read out of the palette rather than guessed at. It comes
+       out black going dark and white going light, which is the way round each
+       of them wants to be.
+
+       It used to be two passes, a wide bright one under a narrow dark one, on
+       the reasoning that one colour cannot work when the page under it is
+       light in one direction and dark in the other. That is true of a fixed
+       colour, and stopped being true the moment the colour came from the
+       direction being switched to: the theme arriving is always the opposite
+       of the one leaving, so the trail always contrasts with the page it is
+       drawn on.
+
+       The bright pass was also the thin white edging that showed along every
+       shard in both themes. It was the one thing about the crack that was the
+       same colour whichever way the switch went, and it is gone.
        ==================================================================== */
 
-		function crackCanvas(fx, W, H) {
+		function crackCanvas(fx, W, H, trail) {
 			var dpr = Math.min(window.devicePixelRatio || 1, 2);
 			var c = document.createElement("canvas");
 			c.className = "pt-crack";
@@ -746,23 +887,26 @@
 			g.lineCap = "round";
 			g.lineJoin = "round";
 
-			var passes = [
-				{ w: 3.2, c: "rgba(255, 255, 255, 0.5)" },
-				{ w: 1.1, c: "rgba(8, 15, 30, 0.55)" }
-			];
+			/* No colour to draw with means nothing to draw. The pieces break
+         and fall either way; the break is simply not outlined. An empty
+         canvas rather than a guessed colour, because a wrong trail is
+         visible and an absent one is not. */
+			if (!trail) return c;
 
-			for (var p = 0; p < passes.length; p++) {
-				g.strokeStyle = passes[p].c;
-				g.lineWidth = passes[p].w;
-				for (var i = 0; i < fx.lines.length; i++) {
-					var line = fx.lines[i];
-					g.beginPath();
-					for (var j = 0; j < line.length; j++) {
-						if (j) g.lineTo(line[j][0], line[j][1]);
-						else g.moveTo(line[j][0], line[j][1]);
-					}
-					g.stroke();
+			/* Opaque, and it has to be: this is a gap, and a gap shows what is
+         behind it rather than a blend of the two pages. Anything less than
+         solid would be a colour that exists on neither of them. */
+			g.strokeStyle = trail;
+			g.lineWidth = 1.6;
+
+			for (var i = 0; i < fx.lines.length; i++) {
+				var line = fx.lines[i];
+				g.beginPath();
+				for (var j = 0; j < line.length; j++) {
+					if (j) g.lineTo(line[j][0], line[j][1]);
+					else g.moveTo(line[j][0], line[j][1]);
 				}
+				g.stroke();
 			}
 			return c;
 		}
@@ -913,6 +1057,24 @@
 			var push =
 				SCATTER_MIN +
 				(SCATTER_MAX - SCATTER_MIN) * Math.min(1, Math.sqrt(d / 700));
+
+			/* Where the strike was, in this piece's own coordinates. The veil
+         over the glass is a radial gradient centred there, and handing every
+         piece the position of the same point rather than a strength of its
+         own is the whole of the trick: the gradient is then a function of
+         where you are on the page and not of which fragment you are standing
+         on, so it runs unbroken across every crack between them.
+
+         A value per piece would step at each boundary instead. It would not
+         be wrong exactly — a fragment is a unit of damage, and each one takes
+         the strike differently — but the steps land on the cracks, and a
+         field that stops at every line it crosses reads as a mosaic of greys
+         rather than as one pane with one place where it was hit.
+
+         It costs two numbers a piece and no element: the gradient is painted
+         by the same pseudo-element that was already there. */
+			el.style.setProperty("--veil-x", (impact.x - x0).toFixed(1) + "px");
+			el.style.setProperty("--veil-y", (impact.y - y0).toFixed(1) + "px");
 
 			el.style.setProperty("--sx", ((dx / d) * push).toFixed(2) + "px");
 			el.style.setProperty("--sy", ((dy / d) * push).toFixed(2) + "px");
@@ -1171,7 +1333,7 @@
          they could; the <link> elements would try to fetch and fail. The
          overlays go too — a shatter that caught itself mid-flight would
          photograph its own pieces. */
-			each(clone.querySelectorAll("script, link, iframe, noscript, .pt-shard, .pt-crack"), function (el) {
+			each(clone.querySelectorAll("script, link, iframe, noscript, .pt-shard, .pt-crack, .pt-glass"), function (el) {
 				el.parentNode.removeChild(el);
 			});
 

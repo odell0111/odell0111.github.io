@@ -76,6 +76,7 @@
   .dev-entry,
   .pt-shard,
   .pt-crack,
+  .pt-glass,
   .toast {
     display: none;
   }
@@ -144,26 +145,36 @@
      fade's duration in returnMs(). Change an effect's speed here and nowhere
      else.
 
-     The shatter has no beat left in it: the pieces come apart and go down at
-     the same time, so this is the length of one continuous motion — and both
-     of the animations below run its whole length, because the throw and the
-     fall are two clocks over one second rather than two halves of it.
+     The shatter has two beats and they are two different lengths. The break
+     is over at the 40% stop below; the fall is --pt-drop-ms of its own.
 
-     --pt-shatter is the one dial for the whole effect's speed, because every
-     stop below is a percentage OF it. At the 1000ms it ships at, one percent
-     is ten milliseconds, which is what makes the stop numbers readable as
-     milliseconds: 40% is where the break has finished, and the fall takes the
-     remaining 60%.
+     --pt-shatter is the dial for the break, and the percentage stops are what
+     make it readable: at the 1000ms it ships at, one percent is ten
+     milliseconds, so 40% is 400ms and can be read as one.
 
-     --pt-gap is the pause between the shatter's two beats. The pieces are
-     thrown, and then — this long after they have been thrown — they fall.
-     It is small on purpose and it is the dial to turn: at 0ms the fall begins
-     on the frame the throw ends, and much past a few tens of milliseconds
-     starts to read as the pieces hanging in the air rather than as an impact
-     resolving. */
+     --pt-drop-ms is the fall, and it is a second dial rather than a share of
+     the first because the two motions have no reason to move together. It
+     used to be the remaining 60% of --pt-shatter, which made the fall the
+     longer half of an effect that is about the break — and a pane coming
+     apart does not then hang in the air at the speed it shattered. Retime
+     the break and the fall stays where it is.
+
+     --pt-gap is the pause between the two beats. The pieces are thrown, and
+     then — this long after they have been thrown — they fall. It is small on
+     purpose and it is the dial to turn: at 0ms the fall begins on the frame
+     the throw ends, and much past a few tens of milliseconds starts to read
+     as the pieces hanging in the air rather than as an impact resolving. */
+  /* How far the crushed glass reaches from the strike, in px. The pieces
+     within this of the impact are the milky ones and everything past it
+     carries the plain coat — see .pt-shard::after. It is a length rather than
+     a share of anything because it is a fact about a pane, not about a
+     screen: a phone and a desktop break the same way at the same scale. */
+  --pt-veil-reach: 380px;
+
   --pt-fall: 780ms;
   --pt-shatter: 1000ms;
   --pt-gap: 10ms;
+  --pt-drop-ms: 300ms;
   --pt-bloom: 620ms;
 }
 
@@ -379,12 +390,116 @@ html[data-turn="bloom"]::view-transition-new(root) {
      that leaves running underneath the fall is the throw's tail, the slow
      outward drift from the thrown position to the flung one. It is meant to:
      the drift is the scatter still resolving, and stopping it dead at the
-     moment gravity takes over would read as the pieces hitting something. */
+     moment gravity takes over would read as the pieces hitting something.
+
+     The throw is the longer of the two now, so it is still running after the
+     fall has finished. Nothing comes of it: the fall has carried the piece a
+     viewport and a bit past the bottom edge, so the last of the drift happens
+     off screen and no one sees it stop. */
   animation:
     pt-throw var(--pt-shatter) var(--lag, 0ms) both,
-    pt-drop calc(var(--pt-shatter) * 0.6)
+    pt-drop var(--pt-drop-ms)
       calc(var(--lag, 0ms) + var(--pt-shatter) * 0.4 + var(--pt-gap))
       both;
+}
+
+/* The white over the glass, and the whole of what makes the break read as
+   having come from somewhere.
+
+   Two things are going on and they are one gradient. The floor, out past
+   --pt-veil-reach, is a plain coat of white over the page: without it the
+   pieces carry the captured page and nothing else, and at rest they tile the
+   viewport into something indistinguishable from the page still being there.
+   It lifts the glass — the pane catches a little light and what is under it
+   goes very slightly duller, which is the difference between a sheet and a
+   picture of a sheet.
+
+   Inside --pt-veil-reach it deepens, because glass that has taken the strike
+   is no longer in optical contact with what it is stuck to. It is crushed,
+   and crushed glass scatters light instead of passing it, which is the white
+   at the centre of a broken windscreen. The pieces further out have taken
+   less of it and go back to being clear.
+
+   A gradient rather than a value per piece, and the difference matters. The
+   centre is --veil-x/--veil-y, set per piece by pageturn.js to where the
+   strike was in that piece's own coordinates — the same point every time, so
+   what is painted is a function of where you are on the page and not of
+   which fragment you are on, and it runs unbroken across every crack. A
+   value per piece steps at each boundary, and steps that land on the cracks
+   read as a mosaic of greys rather than as one pane with one place where it
+   was hit.
+
+   The stops sample a squared falloff at 0.30 down to 0.07: compact, with a
+   soft edge. A straight ramp gives a disc with a rim you can see the edge of,
+   so the quarter stops exist to hold the curve rather than to be read. To
+   move the crush, the first stop is the dial; --pt-veil-reach is how far it
+   carries, and the last stop is the coat the rest of the pane wears.
+
+   Faint on purpose, and it is on the dark theme that it shows: white over
+   #f8fafc has almost nowhere to go, so going light the pane reads much as it
+   did before.
+
+   Two elements wear it — the pieces, and the single sheet .pt-glass that
+   stands in for them until they exist — and they share one declaration of
+   the gradient, because two copies drift and a drift here is a seam in the
+   white at the one moment the eye is on it.
+
+   It cannot be hoisted into a --pt-veil token on :root, tempting as that is.
+   Custom properties substitute at computed-value time, so a var() nested
+   inside one resolves where that property is computed — :root — and every
+   piece's --veil-x would read as absent there and fall back to 50%, putting
+   the crush in the middle of every fragment. The gradient has to be written
+   on the elements that carry --veil-x, which is what a shared rule does and
+   a token cannot. */
+.pt-glass,
+.pt-shard::after {
+  background: radial-gradient(
+    circle var(--pt-veil-reach) at var(--veil-x, 50%) var(--veil-y, 50%),
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.2) 25%,
+    rgba(255, 255, 255, 0.128) 50%,
+    rgba(255, 255, 255, 0.084) 75%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  pointer-events: none;
+}
+
+/* The sheet the pieces are cut from, wearing their coat while they are still
+   being made.
+
+   The pieces carry the veil themselves, but they do not exist until the
+   capture is done with, and on a phone that is over a second of cracked page
+   with no light on it. This is one element covering the viewport with the
+   same gradient, put up with the crack, so the pane is already glass from
+   the first frame rather than acquiring a surface partway through the break.
+
+   Under the pieces rather than over them, and that is the whole of how it
+   leaves. At rest the pieces tile the viewport exactly, so they cover this
+   by construction: the frame the mount lands on paints the same white as the
+   frame before it, with this hidden behind them, and pageturn.js takes it
+   out in that same task. Over them it would have to be faded against a
+   gradient whose edge is not knowable from outside, and any mismatch would
+   land as a flicker exactly where the eye already is. */
+.pt-glass {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 299; /* under the pieces, which are 300 */
+
+  /* Width and height come from pageturn.js, off the same turnBox() the
+     pieces are laid out in, rather than from inset: 0. The two have to be
+     the same rectangle: the gradient's floor is a coat over the whole pane,
+     so an element even a few pixels short of the pieces would end the white
+     at a different edge than they do, and the handover would show it. */
+}
+
+/* Inside the clip path, so it takes the polygon's shape and the tilt of the
+   piece with it — a pseudo-element is clipped by its parent's clip-path
+   exactly as the parent's own background is. */
+.pt-shard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
 }
 
 /* The break on `transform`, the fall on `translate` — and which carries which
@@ -424,10 +539,10 @@ html[data-turn="bloom"]::view-transition-new(root) {
    ends up, which is still running when the fall begins. See the note on the
    delay in .pt-shard — that overlap is wanted.
 
-   pt-drop is gravity, and runs for the remaining 60% of the effect rather
-   than the whole of it, because the first 40% is the break's. One curve with
-   no stops, so it never pauses, and it starts from a standstill for the same
-   reason a dropped thing does.
+   pt-drop is gravity. It runs for --pt-drop-ms and starts when the break is
+   over, so it covers no part of the first 40%. One curve with no stops, so it
+   never pauses, and it starts from a standstill for the same reason a dropped
+   thing does.
 
    The fall distance is one viewport plus 220px of slack, and it is the same
    for every piece for the same reason real pieces all fall at the same rate:
