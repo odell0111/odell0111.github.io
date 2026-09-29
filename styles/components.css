@@ -179,6 +179,20 @@
   margin-top: 1.9rem;
 }
 
+/* Three on one line want about 29rem of column. Under that they do not
+   overflow, they break — and where they break is a wide button, a wide button,
+   then a short one alone on a line of its own, which reads as an afterthought
+   rather than as the third of three equal choices.
+
+   Stacked, each one takes the width it is given and the three read as one list.
+   No width or align-items is set on the buttons themselves: a column stretches
+   its items by default, and .btn has no width of its own to fight it. */
+@media (max-width: 599px) {
+  .hero-actions {
+    flex-direction: column;
+  }
+}
+
 /* ==========================================================================
    08  TERMINAL
    A real, focusable input — not a picture of one. The screen has a fixed

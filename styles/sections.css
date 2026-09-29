@@ -659,6 +659,30 @@
   gap: 0.6rem;
 }
 
+/* On a phone the pair does fit side by side, and that is the problem: at this
+   width it is the whole line, so two buttons sharing it read as one control
+   with a seam down the middle rather than as two documents to choose between.
+
+   width: 100% is what takes the line — it makes the block wrap under the label
+   instead of sitting beside it — and the column then stretches both buttons to
+   that full width. It is a width rather than a flex-basis because the block is
+   a column by then, and in a column the basis is the height: flex-basis: 100%
+   asked for a full page of it, left the width to the content, and the pair
+   stayed beside the label at 265px instead of under it at 312. */
+@media (max-width: 599px) {
+  .contact-doc-btns {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  /* The label sits over the pair at this width rather than beside it, and the
+     buttons under it are centred by their own text, so a label still hanging
+     left would be the one thing off the axis. */
+  .contact-docs {
+    justify-content: center;
+  }
+}
+
 /* The copy button swaps icon and label together once the address is on the
    clipboard, so the change is never signalled by colour alone. */
 #copyEmail .icon-done,
