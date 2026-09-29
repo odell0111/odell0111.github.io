@@ -1,0 +1,191 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · tokens
+
+   Load 1 of 8. There is no build step, so the cascade order is the
+   <link> order in index.html and nothing else:
+
+     1  tokens.css      01 Tokens
+     2  base.css        02 Reset & base · 03 Utilities
+     3  layout.css      04 Ambient background · 05 Header & navigation
+     4  components.css  06 Buttons & links · 07 Hero · 08 Terminal ·
+                        09 Sections
+     5  sections.css    10 Work · 11 Capabilities · 12 Approach · 13 About ·
+                        14 Contact
+     6  footer.css      15 Footer
+     7  toast.css       16 Toast
+     8  motion.css      17 Motion & print
+
+   That order is not a preference. These were one file until they were
+   eight, and the sections still appear in their original sequence, so
+   every rule kept the position it had. Reordering the <link> tags can
+   change which rule wins, and there is no bundler to normalise it.
+
+   01 Tokens
+
+   The light palette is the base definition and the two dark entry
+   points are hand-tuned copies of the same token names. Every other
+   file reads these custom properties, so this one loads first.
+   ========================================================================== */
+
+/* ==========================================================================
+   01  TOKENS
+   The light palette is the base definition. Dark is a separate, hand-tuned set
+   of the same token names — not an algorithmic inversion of these values.
+   Inversion is the most common dark-mode defect: it produces pure-black
+   surfaces and accent colours that vibrate against the background.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --band: rgba(15, 23, 42, 0.035);
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  /* Text. Ratios are measured, not estimated — the previous values here were
+     optimistic by up to a full point, which is how three of them passed
+     review while failing AA on the surfaces they actually sat on. */
+  --text: #0f172a;
+  /* 17.1:1 on --bg */
+  --muted: #475569;
+  /*  7.2:1 on --bg */
+  --faint: #5b6a7d;
+  /*  5.3:1 on --bg · 5.0:1 on --surface-2 · 4.9:1 on band */
+
+  /* Accents */
+  --accent: #4f46e5;
+  /*  6.0:1 on --bg · 6.3:1 on --surface */
+  --accent-2: #0e7490;
+  /*  5.1:1 on --bg · 5.4:1 on --surface · 4.9:1 on --surface-2 */
+  --accent-soft: rgba(79, 70, 229, 0.09);
+  --accent-line: rgba(79, 70, 229, 0.28);
+
+  /* Gradients — two pairs, because they answer to different constraints.
+     --grad carries large display text and the skill bars, so it is free to be
+     the lighter, more vivid one. --cta carries white text in BOTH themes, so
+     it has to stay dark in both. They were a single hardcoded string before,
+     which is precisely why the light theme failed: a gradient tuned to look
+     right on #0b0f17 cannot also clear 4.5:1 on #f8fafc. */
+  --grad-a: #4f46e5;
+  --grad-b: #0e7490;
+  --cta-a: #4f46e5;
+  --cta-b: #0e7490;
+
+  /* Ambient blobs */
+  --orb-1: rgba(99, 102, 241, 0.30);
+  --orb-2: rgba(6, 182, 212, 0.24);
+  --orb-3: rgba(168, 85, 247, 0.16);
+  --grain-opacity: 0.055;
+
+  /* Depth */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 1px 3px rgba(15, 23, 42, 0.06), 0 8px 24px -12px rgba(15, 23, 42, 0.14);
+  --shadow-lg: 0 2px 6px rgba(15, 23, 42, 0.06), 0 20px 44px -20px rgba(15, 23, 42, 0.22);
+  /* 0.45 measured 2.0:1 against the page — a focus ring has to clear 3:1
+     (WCAG 1.4.11) because it is the only thing telling a keyboard user where
+     they are. 0.85 measures 4.4:1. */
+  --ring: rgba(79, 70, 229, 0.85);
+
+  /* Type */
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+
+  /* Geometry */
+  --wrap: 1140px;
+  --gutter: 1.5rem;
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --header-h: 64px;
+
+  --ease: cubic-bezier(0.22, 0.8, 0.28, 1);
+}
+
+/* Dark palette. Three entry points so the toggle wins in both directions:
+   the OS preference (unless the user forced light), and an explicit
+   data-theme="dark" regardless of the OS. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --bg: #0b0f17;
+    --surface: #141b27;
+    --surface-2: #1a2331;
+    --band: rgba(148, 163, 184, 0.05);
+    --border: #253145;
+    --border-strong: #38475f;
+
+    --text: #f1f5f9;
+    /* 16.4:1 on --bg */
+    --muted: #a4b2c4;
+    /*  9.2:1 on --bg */
+    --faint: #8395ab;
+    /*  6.1:1 on --bg */
+
+    --accent: #a5b4fc;
+    --accent-2: #22d3ee;
+    --accent-soft: rgba(129, 140, 248, 0.14);
+    --accent-line: rgba(129, 140, 248, 0.34);
+
+    /* Inverted relative to the light theme, as the decorative gradient has to
+       be: what reads on white disappears on near-black. The call-to-action
+       pair is the one thing that does NOT invert, because white sits on it. */
+    --grad-a: #818cf8;
+    --grad-b: #22d3ee;
+    --cta-a: #4f46e5;
+    --cta-b: #0e7490;
+
+    --orb-1: rgba(99, 102, 241, 0.34);
+    --orb-2: rgba(6, 182, 212, 0.22);
+    --orb-3: rgba(168, 85, 247, 0.20);
+    --grain-opacity: 0.075;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.5), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+    --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 20px 44px -20px rgba(0, 0, 0, 0.8);
+    --ring: rgba(165, 180, 252, 0.75);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0b0f17;
+  --surface: #141b27;
+  --surface-2: #1a2331;
+  --band: rgba(148, 163, 184, 0.05);
+  --border: #253145;
+  --border-strong: #38475f;
+
+  --text: #f1f5f9;
+  --muted: #a4b2c4;
+  --faint: #8395ab;
+
+  --accent: #a5b4fc;
+  --accent-2: #22d3ee;
+  --accent-soft: rgba(129, 140, 248, 0.14);
+  --accent-line: rgba(129, 140, 248, 0.34);
+
+  /* Same inversion as the media-query block above. The two have to be kept in
+     step by hand, which is the price of supporting an explicit override. */
+  --grad-a: #818cf8;
+  --grad-b: #22d3ee;
+  --cta-a: #4f46e5;
+  --cta-b: #0e7490;
+
+  --orb-1: rgba(99, 102, 241, 0.34);
+  --orb-2: rgba(6, 182, 212, 0.22);
+  --orb-3: rgba(168, 85, 247, 0.20);
+  --grain-opacity: 0.075;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.5), 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.5), 0 20px 44px -20px rgba(0, 0, 0, 0.8);
+  --ring: rgba(165, 180, 252, 0.75);
+}
+

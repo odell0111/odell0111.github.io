@@ -33,7 +33,7 @@ SANS_BOLD = FONT_DIR / "segoeuib.ttf"
 SANS_REG = FONT_DIR / "segoeui.ttf"
 MONO_REG = FONT_DIR / "consola.ttf"
 
-# Palette, mirroring the CSS custom properties in styles/main.css.
+# Palette, mirroring the CSS custom properties in styles/tokens.css.
 BG = (11, 15, 23)
 INK = (241, 245, 249)
 MUTED = (148, 163, 184)

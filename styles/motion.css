@@ -1,0 +1,467 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · motion
+
+   Load 8 of 8 — see tokens.css for the full map and for
+   why the load order carries meaning.
+
+   17 Motion & print · 18 The page turn
+
+   Last on purpose. The reduced-motion block overrides everything above
+   it with !important — and the turn's pseudo-elements are named explicitly
+   inside it, because `*` does not match `::view-transition-*`.
+   ========================================================================== */
+
+/* ==========================================================================
+   17  MOTION & PRINT
+   ========================================================================== */
+
+/* Anyone who has asked their OS to reduce motion gets a completely static
+   page — no drifting background, no growing bars, no typing. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .orb {
+    animation: none;
+  }
+
+  .project:hover {
+    transform: none;
+  }
+
+  .btn-primary:hover {
+    transform: none;
+  }
+
+  /* Bars still end up at their real value — only the growth is skipped. */
+  .js .skill-bar {
+    width: var(--level, 0%);
+  }
+
+  /* A sweeping shimmer is exactly the kind of motion this setting is about.
+     The chip still reads as "waiting" without it. */
+  .stat.is-loading {
+    animation: none;
+    background-position: 50% 0;
+  }
+
+  /* The turn's snapshot layers have to be named here. The `*` rule above uses
+     the universal selector, and `*` does not match `::view-transition-*` —
+     every transition pseudo is outside the element tree, so the blanket rule
+     silently misses them. pageturn.js also refuses to start a turn under
+     reduced motion; this is the half that holds if that check is ever wrong. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
+@media print {
+
+  .backdrop,
+  .site-header,
+  .terminal,
+  .skip-link,
+  .footer-links,
+  .dev-entry,
+  .pt-shard,
+  .pt-crack,
+  .toast {
+    display: none;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+  }
+
+  .section {
+    padding-block: 1rem;
+    break-inside: avoid;
+  }
+
+  .project {
+    box-shadow: none;
+    border-color: #ccc;
+  }
+
+  /* A printed CV list is only useful if the printed page says where the
+     numbers came from. */
+  .stats-note {
+    color: #444;
+  }
+}
+
+/* ==========================================================================
+   18  THE PAGE TURN
+
+   The theme switch, as something leaving. pageturn.js owns the behaviour;
+   this section owns how it looks. With the turn switched off in main.js
+   (PAGE_TURN = "") none of this is ever reached, and nothing below matches
+   anything, so the toggle behaves exactly as it did before.
+
+   Three modes, and they are three different things rather than three settings
+   of one, which is why the second is not a variant of the first:
+
+     shatter  the page is glass. It cracks from the point that was clicked,
+              throws its pieces outward, and drops them. Drawn by
+              pageturn.js — it cannot be a View Transition, because a snapshot
+              can be animated but not cut up. Styled at the bottom of this
+              section.
+     fall     the page is a sheet pinned along its top edge. The pin lets go,
+              the sheet tips, turns and drops away. This one IS a View
+              Transition, so the browser supplies the picture and the fidelity
+              is free.
+     bloom    a circle opens from the theme button and the incoming theme
+              sweeps out of it until it has taken the screen. Also a View
+              Transition.
+
+   Two of the three move the OUTGOING page and one moves the INCOMING one, and
+   that is not an inconsistency — it is what each effect is. A sheet comes off
+   the wall because the wall is what changed; a circle has to grow FROM the
+   thing that was clicked, so what grows is whatever is arriving, seen through
+   the hole. The version before this one was built the other way round for
+   every mode — the moving sheet was always the light page, so each rule needed
+   a mirror image for the way back, and the direction of the change had to be
+   worked out before anything could be drawn. None of these three has a
+   direction in it.
+   ========================================================================== */
+
+:root {
+  /* How long each effect takes, and the one place either is written down.
+     pageturn.js reads them back off the page with getComputedStyle rather
+     than holding its own copy, the same way main.js reads the language
+     fade's duration in returnMs(). Change an effect's speed here and nowhere
+     else.
+
+     The shatter has no beat left in it: the pieces come apart and go down at
+     the same time, so this is the length of one continuous motion — and both
+     of the animations below run its whole length, because the throw and the
+     fall are two clocks over one second rather than two halves of it.
+
+     --pt-shatter is the one dial for the whole effect's speed, because every
+     stop below is a percentage OF it. At the 1000ms it ships at, one percent
+     is ten milliseconds, which is what makes the stop numbers readable as
+     milliseconds: 40% is where the break has finished, and the fall takes the
+     remaining 60%.
+
+     --pt-gap is the pause between the shatter's two beats. The pieces are
+     thrown, and then — this long after they have been thrown — they fall.
+     It is small on purpose and it is the dial to turn: at 0ms the fall begins
+     on the frame the throw ends, and much past a few tens of milliseconds
+     starts to read as the pieces hanging in the air rather than as an impact
+     resolving. */
+  --pt-fall: 780ms;
+  --pt-shatter: 1000ms;
+  --pt-gap: 10ms;
+  --pt-bloom: 620ms;
+}
+
+/* --------------------------------------------------------------------------
+   fall — the sheet comes off the wall
+
+   The hinge is the pin, and where the pin is is the whole of the character.
+   It is the language toggle in the header: pageturn.js measures it and hands
+   it over as --pt-pin-x/--pt-pin-y. Hanging the sheet off a corner of the
+   frame would read as a photograph being spun; hanging it off a thing on the
+   page reads as a sheet caught on that thing.
+
+   Two stops, and the first is the whole of the motion. A pin letting go does
+   not start a rotation, it removes the thing holding one back, so the sheet
+   hangs for a moment and then goes over. That is the 18% stop: a quarter of
+   the way into the turn and almost no travel, with an ease that stays slow to
+   the end of it. After that it is only gravity.
+
+   The angle is not fixed. --pt-tilt is where it was hanging and --pt-turn is
+   how far it goes over, both drawn fresh each turn — the sheet was pinned a
+   little crooked, and it goes over the way it leans. The 18% stop is written
+   as a quarter of the turn rather than as an angle of its own, so the hang
+   keeps its proportion whatever comes out of the draw. The fallbacks in
+   var() are the fixed behaviour this had before, for the one case where
+   nothing has set them.
+
+   The distance is --pt-drop, also from pageturn.js, and for a reason the CSS
+   cannot express: rotating about the toggle swings the far corner of the
+   sheet UP, by roughly the width times the sine of the angle, so the sheet
+   has to travel further down before the last of it clears the bottom. It was
+   written here as `105vh + 25vw` for that reason, which was right for a hinge
+   at the top-centre and a fixed 22deg and is right for nothing else. Anything
+   still on screen when the animation ends would be frozen there by
+   animation-fill-mode until pageturn.js clears it, which is the one thing
+   this distance exists to prevent. */
+@keyframes pt-fall {
+  0% {
+    transform: translateY(0) rotate(var(--pt-tilt, 0deg));
+    animation-timing-function: cubic-bezier(0.62, 0, 1, 1);
+  }
+  18% {
+    transform: translateY(3vh)
+      rotate(calc(var(--pt-tilt, 0deg) + var(--pt-turn, 22deg) * 0.25));
+    animation-timing-function: cubic-bezier(0.45, 0, 1, 1);
+  }
+  100% {
+    transform: translateY(var(--pt-drop, calc(105vh + 25vw)))
+      rotate(calc(var(--pt-tilt, 0deg) + var(--pt-turn, 22deg)));
+  }
+}
+
+/* A turn only exists while one is running. pageturn.js sets data-turn before
+   it asks for the snapshot and clears it once the transition's finished
+   promise settles, so nothing below matches outside a turn.
+
+   The attribute carries the effect's name. It was a bare flag, which was right
+   while there was one browser-driven effect and there are two: the fall moves
+   the outgoing snapshot and the bloom moves the incoming one, so which of the
+   two is the one that moves is exactly what the value has to decide.
+
+   Both modes below set mix-blend-mode on both snapshots. The UA stylesheet
+   gives them plus-lighter so that a cross-fade does not dip through the page
+   background half way, and neither of these is a cross-fade: exactly one
+   snapshot is opaque at every frame, so the blend can only add a page to
+   itself. Writing normal says so rather than depending on which Chromium
+   version's UA sheet is in front of you. */
+
+/* The outgoing page falls; the incoming one is already there and does not
+   move. That is the whole of the effect in both directions — going dark the
+   light page drops away off the dark one, going light the dark page drops
+   away off the light one — and it is why there is only one set of rules
+   here where the old turn needed four.
+
+   The old snapshot is put above the new one explicitly. The UA stylesheet
+   leaves both at z-index auto in DOM order, which happens to be the right
+   way round and is not something to rely on. */
+html[data-turn="fall"]::view-transition-old(root) {
+  /* The pin, in viewport pixels. The snapshot is the size of the viewport and
+     its corner sits on the viewport's corner, so a point measured with
+     getBoundingClientRect is already in this coordinate space and needs no
+     conversion. */
+  transform-origin: var(--pt-pin-x, 50%) var(--pt-pin-y, 0px);
+  animation: pt-fall var(--pt-fall) both;
+  mix-blend-mode: normal;
+  z-index: 2;
+}
+
+html[data-turn="fall"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
+/* The bloom is the other way round: nothing moves, and the incoming page is
+   uncovered.
+
+   A circle opens at the theme button and grows until it has taken the screen,
+   and what is inside it is the theme that is arriving. That is why the moving
+   snapshot is the NEW one here and why the old one gets `animation: none` —
+   the outgoing theme is not leaving, it is being covered.
+
+   Which also means the effect is a reveal and not a wipe: the circle is the
+   only thing changing, the page underneath it does not slide or scale. The
+   clip is on the snapshot rather than on a mask element, so there is nothing
+   to keep in step with it. */
+html[data-turn="bloom"]::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  z-index: 1;
+}
+
+html[data-turn="bloom"]::view-transition-new(root) {
+  animation: pt-bloom var(--pt-bloom) both;
+  mix-blend-mode: normal;
+  z-index: 2;
+}
+
+/* Both ends of the circle are written with the same pin, in the same units
+   and in the same order, because that is the only thing that lets the two
+   interpolate. A circle whose position differed between the stops would not
+   be interpolated at all — the whole clip-path would fall back to a discrete
+   swap and the effect would be a cut.
+
+   The radius is in pixels and comes from pageturn.js, which measures the
+   theme button and the viewport and works out the distance to the furthest
+   corner. It cannot be done here: a percentage in circle() resolves against
+   sqrt(w² + h²)/√2, not against either edge, so `circle(100%)` is not the
+   corner and the fallback below is deliberately far larger than any viewport
+   rather than exactly enough for one.
+
+   The ease is the standard one for something arriving — fast out of the
+   centre, settling at the edge — and it is here rather than on the animation
+   so that the shape of the growth travels with the keyframes if this is ever
+   retimed. */
+@keyframes pt-bloom {
+  from {
+    clip-path: circle(0px at var(--pt-pin-x, 50%) var(--pt-pin-y, 0px));
+    animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  to {
+    clip-path: circle(
+      var(--pt-radius, 150vmax) at var(--pt-pin-x, 50%) var(--pt-pin-y, 0px)
+    );
+  }
+}
+
+/* --------------------------------------------------------------------------
+   shatter — the page is glass
+
+   pageturn.js builds this: a canvas of crack lines, then one absolutely
+   positioned layer per piece, each showing its own corner of a bitmap of the
+   page and clipped to its own polygon. Everything here is appearance; every
+   number that depends on the viewport is set inline by that file.
+
+   Both are `position: fixed` and `pointer-events: none`. The second is not
+   tidiness: the toggle has to stay clickable through the whole effect, or a
+   visitor who changes their mind mid-fall has to wait it out. */
+
+/* The fracture network, drawn once. It goes ABOVE the pieces rather than
+   under them — at the first frame the pieces tile the viewport exactly and
+   anything behind them is invisible, so a crack underneath would disappear
+   at the moment the pieces arrive and only reappear as the gaps opened.
+   Above them it stays on the seam while the seam widens, and fades.
+
+   It fades rather than being cut because the pieces take a moment to arrive:
+   pageturn.js adds is-in when the canvas is up and removes it when they are
+   mounted, so the two cross over instead of one replacing the other. */
+.pt-crack {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 301; /* above the pieces, which are 300 */
+  display: block;
+  pointer-events: none;
+  opacity: 0;
+  /* Out over 300ms... */
+  transition: opacity 300ms ease-out;
+}
+
+.pt-crack.is-in {
+  /* ...but in over 90ms. A crack arrives, it does not fade up. */
+  opacity: 1;
+  transition-duration: 90ms;
+}
+
+/* One piece. The three custom properties below are set inline, per piece, by
+   pageturn.js, and they are the whole of what the keyframes need:
+
+     --sx --sy   how far this piece is thrown, and in which direction
+     --sr        how far it turns doing it
+     --lag       how long it waits before it lets go, so the pieces do not
+                 all leave on the same frame
+
+   --sy is scaled in the stops below, never replaced: the throw and the fall
+   are the same piece moving, and a stop that dropped the throw would snap it
+   back through the impact point on its way down.
+
+   The delay holds the piece on its own tile until it elapses, which is what
+   `both` is doing here — backwards fill covers the delay. It has to be a
+   positive delay for that: see LAG_MAX in pageturn.js. */
+.pt-shard {
+  position: fixed;
+  display: block;
+  z-index: 300; /* above the skip link (200), which is the highest on the page */
+  pointer-events: none;
+  background-repeat: no-repeat;
+  /* Two animations on two different properties. The note under the keyframes
+     is about why that is not a stylistic choice.
+
+     The two are held apart in time as well as in property. The throw starts on
+     the piece's own turn; the fall waits for the break to be over — the 40%
+     stop, which is where the shove has finished — and then for --pt-gap. What
+     that leaves running underneath the fall is the throw's tail, the slow
+     outward drift from the thrown position to the flung one. It is meant to:
+     the drift is the scatter still resolving, and stopping it dead at the
+     moment gravity takes over would read as the pieces hitting something. */
+  animation:
+    pt-throw var(--pt-shatter) var(--lag, 0ms) both,
+    pt-drop calc(var(--pt-shatter) * 0.6)
+      calc(var(--lag, 0ms) + var(--pt-shatter) * 0.4 + var(--pt-gap))
+      both;
+}
+
+/* The break on `transform`, the fall on `translate` — and which carries which
+   is the whole of the trick rather than a detail of style.
+
+   One property can only be driven by one animation. Two animations of the
+   same property do not compose; the later one simply wins. So the throw and
+   the fall need two different properties to have two different clocks, and
+   the pair has to be chosen so that they still multiply into the motion that
+   was there before.
+
+   The individual properties compose in a fixed order — translate, then
+   rotate, then scale, then transform — and that product is applied to the
+   element from the right. Putting the throw on `transform` therefore lets the
+   fall's `translate` displace it afterwards, in the frame's own axes:
+
+     translate(0, drop) × transform(translate(sx, sy) rotate(sr))
+       = translate(sx, sy + drop) rotate(sr)
+
+   which is exactly the single transform these keyframes used to write, with
+   the drop landing after the rotation instead of inside it. Swap them — fall
+   on `transform`, throw on `translate` — and the drop is rotated on its way
+   out by the piece's own spin: a fall of 1081px turned through 20deg puts the
+   piece 370px sideways of where it should be. Not the effect.
+
+   What the split buys is a clock each. Before it the throw and the fall
+   shared one timeline in two stops, and a bezier that ends at its own
+   endpoint necessarily ends at zero velocity — the piece decelerated to a
+   full stop at 40% and then set off again. That is the stall you can see:
+   the pane drops a little way, stops, and then falls. Now the throw
+   decelerates and the fall accelerates, and each is free to be the length it
+   wants to be rather than the length the other leaves it.
+
+   pt-throw is the break: fast out of the gate and settling, because a pane
+   does not ease into coming apart. The shove is over at 40%; what the rest of
+   it carries is the drift outward from where the piece was thrown to where it
+   ends up, which is still running when the fall begins. See the note on the
+   delay in .pt-shard — that overlap is wanted.
+
+   pt-drop is gravity, and runs for the remaining 60% of the effect rather
+   than the whole of it, because the first 40% is the break's. One curve with
+   no stops, so it never pauses, and it starts from a standstill for the same
+   reason a dropped thing does.
+
+   The fall distance is one viewport plus 220px of slack, and it is the same
+   for every piece for the same reason real pieces all fall at the same rate:
+   scaling it by anything — how far the piece is from the impact, where it
+   sits on the screen — would give the low ones a visibly different speed from
+   the high ones, and the eye reads that as the sheet coming apart rather than
+   as falling. The pieces nearest the bottom simply leave the frame first.
+
+   The slack covers the two things that would otherwise leave a corner on
+   screen at the end: the throw, which can be up to 62px upward for a piece
+   above the impact, and the rotation, which at 2.2× SPIN_MAX lifts the top
+   edge of a wide piece by around 100px. */
+@keyframes pt-throw {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    animation-timing-function: cubic-bezier(0.16, 0.7, 0.3, 1);
+  }
+  40% {
+    /* Thrown. The fall is not waiting on this. */
+    transform: translate(var(--sx), var(--sy)) rotate(var(--sr));
+    animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  }
+  100% {
+    transform: translate(calc(var(--sx) * 1.35), calc(var(--sy) * 1.1))
+      rotate(calc(var(--sr) * 2.2));
+  }
+}
+
+@keyframes pt-drop {
+  0% {
+    translate: 0 0;
+    animation-timing-function: cubic-bezier(0.45, 0, 1, 1);
+  }
+  100% {
+    translate: 0 calc(105vh + 220px);
+  }
+}

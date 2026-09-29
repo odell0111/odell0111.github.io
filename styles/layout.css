@@ -1,0 +1,752 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · layout
+
+   Load 3 of 8 — see tokens.css for the full map and for
+   why the load order carries meaning.
+
+   04 Ambient background · 05 Header & navigation
+
+   The two things that sit behind and above every page: the drifting
+   backdrop, and the sticky header with its nav.
+   ========================================================================== */
+
+/* ==========================================================================
+   04  AMBIENT BACKGROUND
+   Built from CSS only: three soft radial blobs plus an inline SVG grain.
+   Radial gradients are used instead of `filter: blur()` on large elements —
+   the gradient gives the same soft edge with no filter pass per frame, which
+   matters because these animate continuously behind the whole page.
+   ========================================================================== */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.orb {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  /* Only `transform` is animated, so the compositor owns these layers and the
+     main thread stays free for input (INP). */
+  will-change: transform;
+}
+
+.orb-a {
+  width: 46vmax;
+  height: 46vmax;
+  top: -16vmax;
+  left: -12vmax;
+  background: radial-gradient(circle at 50% 50%, var(--orb-1), transparent 68%);
+  animation: drift-a 22s ease-in-out infinite alternate;
+}
+
+.orb-b {
+  width: 40vmax;
+  height: 40vmax;
+  top: 24vmax;
+  right: -14vmax;
+  background: radial-gradient(circle at 50% 50%, var(--orb-2), transparent 68%);
+  animation: drift-b 26s ease-in-out infinite alternate;
+}
+
+.orb-c {
+  width: 34vmax;
+  height: 34vmax;
+  bottom: -14vmax;
+  left: 28%;
+  background: radial-gradient(circle at 50% 50%, var(--orb-3), transparent 68%);
+  animation: drift-c 30s ease-in-out infinite alternate;
+}
+
+/* Fractal-noise grain. Stops the gradients reading as flat digital wash and
+   gives the surface a paper-like texture. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Each orb turns through a midpoint rather than sliding along a straight line,
+   so the path reads as wandering instead of oscillating between two points.
+   `ease-in-out` rather than `--ease`: that token is a strong ease-*out*, and
+   applied per keyframe segment it stalls the orb at every midpoint. Easing in
+   and out over each leg leaves a smooth hand-off through the turn and at the
+   reversal `alternate` performs. */
+@keyframes drift-a {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(10vmax, -5vmax, 0) scale(1.12);
+  }
+
+  100% {
+    transform: translate3d(4vmax, 9vmax, 0) scale(1.03);
+  }
+}
+
+@keyframes drift-b {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+
+  50% {
+    transform: translate3d(-7vmax, 7vmax, 0) scale(1);
+  }
+
+  100% {
+    transform: translate3d(-12vmax, -5vmax, 0) scale(1.1);
+  }
+}
+
+@keyframes drift-c {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(-6vmax, -8vmax, 0) scale(1.16);
+  }
+
+  100% {
+    transform: translate3d(8vmax, -3vmax, 0) scale(1.04);
+  }
+}
+
+/* ==========================================================================
+   05  HEADER & NAVIGATION
+   ========================================================================== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+}
+
+/* Applied by the script once the page has scrolled, so the header does not
+   read as a hard band at the top of the hero. */
+.site-header.is-stuck {
+  border-bottom-color: var(--border);
+}
+
+/* No color-mix support: fall back to a solid surface. */
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+  .site-header {
+    background: var(--bg);
+  }
+}
+
+.nav {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  flex: none;
+}
+
+.brand-mark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(135deg, var(--grad-a), var(--grad-b)) border-box;
+}
+
+.brand-text {
+  font-size: 0.98rem;
+}
+
+.nav-list {
+  position: relative;
+  /* Own stacking context, so the selection box below can sit at z-index -1 —
+     behind the labels, in front of the page. Without this it would escape to
+     the header and paint underneath it, which is to say nowhere. */
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  margin-left: auto;
+}
+
+.nav-link {
+  display: inline-block;
+  padding: 0.5rem 0.7rem;
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.nav-link:hover {
+  color: var(--text);
+  background: var(--accent-soft);
+}
+
+/* Still the primary destination, so it keeps the accent and the roomier
+   padding. It no longer carries a border: that box is the proof of being
+   selected now, and a link cannot be permanently selected. */
+.nav-link-cta {
+  color: var(--accent);
+  padding-inline: 0.85rem;
+}
+
+.nav-link-cta:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---- The selection box -------------------------------------------------
+   It used to be painted onto the Contact link for good, which told every
+   visitor they were in Contact whatever they were actually reading. There is
+   one box now, owned by the list rather than by any link, and it slides to
+   whichever section is on screen.
+
+   The geometry arrives as custom properties from the script — the link's
+   offset inside the list, and its size. Measured rather than computed,
+   because the labels change width with the language, the Contact link is a
+   different size from the rest, and the font arrives after first paint.
+
+   z-index -1 inside .nav-list's own stacking context puts it behind the
+   labels, so the tint never washes over the text it belongs to. */
+.nav-list::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: var(--nav-w, 0);
+  height: var(--nav-h, 0);
+  transform: translate(var(--nav-x, 0), var(--nav-y, 0));
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Armed only once the script has placed it once. Before that it is a
+   zero-width box at the list's origin, and transitioning that into position
+   would slide it in from the corner on every page load. */
+.nav-list.is-ready::before {
+  transition: transform 0.3s var(--ease), width 0.3s var(--ease),
+    height 0.3s var(--ease), opacity 0.2s var(--ease);
+}
+
+/* The hero is not a nav destination, so at the top of the page no section is
+   current and the box steps out rather than pointing at the wrong thing. */
+.nav-list.has-current::before {
+  opacity: 1;
+}
+
+/* The label itself, so the selected item reads even where the box cannot
+   follow — see the narrow-screen block. Placed after :hover deliberately:
+   the two have equal specificity, so order is what lets this one hold its
+   colour under the pointer. */
+.nav-link[aria-current="true"] {
+  color: var(--accent);
+}
+
+.nav-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: none;
+}
+
+/* 38px square — comfortably above the 24px minimum target (WCAG 2.2 AA). */
+.icon-btn,
+.lang-btn {
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+
+.icon-btn:hover,
+.lang-btn:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+/* Theme button shows the icon of the theme it will switch TO. The two roll
+   past each other instead of swapping: `display` cannot be animated, so the
+   old `display: none` swap snapped. Both icons now stay in the box, stacked
+   and clipped, and travel down one axis as a single strip — the arriving one
+   comes into the slot while the leaving one carries on out of it. The rotation
+   gives the roll an arc, so it reads as one movement rather than two slides.
+
+   They sit a constant 150% apart, which is the least that clears the box: half
+   the box (19px) plus half an icon (9.7px). Pull it in and a sliver of the
+   other icon shows at rest; push it out and the two overlap for longer while
+   they cross. */
+.icon-btn {
+  position: relative;
+  overflow: hidden;
+  /* Not --ease: that token is a strong ease-*out*, and it covers 93% of this
+     450ms roll within the first 225ms — a snap with a slow tail, not a roll.
+     Standard easing takes off at once and settles, which is what a roll wants. */
+  --roll: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-btn .icon {
+  font-size: 1.05rem;
+}
+
+.icon-btn .icon-sun,
+.icon-btn .icon-moon {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  transition: transform 0.45s var(--roll), opacity 0.45s var(--roll);
+}
+
+.icon-btn .icon-sun {
+  opacity: 0;
+  transform: translateY(-150%) rotate(-45deg);
+}
+
+.icon-btn .icon-moon {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+}
+
+:root[data-theme="dark"] .icon-btn .icon-sun {
+  opacity: 1;
+  transform: translateY(0) rotate(0deg);
+}
+
+:root[data-theme="dark"] .icon-btn .icon-moon {
+  opacity: 0;
+  transform: translateY(150%) rotate(45deg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .icon-btn .icon-sun {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+
+  :root:not([data-theme="light"]) .icon-btn .icon-moon {
+    opacity: 0;
+    transform: translateY(150%) rotate(45deg);
+  }
+}
+
+.lang-btn {
+  width: auto;
+  min-width: 38px;
+  /* Gives the label's turn in "The switch" something to turn into. Without
+     it the flip is a flat horizontal squash; with it the label has depth. */
+  perspective: 240px;
+  padding-inline: 0.55rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.hamburger {
+  display: none;
+  width: 38px;
+  height: 38px;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.hamburger-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 16px;
+}
+
+.hamburger-box span {
+  display: block;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.22s var(--ease), opacity 0.22s var(--ease);
+}
+
+.hamburger[aria-expanded="true"] .hamburger-box span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger[aria-expanded="true"] .hamburger-box span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger[aria-expanded="true"] .hamburger-box span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+@media (max-width: 860px) {
+  .hamburger {
+    display: inline-flex;
+  }
+
+  .nav-list {
+    position: absolute;
+    top: var(--header-h);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+    margin: 0;
+    padding: 0.6rem var(--gutter) 1rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-md);
+    /* Collapsed by default; the script toggles .is-open and keeps
+       aria-expanded in sync. */
+    display: none;
+  }
+
+  .nav-list.is-open {
+    display: flex;
+  }
+
+  .nav-link {
+    padding: 0.7rem 0.8rem;
+    font-size: 1rem;
+  }
+
+  .nav-link-cta {
+    text-align: center;
+    margin-top: 0.35rem;
+  }
+
+  /* The panel is a vertical list, so a box that slides sideways has nowhere
+     to go. It is dropped here and the current section is marked on the label
+     instead — the panel closes on tap, so this is mostly for the visitor who
+     opens it to see where they are. */
+  .nav-list::before {
+    display: none;
+  }
+
+  .nav-link[aria-current="true"] {
+    background: var(--accent-soft);
+  }
+
+  /* The tools are pushed right from here rather than by the list.
+     Above this breakpoint .nav-list carries `margin-left: auto` and does that
+     job, but here it leaves the flow (absolute, above) and drops its margin
+     with it — so the brand and the tools were left as the only two in-flow
+     children, separated by nothing but the flex gap and stranded together on
+     the left. Measured before this rule: the tools sat 16px from the brand at
+     every width, with 52px of dead space beside them at 320px growing to 591px
+     at 859px. */
+  .nav-tools {
+    margin-left: auto;
+  }
+}
+
+/* ---- The dev panel ------------------------------------------------------ */
+
+/* Reached only by visiting /dev, which leaves a key the head script reads
+   before first paint and turns into html.is-dev — so all of this is scoped to
+   that class but for the two hides below. A visitor's header is untouched by
+   it: without the class the gear and the card are display: none, which is no
+   layout, no paint and no stacking context.
+
+   None of it is new furniture. The gear is the same 38px square as the two
+   buttons beside it and inherits their hover; the marker is the site's own
+   pill; the card is the toast's recipe hung off a different anchor. */
+
+/* Unscoped, both of them, each for its own reason.
+
+   The gear, because .icon-btn above sets display: inline-flex — which outranks
+   the `hidden` attribute's UA rule — so a scoped-only hide would never hide it
+   from anyone.
+
+   The card, because this rule has to survive the class coming off. Scoped to
+   .is-dev, exiting dev mode would strip the very rule that was hiding it and
+   drop a full card into the header. */
+.dev-tools,
+.dev-card {
+  display: none;
+}
+
+html.is-dev .dev-tools {
+  display: inline-flex;
+}
+
+/* The gear ships `disabled` and devpanel.js clears that once there is a card
+   behind it, so a file that 404s or dies on parse leaves a visibly greyed
+   button rather than a live one that does nothing — the rule pageturn.js
+   already states for a mode that silently no-ops. Greyed means the hover goes
+   with it. */
+html.is-dev .dev-tools:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+html.is-dev .dev-tools:disabled:hover {
+  background: transparent;
+  border-color: var(--border);
+}
+
+/* The card hangs off the tools rather than sitting in the flow. In flow it
+   would add its height to a header that is a fixed var(--header-h), and
+   navLine() reads that height to place the selection box — the box would slide
+   off the link it is under. */
+html.is-dev .nav-tools {
+  position: relative;
+}
+
+/* Anchored so the top edge lands on the header's bottom edge: the tools are
+   38px tall and centred in --header-h, so what is below them is half the
+   difference. The 38px is .icon-btn's own height, restated here because this
+   is a distance between two boxes, one of which is not this one. */
+html.is-dev .dev-card.is-open {
+  display: block;
+  position: absolute;
+  top: calc(100% + (var(--header-h) - 38px) / 2);
+  right: 0;
+  z-index: 5;
+  /* Narrower than the tools' own edge whenever the viewport is, so the card
+     cannot push the page sideways at 320px — where the two come out equal. */
+  width: min(17rem, calc(100vw - 2 * var(--gutter)));
+  padding: 0.85rem 0.9rem 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+}
+
+.dev-head {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+
+.dev-title {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Pushed away from the title rather than the close button being pulled right,
+   so the right edge stays the card's own padding and not a negative margin. */
+.dev-flag {
+  margin-right: auto;
+}
+
+.dev-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-right: -0.2rem;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.dev-close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+/* .icon is 1.15em square, which at this size is a shade large for a 26px box. */
+.dev-close .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.dev-label {
+  margin: 0;
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* One sunken track with four seats, rather than four buttons side by side: the
+   chosen seat is a raised chip inside it, which is what says "one of these"
+   without a border around every option — and it is what the nav's own selected
+   link looks like. */
+.dev-seg {
+  display: grid;
+  /* Auto columns rather than a repeat() with a number in it. The list of modes
+     lives in pageturn.js and the markup is checked against it, so a count
+     written down here would be a third place to keep in step — and the one
+     that fails silently, by leaving a segment short or overflowing the row. */
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 2px;
+  margin-top: 0.4rem;
+  padding: 2px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.dev-opt {
+  min-height: 28px;
+  padding: 0.2rem 0.15rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s var(--ease), color 0.18s var(--ease);
+}
+
+.dev-opt:hover:not(:disabled) {
+  color: var(--text);
+}
+
+/* The accent pair .nav-link[aria-current="true"] uses, for the same job. */
+.dev-opt[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+
+/* A mode this build does not have is disabled rather than hidden, so the card
+   can only ever offer what pageturn.js can actually run. */
+.dev-opt:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.dev-note {
+  margin: 0.5rem 0 0;
+  font-size: 0.73rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.dev-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.75rem 0 0;
+}
+
+/* 40x24 rather than a 38px square: a switch is the one control in here that is
+   not an icon, and a 22px track would have been under the 24px minimum target
+   this site holds itself to everywhere else. */
+.dev-switch {
+  position: relative;
+  flex: none;
+  width: 40px;
+  height: 24px;
+  padding: 0;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.dev-switch[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+/* An 18px knob in an 18px-tall padding box leaves 2px above and below, and the
+   same 2px at each end: 38 - 2 - 18 - 2 = 16px of travel. */
+.dev-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: transform 0.2s var(--ease), background 0.2s var(--ease);
+}
+
+.dev-switch[aria-pressed="true"] .dev-knob {
+  transform: translateX(16px);
+  background: var(--surface);
+}
+
+/* Off while the fade is off, because the churn has nothing to hide behind on
+   that path. The card says so in a note rather than leaving a switch that
+   looks live and does nothing. */
+.dev-switch:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Outlined rather than filled: it is the one thing in the card that leaves,
+   and it should not read as the primary action. */
+.dev-exit {
+  display: block;
+  width: 100%;
+  min-height: 34px;
+  margin-top: 0.9rem;
+  padding: 0.45rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.79rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease),
+    background 0.18s var(--ease);
+}
+
+.dev-exit:hover {
+  color: var(--text);
+  background: var(--surface-2);
+  border-color: var(--accent-line);
+}
+

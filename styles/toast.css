@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · toast
+
+   Load 7 of 8 — see tokens.css for the full map and for
+   why the load order carries meaning.
+
+   16 Toast
+
+   The corner notification. It is separate from components.css because
+   it sits at the end of the cascade, and moving it would change which
+   rules win.
+   ========================================================================== */
+
+/* ==========================================================================
+   16  TOAST
+   The failure notice for the live figures. It stays in the document at all
+   times — a live region has to exist before anything is put into it, or the
+   announcement is missed — and is hidden with opacity rather than
+   `visibility` or `display`, both of which would take it out of the
+   accessibility tree and silence it.
+
+   The close button is the one thing that does use `visibility: hidden`, so
+   that an invisible toast never becomes a tab stop.
+   ========================================================================== */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  z-index: 60;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  width: max-content;
+  max-width: min(30rem, calc(100vw - 2rem));
+  padding: 0.8rem 0.75rem 0.8rem 0.95rem;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+  font-size: 0.87rem;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.75rem);
+  transition: opacity 0.22s var(--ease), transform 0.22s var(--ease);
+}
+
+.toast.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.toast-text {
+  margin: 0;
+}
+
+.toast-close {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin: -0.15rem -0.1rem -0.15rem 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  visibility: hidden;
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.toast.is-visible .toast-close {
+  visibility: visible;
+}
+
+.toast-close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.toast-close .icon {
+  width: 15px;
+  height: 15px;
+}
+

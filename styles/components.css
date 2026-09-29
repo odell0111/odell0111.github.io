@@ -1,0 +1,364 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · components
+
+   Load 4 of 8 — see tokens.css for the full map and for
+   why the load order carries meaning.
+
+   06 Buttons & links · 07 Hero · 08 Terminal · 09 Sections
+
+   The reusable pieces — buttons, links, the hero, the terminal — and the
+   section shell they all sit in.
+   ========================================================================== */
+
+/* ==========================================================================
+   06  BUTTONS & LINKS
+   ========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.65rem 1.15rem;
+  border-radius: 11px;
+  border: 1px solid transparent;
+  font-size: 0.94rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.16s var(--ease), box-shadow 0.16s var(--ease),
+    background 0.16s var(--ease), border-color 0.16s var(--ease), color 0.16s var(--ease);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cta-a), var(--cta-b));
+  color: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-ghost {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-ghost:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.18s var(--ease);
+}
+
+.link:hover {
+  border-bottom-color: var(--accent-line);
+}
+
+/* The other marks in the sprite are square, so .icon sizes them 1.15em both
+   ways and they fill the box. This one is 65.812 x 58 -- wider than it is
+   tall -- so a square box would letterbox it down to 88% height and it would
+   sit smaller than the GitHub mark beside it. Matching the height instead and
+   letting the width follow puts the two on the same line optically.
+
+   Both dimensions have to be written out. `height: auto` would look like the
+   tidier way to say this, but the viewBox lives on the <symbol>, not on this
+   <svg>, so the element has no intrinsic ratio of its own to resolve against
+   and auto falls back to the replaced-element default of 300x150. */
+.icon-pypi {
+  width: 1.305em;
+  /* 1.15em x 65.812/58 */
+  height: 1.15em;
+
+  /* The PyPI logo's white areas -- the ghost cubes' right faces and the two
+     specular dots -- are painted in this rather than in currentColor. They
+     cannot be an opacity over the ink: white is lighter than its backdrop, and
+     compositing ink can only go darker. They are not merely transparent
+     either, because in the original they occlude the dark faces behind them.
+
+     So they are painted in the colour of whatever the icon is sitting on. That
+     reads as white on the light theme and as the page on the dark one, and
+     keeps covering what is behind them either way. Set here rather than baked
+     into the sprite so it is one line to move if the mark is ever used on a
+     different surface -- the PyPI link is on a .project card. */
+  --pypi-page: var(--surface);
+}
+
+/* ==========================================================================
+   07  HERO
+   ========================================================================== */
+
+.hero {
+  padding-block: clamp(3rem, 8vw, 6rem) clamp(3rem, 7vw, 5rem);
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+}
+
+@media (min-width: 940px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.4rem, 6.2vw, 3.9rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  margin-bottom: 1.1rem;
+}
+
+.grad {
+  background: linear-gradient(115deg, var(--grad-a), var(--grad-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-lede {
+  font-family: var(--mono);
+  font-size: clamp(0.95rem, 2.1vw, 1.12rem);
+  line-height: 1.5;
+  color: var(--accent-2);
+  margin-bottom: 1rem;
+  text-wrap: balance;
+}
+
+.hero-sub {
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: 1.02rem;
+}
+
+.hero-stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.hero-stack li {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.28rem 0.7rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1.9rem;
+}
+
+/* ==========================================================================
+   08  TERMINAL
+   A real, focusable input — not a picture of one. The screen has a fixed
+   minimum height so growing output never shifts the layout (CLS).
+   ========================================================================== */
+
+.terminal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.62rem 0.85rem;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--border-strong);
+}
+
+.terminal-dot:nth-child(1) {
+  background: #f87171;
+}
+
+.terminal-dot:nth-child(2) {
+  background: #fbbf24;
+}
+
+.terminal-dot:nth-child(3) {
+  background: #34d399;
+}
+
+.terminal-bar-title {
+  margin-left: 0.35rem;
+  font-family: var(--mono);
+  font-size: 0.76rem;
+  color: var(--faint);
+}
+
+.terminal-screen {
+  padding: 1rem 1.05rem 1.1rem;
+  font-family: var(--mono);
+  font-size: 0.84rem;
+  line-height: 1.62;
+  min-height: 268px;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-out {
+  flex: 1;
+  /* Capped so a long command output scrolls inside the screen instead of
+     pushing the hero taller and shifting everything below it. */
+  max-height: 232px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
+.terminal-out .t-ok {
+  color: var(--accent);
+}
+
+.terminal-out .t-dim {
+  color: var(--faint);
+}
+
+.terminal-out .t-err {
+  color: #e11d48;
+}
+
+/* Addresses in the transcript are destinations, not scenery. They used to be
+   printed as plain text, which left the visitor reading one off the screen and
+   typing it out by hand — the one thing a transcript is bad at. Underlined as
+   well as coloured, so the affordance does not rest on telling two accents
+   apart. */
+.terminal-out .t-link {
+  color: var(--accent-2);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-line);
+  text-underline-offset: 0.18em;
+}
+
+.terminal-out .t-link:hover {
+  color: var(--accent);
+  text-decoration-color: currentColor;
+}
+
+.terminal-fallback pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--muted);
+  font: inherit;
+}
+
+.terminal-form {
+  display: none;
+  /* shown only once scripting is confirmed */
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--border);
+}
+
+.js .terminal-form {
+  display: flex;
+}
+
+.js .terminal-fallback {
+  display: none;
+}
+
+.terminal-prompt {
+  color: var(--accent-2);
+  flex: none;
+}
+
+.terminal-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  padding: 0.15rem 0;
+  color: var(--text);
+  font: inherit;
+  caret-color: var(--accent-2);
+}
+
+.terminal-input::placeholder {
+  color: var(--faint);
+}
+
+.terminal-input:focus {
+  outline: none;
+}
+
+/* The row carries the focus indication so it reads as a field, not a caret. */
+.terminal-form:focus-within {
+  border-top-color: var(--accent-line);
+}
+
+/* ==========================================================================
+   09  SECTIONS
+   ========================================================================== */
+
+.section {
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+}
+
+.section-alt {
+  background: var(--band);
+  border-block: 1px solid var(--border);
+}
+
+.section-head {
+  margin-bottom: clamp(1.8rem, 4vw, 2.75rem);
+}
+
+.section-title {
+  font-size: clamp(1.6rem, 3.6vw, 2.15rem);
+  margin-bottom: 0.6rem;
+}
+
+.section-sub {
+  max-width: 62ch;
+  color: var(--muted);
+  font-size: 1rem;
+}
+

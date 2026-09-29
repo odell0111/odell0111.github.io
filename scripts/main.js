@@ -18,8 +18,19 @@
 
    The live figures and the scramble used to be 11 and 12. They are now
    figures.js and scramble.js, beside this file and loaded after it, because
-   each is a self-contained concern that shares nothing but three helpers —
-   which this file publishes as window.Odell at the end, and only those.
+   each is a self-contained concern that shares nothing but the helpers this
+   file publishes as window.Odell at the end.
+
+   The page-turn on the theme switch is pageturn.js, and it is a third kind
+   of thing again: it wants nothing from this file, not even a helper. The
+   PAGE_TURN constant in section 2 is the entire wiring in this direction,
+   and setting it to "" removes the effect without touching anything else.
+
+   The dev panel is devpanel.js, and it is the one file that reads back from
+   the others. It adds no behaviour of its own — it writes three localStorage
+   keys and the code that was already here reads them, which is why nothing
+   needed a setter and why the two readers published at the end are the whole
+   of what it wants from this file.
 
    What stays here is what is actually one program: the theme, the language
    and the terminal all read and write each other, and splitting them would
@@ -84,13 +95,102 @@
 		themeToggle.setAttribute("aria-pressed", String(currentTheme() === "dark"));
 	}
 
+	/* The four writes that make a theme change, gathered into one place
+     because the turn has to be able to run them at a moment of its choosing
+     rather than at the moment of the click: the sheet it animates is a
+     picture of the page as it is now, so the page has to stay as it is until
+     that picture has been taken.
+
+     "shatter", "fall", or "" for no turn at all. */
+	var PAGE_TURN = "fall";
+
+	/* Which turn runs, in order of authority: ?turn= for this session, then the
+     dev panel's stored choice, then the constant above.
+
+     Resolved on every click rather than once, which is what it used to do. The
+     cache was a fair saving when the constant was the only input; with a value
+     behind it that can change while the page is open, keeping one would mean
+     the panel had to invalidate it, and a second source of truth for one fact
+     is a worse trade than a regex over a string and one storage read — less
+     than the store("lang", …) write the language switch already makes on every
+     click.
+
+     Nothing is read from storage unless the page is in dev mode, so a key left
+     behind by a session that ended cannot reach a visitor.
+
+     ?turn=none is the empty mode, spelled so the URL does not have to end in a
+     bare `=`. An unknown name is ignored rather than guessed at, in the URL
+     and in storage alike. */
+	function devMode() {
+		/* Read off the class rather than out of storage: the head script already
+       resolved it before first paint, and the panel takes the class off when
+       dev mode is left, so this follows either way without a second read. */
+		return root.classList.contains("is-dev");
+	}
+
+	function modeOf(name) {
+		return name === "none" ? "" : name;
+	}
+
+	function knownMode(name) {
+		return !!window.PAGETURN && window.PAGETURN.modes.indexOf(modeOf(name)) >= 0;
+	}
+
+	function pageTurnMode() {
+		/* The empty constant is a kill switch rather than a default — pageturn.js
+       documents "" as "this file is never reached, nothing in motion.css §18
+       matches anything" — so it is answered before either override, and
+       neither a URL nor a stored key can put back a turn the source says is
+       off. */
+		if (!PAGE_TURN) return "";
+
+		var m = /[?&]turn=([a-z]*)/.exec(window.location.search);
+		if (m && knownMode(m[1])) return modeOf(m[1]);
+
+		if (devMode()) {
+			var saved = store("turn");
+			/* Tested against null rather than for falsiness. store() returns ""
+         for a stored empty string and null when the key is absent, so a falsy
+         test would read "chose none" and "never chose" as the same thing and
+         quietly put the default back — which is exactly why the panel writes
+         "none" and never "". */
+			if (saved !== null && knownMode(saved)) return modeOf(saved);
+		}
+
+		return PAGE_TURN;
+	}
+
+	function applyTheme(next) {
+		root.setAttribute("data-theme", next);
+		root.style.colorScheme = next;
+		store("theme", next);
+		paintThemeButton();
+	}
+
 	if (themeToggle) {
 		themeToggle.addEventListener("click", function () {
 			var next = currentTheme() === "dark" ? "light" : "dark";
-			root.setAttribute("data-theme", next);
-			root.style.colorScheme = next;
-			store("theme", next);
-			paintThemeButton();
+			var mode = pageTurnMode();
+
+			/* Turned off while the language is mid-swap. The page is at zero
+         opacity for the length of that fade, and a turn would photograph the
+         blank it has become. `switching` is declared with `var` in section 3,
+         so it hoists into this scope and is false by the time anything can
+         be clicked — read here rather than there because this is the only
+         place that has to care. */
+			if (mode && !switching && window.PAGETURN) {
+				window.PAGETURN.play(next, applyTheme, mode);
+				return;
+			}
+
+			/* Read off window and guarded, the way the scramble is, and for
+         the same reason: this is a separate request and so a separate way to
+         fail. In strict mode a bare reference to a global that never arrived
+         is a ReferenceError, and an unguarded call would take the theme
+         switch down with it. Guarded, the worst case is a theme that changes
+         without the effect. The terminal's `theme` command clicks this same
+         button, so it gets whichever of the two happens here for free. */
+			applyTheme(next);
 		});
 	}
 
@@ -167,6 +267,19 @@
 	var SWAP_BACKSTOP_MS = 400;
 	var switching = false;
 
+	/* Whether the language switch fades. On unless the dev panel says otherwise,
+     and there is deliberately no CSS behind it: fadeOn() is read at the top of
+     switchLanguage and the instant path is the one reduced motion already
+     takes, so the answer is a branch rather than a class. That is the only
+     shape that works here — the gate below says why. */
+	var LANG_FADE = true;
+
+	function fadeOn() {
+		if (!devMode()) return LANG_FADE;
+		var saved = store("fade");
+		return saved === null ? LANG_FADE : saved !== "off";
+	}
+
 	/* How long the return takes, read off the page rather than written down here
      a second time. The longest section-plus-delay wins. Removing `lang-in` too
      early would cut the fade short and snap the sections the rest of the way,
@@ -195,8 +308,25 @@
 
 		/* Reduced motion gets the new language without the theatre. The
        stylesheet would collapse the transition to nothing anyway, but the
-       wait before the swap is JavaScript's, and it would still be felt. */
-		if (reduceMotion.matches) {
+       wait before the swap is JavaScript's, and it would still be felt.
+
+       The dev panel's fade switch takes this same path, and takes it here
+       rather than through a class that zeroes the duration. That class would
+       have to drop properties from transition-property, and dropping a
+       property cancels a running transition — which fires transitioncancel
+       rather than transitionend, so onFadeEnd would never run and the swap
+       would fall through to the backstop below. It would also miss
+       #langToggleText, whose turn is a lang-flip animation, not a
+       transition. Never adding `lang-out` turns all of it off at once — the
+       section fades, the nav-link fades, the animation — and touches nothing
+       already in flight.
+
+       The churn is stopped rather than left running. There is no fade here for
+       it to hide behind, and it writes into the visible span as well as the
+       hidden one, so an uncovered churn would leave garbled letters on screen
+       for up to its own maximum. */
+		if (reduceMotion.matches || !fadeOn()) {
+			if (window.SCRAMBLE) window.SCRAMBLE.stop();
 			applyLanguage(next, true);
 			return;
 		}
@@ -1340,14 +1470,22 @@
 		if (toast && toast.classList.contains("is-visible")) hideToast();
 	});
 
-	/* Everything the other two files in scripts/ need, and nothing else. They
-	   load after this one and read it once, at the top, so the order in the
-	   markup is the order of the dependency: this file defines the page and
-	   they dress it. Publishing only what is actually consumed keeps the
-	   surface small enough to see at a glance. */
+	/* Everything the other files in scripts/ need, and nothing else. They load
+	   after this one and read it once, at the top, so the order in the markup is
+	   the order of the dependency: this file defines the page and they dress it.
+	   Publishing only what is actually consumed keeps the surface small enough
+	   to see at a glance.
+
+	   The last two are read by devpanel.js and by nothing else, and they are
+	   readers rather than setters because the stored value is the whole
+	   channel: the panel writes a key, the code that already owned that
+	   decision reads it back at the moment it needs it, and there is nothing in
+	   between to keep in step. */
 	window.Odell = {
 		$: $,
 		$$: $$,
 		showToast: showToast,
+		turnMode: pageTurnMode,
+		fadeOn: fadeOn,
 	};
 })();

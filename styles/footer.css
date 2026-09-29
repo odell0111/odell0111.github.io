@@ -1,0 +1,103 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · footer
+
+   Load 6 of 8 — see tokens.css for the full map and for
+   why the load order carries meaning.
+
+   15 Footer
+
+   The footer and its link row, and the dev entry that sits on its
+   doorstep. The dev entry is not part of the footer and is not styled
+   as though it were; it lives here because this is the section it
+   abuts, and a section of its own would renumber everything after it.
+   ========================================================================== */
+
+/* ==========================================================================
+   15  FOOTER
+   ========================================================================== */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding-block: 1.6rem;
+  background: var(--band);
+}
+
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.footer-copy {
+  font-size: 0.85rem;
+  color: var(--faint);
+}
+
+.footer-links {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  color: var(--muted);
+  border: 1px solid transparent;
+  transition: color 0.18s var(--ease), background 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+
+.footer-links a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+/* ---- The dev entry ---------------------------------------------------- */
+
+/* The link into dev mode. It sits above the footer and outside it, but the
+   two share a band, so it is quieter than the footer's own copy rather than
+   louder: --faint, which is the colour .footer-copy already uses. Visible
+   enough to be found by someone looking, quiet enough that nobody reads it
+   as a feature of the page.
+
+   Monospace because it is a path, and the site already says "path" in
+   --mono everywhere else it says it (.term, code, kbd). That is also the
+   honest register for it: a directory name is a thing a developer
+   recognises, and it needs no explanation for the people it is for. */
+
+.dev-entry {
+  display: flex;
+  justify-content: flex-end;
+  padding-block: 0.85rem 0;
+}
+
+.dev-entry a {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--faint);
+  padding: 0.3rem 0.45rem;
+  /* The padding is what makes the hover pill big enough to hit; the negative
+     margin is what stops it pushing the text inward, so the label's right
+     edge lines up with the footer icons below it rather than sitting 0.45rem
+     short of them. */
+  margin-right: -0.45rem;
+  border-radius: 7px;
+  /* The base reset colours links but does not strip the underline, so every
+     link on this site takes it off itself. An underlined /dev would be the
+     loudest thing in the band, which is the opposite of the brief. */
+  text-decoration: none;
+  transition: color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.dev-entry a:hover {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+

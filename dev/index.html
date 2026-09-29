@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- A tool, not a page. Nothing here is meant to be found, cited or
+         indexed, and this is the only place that is true — see robots.txt,
+         whose openness is deliberate and stays that way.
+
+         `noindex` and not a `Disallow: /dev` in robots.txt. A disallowed URL
+         is never fetched, so the tag inside it would never be read; the only
+         thing a disallow buys is a page nobody has seen. -->
+    <meta name="robots" content="noindex" />
+
+    <title>Dev mode — odell.dev</title>
+
+    <!-- Self-contained on purpose. Every path on this site is relative, so a
+         stylesheet copied from the root would be requested at
+         /dev/styles/… and 404. This page needs three lines of CSS, which is
+         cheaper than a base tag and its consequences. -->
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-content: center;
+        gap: 0.6rem;
+        padding: 2rem;
+        background: #0b0f17;
+        color: #e6edf7;
+        font: 400 15px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+        text-align: center;
+      }
+      p {
+        margin: 0;
+        max-width: 34ch;
+        color: #93a2b8;
+      }
+      /* Nothing is shown while the redirect is being made. The replace runs
+         as the body is parsed, so the page is normally never painted at all —
+         a "turning on dev mode…" line would be text almost nobody sees, and
+         the one group who would see it is the group it would be wrong for
+         (scripts off, where it never gets turned on). */
+      .failed {
+        display: none;
+      }
+      /* Shown only if storage refused. The script cannot report a failure by
+         redirecting — a redirect is the one outcome that would be a lie. */
+      html.nostore .failed {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <p class="failed">
+      This browser refused local storage, so dev mode cannot be remembered.
+      Private windows and blocked cookies both do this. Nothing was changed.
+    </p>
+
+    <script>
+      (function () {
+        var root = document.documentElement;
+        try {
+          localStorage.setItem("dev", "1");
+        } catch (e) {
+          root.className = "nostore";
+          return;
+        }
+        /* `replace`, not `href`: assigning `href` leaves this page in the
+           history, so Back from the site would land here and bounce straight
+           back — a trap with no way out but a second press.
+
+           Relative rather than "/", so it is correct served from the repo root
+           on Pages and equally correct from any local server that serves the
+           folder under a subpath. */
+        location.replace("../");
+      })();
+    </script>
+
+    <noscript>
+      <p>
+        Dev mode is a script, and scripts are off. The site itself still works
+        without them; this switch does not.
+      </p>
+    </noscript>
+  </body>
+</html>

@@ -1,0 +1,664 @@
+/* ==========================================================================
+   Odell — portfolio stylesheet · sections
+
+   Load 5 of 8 — see tokens.css for the full map and for
+   why the load order carries meaning.
+
+   10 Work · 11 Capabilities · 12 Approach · 13 About ·
+                        14 Contact
+
+   The five content sections, in the order they appear on the page.
+   This is the bulk of the stylesheet and the part that changes most
+   often.
+   ========================================================================== */
+
+/* ==========================================================================
+   10  WORK
+   ========================================================================== */
+
+.work-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.15rem;
+}
+
+@media (min-width: 900px) {
+  .work-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Five cards in a two-column grid: the featured card spans both columns and
+     the remaining four fill two further rows, leaving no hole. */
+  .project-featured {
+    grid-column: 1 / -1;
+  }
+}
+
+.project {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease);
+}
+
+.project:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.project-featured {
+  padding: 1.6rem;
+}
+
+.project-private {
+  background: var(--surface-2);
+  border-style: dashed;
+}
+
+.project-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.project-title {
+  font-size: 1.22rem;
+}
+
+.project-featured .project-title {
+  font-size: 1.45rem;
+}
+
+.pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.22rem 0.6rem;
+}
+
+.pill-flag {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+.project-desc {
+  color: var(--muted);
+  font-size: 0.95rem;
+  max-width: 74ch;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: auto;
+  /* pins the fact row to the bottom of the card */
+  padding-top: 0.2rem;
+}
+
+.fact {
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  padding: 0.3rem 0.6rem;
+}
+
+/* The verifiable number in each card. Monospaced so digits line up across
+   cards, and coloured so the eye finds it first. */
+.fact-strong {
+  font-family: var(--mono);
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+}
+
+/* ---- Live figures -------------------------------------------------------
+   The shimmer is the real number with its colour turned off, not a
+   placeholder block standing in for it. So it is exactly the width of the
+   digits it replaces, and when the live value lands nothing reflows — the
+   text changes colour and that is the whole animation. It also degrades on
+   its own: with no JavaScript the class is never applied and the baked-in
+   figure simply shows. */
+.stat {
+  border-radius: 4px;
+}
+
+.stat.is-loading {
+  color: transparent;
+  background-image: linear-gradient(100deg,
+      var(--accent-soft) 25%,
+      var(--accent-line) 50%,
+      var(--accent-soft) 75%);
+  background-size: 250% 100%;
+  animation: stat-sweep 1.4s linear infinite;
+}
+
+@keyframes stat-sweep {
+  from {
+    background-position: 140% 0;
+  }
+
+  to {
+    background-position: -140% 0;
+  }
+}
+
+.stats-note {
+  margin-top: 1.6rem;
+  font-size: 0.82rem;
+  color: var(--faint);
+}
+
+.stats-note time {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.project-note {
+  display: flex;
+  gap: 0.55rem;
+  font-size: 0.87rem;
+  color: var(--muted);
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent-line);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 0.7rem 0.85rem;
+}
+
+.project-note .icon {
+  margin-top: 0.22rem;
+  color: var(--accent);
+}
+
+.project-note strong {
+  color: var(--text);
+}
+
+.project-aside {
+  font-size: 0.87rem;
+  color: var(--faint);
+  border-top: 1px dashed var(--border);
+  padding-top: 0.75rem;
+}
+
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  padding-top: 0.2rem;
+}
+
+/* ==========================================================================
+   11  CAPABILITIES
+   ========================================================================== */
+
+.cap-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 3.25rem);
+}
+
+@media (min-width: 900px) {
+  .cap-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.cap-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding-bottom: 0.7rem;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.cap-title-spaced {
+  margin-top: 2.4rem;
+}
+
+/* ---- Skill bars ---------------------------------------------------------
+   Kept, because they are wanted — but each bar is paired with the work it
+   comes from. The bar shows relative strength; the caption under it is the
+   part a reader can actually check. */
+.skills {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.skill {
+  display: grid;
+  gap: 0.38rem;
+}
+
+.skill-name {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.skill-track {
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.skill-bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--grad-a), var(--grad-b));
+  /* The level lives on the element as --level (a percentage), so the correct
+     width renders with no JavaScript at all. The script only animates it. */
+  width: var(--level, 0%);
+  transition: width 0.95s var(--ease);
+}
+
+/* Collapse only when scripting is available, then grow on reveal. Without
+   JavaScript these rules never apply and the bars simply render at full
+   width. */
+.js .skill-bar {
+  width: 0;
+}
+
+.js .skill.is-visible .skill-bar {
+  width: var(--level, 0%);
+}
+
+.skill-src {
+  font-size: 0.79rem;
+  color: var(--faint);
+}
+
+/* Work that exists but can't be linked — client projects that aren't public.
+   Set apart from the repo names so the two read as different kinds of claim.
+
+   Italic only. The obvious extra move, an opacity below 1, dims this text to
+   3.2:1 in the light theme and 4.0:1 in the dark one — under AA in both, and
+   "private client work" is a claim about the work, not decoration. It is not
+   a place to save contrast. */
+.skill-src--private {
+  font-style: italic;
+}
+
+.cap-foot {
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--faint);
+  max-width: 52ch;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+}
+
+.tag {
+  font-size: 0.83rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.34rem 0.66rem;
+}
+
+.tag-note {
+  color: var(--faint);
+  font-size: 0.92em;
+}
+
+/* The ellipsis that closes the tools list, and the only item up there that is
+   a figure of speech rather than a name. It keeps a tag's box — which is what
+   holds a tag's place in the run and keeps it clear of x64dbg, instead of
+   crowding the last pill with nothing but the row's gap between them — but the
+   box draws nothing. A pill around three dots reads as a tag whose name is
+   "...", which is worse than either.
+
+   Everything not listed here is the tag's own: the type size, the radius, the
+   border width. Only what differs is written.
+
+   The dots rest on the floor of the box rather than floating in the middle of
+   it. Level with the tags' text they read as one more item; set down on the
+   line the row stands on, they read as the list trailing off — which is what
+   they are for. The horizontal padding is a tag's and the vertical padding is
+   not: a tag's 0.34rem of it would lift the dots back up into the text. */
+.tag-more {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0.66rem;
+  color: var(--faint);
+  background: none;
+  border-color: transparent;
+}
+
+/* Specialties sit below the two-column grid, not inside its right column:
+   with a 50-tag list above them the left column ran out long before they
+   started, leaving a dead gap the width of a column beside the heading.
+   Cards fill whatever width is going — two across, four once there is room.
+   Only 2 and 4 divide four cards evenly; a three-column middle state would
+   strand the fourth card alone on a second row. */
+.cap-specs {
+  margin-top: 0.4rem;
+}
+
+.spec-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+}
+
+@media (min-width: 560px) {
+  .spec-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem 2.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .spec-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.spec h4 {
+  font-size: 0.97rem;
+  margin-bottom: 0.25rem;
+}
+
+.spec p {
+  font-size: 0.89rem;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   12  APPROACH
+   ========================================================================== */
+
+/* The statement is the thesis, so it leads at full width and the five
+   principles sit under it as a card grid. The older split ran a short card
+   down one column beside a tall numbered list in the other, which left a
+   column of dead space under the statement and made the two halves read as
+   unrelated. The content is unchanged — only the arrangement. */
+.approach-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.statement {
+  max-width: 74ch;
+}
+
+.statement-title {
+  font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+  margin-bottom: 0.8rem;
+  background: linear-gradient(115deg, var(--grad-a), var(--grad-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.statement p {
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+
+/* Three across at desktop leaves the last row two-thirds full. A grid reads
+   that as a normal ragged last row; a flex row would stretch the two cards to
+   fill it and make them wider than the three above. */
+.principles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  counter-reset: principle;
+}
+
+@media (min-width: 640px) {
+  .principles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1000px) {
+  .principles {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.principle {
+  counter-increment: principle;
+  padding: 1.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* The number sits at the top of the card now rather than hanging in a gutter:
+   a grid has no gutter to hang it in. */
+.principle::before {
+  content: counter(principle, decimal-leading-zero);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  margin-bottom: 0.85rem;
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+  border-radius: 8px;
+}
+
+.principle h3 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.principle p {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   13  ABOUT
+   ========================================================================== */
+
+/* The bio, and only the bio. The four profile cards that used to sit beneath it
+   are in Contact now, which is where someone looking for a way to make contact
+   actually goes — the visitor who clicked "Get in Touch" used to land on a
+   single email address. */
+.about-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.about-body p {
+  color: var(--muted);
+  max-width: 68ch;
+}
+
+/* ==========================================================================
+   14  CONTACT
+   ========================================================================== */
+
+.contact-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: clamp(1.4rem, 4vw, 2.25rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.contact-mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--mono);
+  font-size: clamp(1rem, 2.6vw, 1.32rem);
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  border-bottom: 2px solid var(--accent-line);
+  padding-bottom: 0.15rem;
+  transition: color 0.18s var(--ease), border-color 0.18s var(--ease);
+}
+
+.contact-mail:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.contact-mail .icon {
+  color: var(--accent);
+  font-size: 1.15em;
+}
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Every way of reaching him, in one place. These four cards were in About,
+   which meant the visitor who clicked "Get in Touch" — the visitor with the
+   question this section exists to answer — found one email address and no
+   other option. The section that says how to make contact is the section that
+   should hold the ways of making it. */
+.contact-social {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Two per row is the ceiling asked for. Below ~37rem a card stops being wider
+   than its own URL, so they stack rather than squeeze. */
+@media (max-width: 599px) {
+  .contact-social {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.contact-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-right: 0.35rem;
+}
+
+.contact-social .contact-label {
+  grid-column: 1 / -1;
+  margin-right: 0;
+}
+
+/* The card these destinations have always used. It keeps --surface and shows
+   its edge with a border instead, which is what the ghost buttons below it do
+   inside this same card — and the hover is theirs exactly: --surface-2 and a
+   stronger border. The first attempt tinted the fill with --accent-soft on a
+   --surface-2 base; measured, that put the subtitle at 4.43:1 in the light
+   theme, under AA, where the fill it had in About had been 4.83. */
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.9rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.18s var(--ease), background 0.18s var(--ease);
+}
+
+.profile-card:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.profile-card .icon {
+  font-size: 1.35rem;
+  color: var(--muted);
+}
+
+.profile-card strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.profile-card small {
+  display: block;
+  font-size: 0.79rem;
+  color: var(--faint);
+}
+
+/* The CVs get a row of their own. They are documents to take away rather than
+   another way to send a message, so they do not belong in the row of actions
+   above. */
+.contact-docs {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding-top: 1.15rem;
+  border-top: 1px solid var(--border);
+}
+
+/* The copy button swaps icon and label together once the address is on the
+   clipboard, so the change is never signalled by colour alone. */
+#copyEmail .icon-done,
+#copyEmail .copy-done {
+  display: none;
+}
+
+#copyEmail.is-copied .icon-copy,
+#copyEmail.is-copied .copy-label {
+  display: none;
+}
+
+#copyEmail.is-copied .icon-done {
+  display: block;
+}
+
+#copyEmail.is-copied .copy-done {
+  display: inline;
+}
+

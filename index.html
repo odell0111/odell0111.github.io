@@ -53,13 +53,26 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet">
-    <link rel="stylesheet" href="styles/main.css">
+    <!-- Eight files, one stylesheet. There is no build step, so the cascade
+         order is this order and nothing else. The sections were a single file
+         until they were eight and still load in their original sequence, so
+         every rule kept the position it had; reordering these can change which
+         rule wins. tokens.css carries the map. -->
+    <link rel="stylesheet" href="styles/tokens.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/sections.css">
+    <link rel="stylesheet" href="styles/footer.css">
+    <link rel="stylesheet" href="styles/toast.css">
+    <link rel="stylesheet" href="styles/motion.css">
 
     <!-- Runs before first paint: applies the saved theme, picks the starting
-     language, and marks JS as available. All three jobs have to happen here —
-     any later and the wrong theme and the wrong language each paint once
-     before being corrected. .no-js stays until this runs, so the content is
-     visible when scripting is unavailable. -->
+     language, marks JS as available, and reveals the dev gear. All four jobs
+     have to happen here — any later and the wrong theme and the wrong language
+     each paint once before being corrected, and the gear lands in the navbar
+     after it has settled, which is a visible jump. .no-js stays until this
+     runs, so the content is visible when scripting is unavailable. -->
     <script>
 (function () {
   var root = document.documentElement;
@@ -99,6 +112,15 @@
     }
   }
   root.setAttribute('lang', lang);
+
+  /* Dev mode, which is on only if /dev was visited. The class does all of the
+     work: the gear's own rule is `display: none` and the stylesheet reveals it
+     under html.is-dev, so there is no button to flash and no script has to run
+     to put it there — meaning it is still right if devpanel.js never arrives.
+
+     An exact '1' rather than a truthy test, so a stray value cannot switch it
+     on. Written from /dev/index.html and cleared by the card's own exit. */
+  if (get('dev') === '1') root.classList.add('is-dev');
 })();
 </script>
 
@@ -178,7 +200,7 @@
        it; using the plain greys leaves every stacked face 5-9/255 too dark.
        The ghost cubes' white faces are the exception — white has to be lighter
        than its backdrop, which no opacity over ink can be, so they are painted
-       in --pypi-page (set next to .icon-pypi, in main.css).
+       in --pypi-page (set next to .icon-pypi, in components.css).
 
        Three fills are dropped rather than mapped: the back and bottom faces of
        the ghost cubes. They are opaque and fully covered in the original, but
@@ -361,6 +383,12 @@
         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M18 6 6 18M6 6l12 12" />
       </symbol>
+      <symbol id="i-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path
+          d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+        <circle cx="12" cy="12" r="3" />
+      </symbol>
     </svg>
 
     <a class="skip-link" href="#main">
@@ -408,6 +436,75 @@
         </ul>
 
         <div class="nav-tools">
+          <!-- The card, a sibling of the button rather than inside it: a
+           button's contents are its accessible name, so controls nested in
+           one are announced as text instead of as controls.
+
+           English throughout, not .lang-en/.lang-es pairs. The churn measures
+           every visible pair on the page, and a closed card is a box with no
+           rects — it would be classed as non-wrapping and pinned to a width of
+           0, clipping its own text if it were opened mid-churn. -->
+          <div class="dev-card" id="devCard" role="group"
+            aria-labelledby="devCardTitle">
+            <div class="dev-head">
+              <p class="dev-title" id="devCardTitle">Settings</p>
+              <!-- The marker the card is named for, and the site's own pill
+                   rather than a new badge. A sibling rather than a child of
+                   the title: the group is labelled by the title, so this stays
+                   out of its accessible name without needing aria-hidden. -->
+              <span class="pill pill-flag dev-flag">Dev</span>
+              <button class="dev-close" id="devClose" type="button">
+                <svg class="icon" aria-hidden="true"><use
+                    href="#i-close"></use></svg>
+                <span class="visually-hidden">Close</span>
+              </button>
+            </div>
+
+            <p class="dev-label" id="devTurnLabel">Theme switch</p>
+            <div class="dev-seg" role="group" aria-labelledby="devTurnLabel">
+              <button class="dev-opt" type="button" data-turn="none"
+                aria-pressed="false">None</button>
+              <button class="dev-opt" type="button" data-turn="fall"
+                aria-pressed="false">Fall</button>
+              <button class="dev-opt" type="button" data-turn="shatter"
+                aria-pressed="false">Shatter</button>
+              <button class="dev-opt" type="button" data-turn="bloom"
+                aria-pressed="false">Bloom</button>
+            </div>
+
+            <!-- Only shown when ?turn= is overriding the stored choice, so the
+             card cannot display one thing while the URL does another. -->
+            <p class="dev-note" id="devTurnNote" hidden></p>
+
+            <p class="dev-row">
+              <span class="dev-label" id="devChurnLabel">Language
+                scramble</span>
+              <button class="dev-switch" id="devChurn" type="button"
+                aria-pressed="false" aria-labelledby="devChurnLabel">
+                <span class="dev-knob" aria-hidden="true"></span>
+              </button>
+            </p>
+
+            <p class="dev-row">
+              <span class="dev-label" id="devFadeLabel">Language
+                transition</span>
+              <button class="dev-switch" id="devFade" type="button"
+                aria-pressed="true" aria-labelledby="devFadeLabel">
+                <span class="dev-knob" aria-hidden="true"></span>
+              </button>
+            </p>
+
+            <!-- Shown while the fade is off. The churn writes into the visible
+             span as well as the hidden one, so with no fade to cover the swap
+             it would re-letter in full view. The switch above is disabled
+             rather than left live, so the dependency reads as a rule instead
+             of as a control that does nothing. -->
+            <p class="dev-note" id="devFadeNote" hidden></p>
+
+            <button class="dev-exit" id="devExit" type="button">Exit dev
+              mode</button>
+          </div>
+
           <!-- The name states what the button controls, and aria-pressed states
            whether it is on — the pattern a toggle button is supposed to
            follow. Naming it after the action instead ("Switch theme") would
@@ -431,6 +528,26 @@
             <span id="langToggleText" aria-hidden="true">ES</span>
             <span class="visually-hidden" id="langToggleLabel">Cambiar a
               español</span>
+          </button>
+
+          <!-- Dev mode, and only in dev mode. Last of the icon buttons rather
+           than first: it is a mode, not a peer of the theme and language
+           controls, and sitting ahead of them read as the most important of
+           the three. On narrow screens the hamburger still comes after it,
+           which is where a menu button belongs.
+
+           Shipped `disabled` and enabled by devpanel.js once it is running: if
+           that file 404s or dies on parse, the button stays visibly greyed
+           rather than becoming a control that does nothing when it is clicked
+           — the same rule pageturn.js states for a mode that silently no-ops.
+
+           `hidden` is not what hides it. .icon-btn sets display: inline-flex,
+           which beats the hidden attribute's UA rule, so the stylesheet does
+           the hiding with a rule of its own. -->
+          <button class="icon-btn dev-tools" id="devToggle" type="button"
+            disabled aria-expanded="false" aria-controls="devCard">
+            <svg class="icon" aria-hidden="true"><use href="#i-gear"></use></svg>
+            <span class="visually-hidden">Settings</span>
           </button>
 
           <button class="hamburger" id="navToggle" type="button"
@@ -1018,6 +1135,21 @@ image-in-terminal  workflow-automation</code></pre>
                 <li class="tag">Ruff / Black / mypy</li>
                 <li class="tag">setuptools</li>
                 <li class="tag">PyPI</li>
+                <li class="tag">IDA Pro</li>
+                <li class="tag">x64dbg</li>
+                <!-- Three dots, not a word: the list is a sample and the dots
+                     say so without claiming a number. Sighted readers get the
+                     convention; the clipped line gives a screen reader the
+                     same meaning, and collect() skips it for the same reason
+                     it skips the other clipped labels.
+
+                     It keeps a tag's box so it holds the same place in the run
+                     as any other item — but the box draws nothing, and the
+                     dots sit at its foot rather than in the middle of it. -->
+                <li class="tag tag-more"><span aria-hidden="true">...</span><span
+                    class="visually-hidden"><span class="lang-en"
+                    lang="en">and more</span><span class="lang-es"
+                    lang="es">y más</span></span></li>
               </ul>
             </div>
 
@@ -1355,6 +1487,19 @@ image-in-terminal  workflow-automation</code></pre>
 
     </main>
 
+    <!-- The way into dev mode. Above the footer rather than inside it: the
+         footer is the site's own content and this is a setting, and putting it
+         in the footer's link row would set it beside GitHub and LinkedIn as
+         though it were one of them.
+
+         A path rather than a button, and unlabelled, because that is the whole
+         of its discoverability — it reads as an address to anyone who knows the
+         convention and as furniture to everyone else. Not hidden: a hidden
+         control is one nobody can find, including the person it is for. -->
+    <div class="wrap dev-entry">
+      <a href="dev/">/dev</a>
+    </div>
+
     <footer class="site-footer">
       <div class="wrap footer-inner">
         <p class="footer-copy">
@@ -1398,13 +1543,28 @@ image-in-terminal  workflow-automation</code></pre>
       </button>
     </div>
 
-    <!-- Three files, one program. `defer` scripts run in document order, and the
+    <!-- Five files, one program. `defer` scripts run in document order, and the
          order here is the dependency: main.js defines the page and publishes the
-         three helpers the other two use as window.Odell; scramble.js needs
-         nothing from anyone; figures.js reads that namespace and does nothing at
-         all if it is missing. Nothing below sets a global but those two. -->
+         three helpers the rest use as window.Odell; scramble.js needs nothing
+         from anyone; figures.js reads that namespace and does nothing at all if
+         it is missing; pageturn.js is called back into by main.js rather than
+         calling it, so it only has to have run before the first click — which
+         `defer` guarantees. devpanel.js is last because it is the only one that
+         reads from three others: window.Odell for the mode actually in force,
+         window.SCRAMBLE for the churn, window.PAGETURN for the list of modes
+         the markup is allowed to offer. Each of the four sets one global and no
+         more; devpanel.js sets none, because it has no consumer — the card is
+         its whole interface.
+
+         Nothing in it runs unless /dev has been visited: its first line returns
+         when html lacks .is-dev. Delete that file, this tag, the gear and card
+         markup above, and the dev block at the end of layout.css, and the page
+         is exactly as it was — the three reads left behind in main.js and
+         scramble.js are inert without a writer. -->
     <script src="scripts/main.js" defer></script>
     <script src="scripts/scramble.js" defer></script>
     <script src="scripts/figures.js" defer></script>
+    <script src="scripts/pageturn.js" defer></script>
+    <script src="scripts/devpanel.js" defer></script>
   </body>
 </html>

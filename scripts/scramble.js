@@ -33,7 +33,9 @@
 
    Split out of main.js. It needs nothing from that file — only
    document.documentElement — and publishes itself as window.SCRAMBLE, which
-   the language switch calls at the click rather than at load.
+   the language switch calls at the click rather than at load. The dev panel
+   reads two things back off it, `stop` and `enabled`, and neither is a
+   control: the panel writes a key and this file reads it.
    ========================================================================== */
 
 (function () {
@@ -42,14 +44,48 @@
 	var root = document.documentElement;
 
 	var SCRAMBLE = (function () {
-		/* The off switch, and it ships off. False and the language switch behaves
-       exactly as it did before this block existed: the page fades, the language
-       flips, the page returns, and not one span is touched. Everything below
-       goes inert.
+		/* The source-level switch, and it ships off. False and a visitor's
+       language switch behaves exactly as it did before this block existed: the
+       page fades, the language flips, the page returns, and not one span is
+       touched. Everything below goes inert.
 
        Kept rather than deleted, and kept working, so the effect is one word
-       away: set this true and the switch churns again. */
+       away: set this true and the switch churns again for everyone.
+
+       It is deliberately one-way. True forces the churn on and nothing can turn
+       it back off — not the dev panel, not a stored key — so this line means
+       what it says. What the panel can do is the other direction: with this
+       false, the churn runs for a visitor who has been to /dev and asked for
+       it, and for nobody else. */
 		var ENABLED = false;
+
+		/* The same read/write overload main.js carries, cut down to the read this
+       file needs and duplicated for the reason flushLayout() is duplicated
+       between this file and pageturn.js: this is a separate request and has to
+       keep working if that one is restructured. */
+		function store(key) {
+			try {
+				return localStorage.getItem(key);
+			} catch (e) {
+				/* Private mode, blocked cookies. There is no dev panel either way,
+           since /dev could not have written the flag that reveals it. */
+				return null;
+			}
+		}
+
+		/* Whether the churn runs, asked at the moment start() is called rather
+       than resolved once at load: the panel can change the answer while the
+       page is open, and a copy taken at load would be a second place the same
+       fact lives.
+
+       Gated on the class rather than on the key, so a key left behind by a
+       session that ended is unreachable — the head script resolved dev mode
+       before first paint and the panel takes the class off on the way out. */
+		function churnOn() {
+			if (ENABLED) return true;
+			if (!root.classList.contains("is-dev")) return false;
+			return store("churn") === "on";
+		}
 
 		/* All of the feel, in one place. Retiming it should never mean editing
        anything past this block. */
@@ -261,7 +297,7 @@
 		}
 
 		function start() {
-			if (!ENABLED) return;
+			if (!churnOn()) return;
 
 			/* A run still in flight is put back before the next one reads the spans,
          so nothing is ever measured with glyphs in it. */
@@ -537,7 +573,16 @@
 			}
 		}
 
-		return { start: start, reveal: reveal };
+		return {
+			start: start,
+			reveal: reveal,
+			stop: stop,
+			/* A reader, not a value: the dev panel asks this every time it paints,
+         and the answer can change while the page is open. */
+			enabled: function () {
+				return churnOn();
+			},
+		};
 	})();
 
 	window.SCRAMBLE = SCRAMBLE;
