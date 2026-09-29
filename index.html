@@ -87,6 +87,30 @@
   if (theme === 'light' || theme === 'dark') {
     root.setAttribute('data-theme', theme);
     root.style.colorScheme = theme;
+
+    /* The two theme-color metas above are keyed on the OS setting, which is
+       the right answer only until there is a stored choice to disagree with
+       it — from here on they would paint Chrome's toolbar and the Android
+       navigation bar in the OS colour while the page is the other one. The
+       matching meta's own colour is copied onto both and both lose the media
+       attribute, so which one the browser honours stops mattering. Here
+       rather than in main.js because main.js is deferred and that chrome is
+       painted before it runs; main.js repeats this on every later toggle,
+       reading --bg instead, because by then the pair is already collapsed. */
+    var metas = document.querySelectorAll('meta[name="theme-color"]');
+    var want = '(prefers-color-scheme: ' + theme + ')';
+    var colour = null;
+    for (var m = 0; m < metas.length; m++) {
+      if (metas[m].getAttribute('media') === want) {
+        colour = metas[m].getAttribute('content');
+      }
+    }
+    if (colour) {
+      for (var n = 0; n < metas.length; n++) {
+        metas[n].removeAttribute('media');
+        metas[n].setAttribute('content', colour);
+      }
+    }
   } else {
     /* Nothing saved — the system preference, via the stylesheet, decides. */
   }

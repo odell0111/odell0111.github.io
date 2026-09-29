@@ -95,6 +95,50 @@
 		themeToggle.setAttribute("aria-pressed", String(currentTheme() === "dark"));
 	}
 
+	/* The browser's own chrome — Chrome on Android's toolbar and the system
+     navigation bar, which sit above and below the page rather than in it — is
+     asked for by <meta name="theme-color">. The pair in <head> is keyed on the
+     OS setting, and that is the right answer for exactly as long as the
+     visitor has not chosen: with nothing stored the page follows the OS too,
+     so the two agree by construction, and they go on agreeing if the OS
+     changes under an open page.
+
+     Once a choice is stored they can disagree, and then those bars are painted
+     the OS colour while the page is the other one. Nothing to do with the
+     turn — it is wrong before a single frame is drawn, and on a phone the two
+     strips are the largest areas of flat colour on the screen.
+
+     Both metas are written, so which one the browser honours stops mattering,
+     and both lose their media attribute: left in place they would go on
+     claiming a light/dark meaning their content no longer has, and an OS
+     change would re-choose between two metas that now say the same thing.
+
+     The colour is read back out of the stylesheet rather than written down a
+     third time. --bg is what the page actually paints with; the two hexes in
+     <head> are a copy of it that nothing would keep in step. */
+	function paintBrowserChrome() {
+		var metas = document.querySelectorAll('meta[name="theme-color"]');
+		if (!metas.length || !window.getComputedStyle) return;
+
+		var bg = "";
+		try {
+			bg = String(getComputedStyle(root).getPropertyValue("--bg") || "");
+		} catch (e) {
+			return;
+		}
+		bg = bg.replace(/^\s+|\s+$/g, "");
+
+		/* Empty means the stylesheet has not arrived. Doing nothing leaves the
+       pair exactly as written, which is the pre-JS answer and still the right
+       guess — an uncorrected colour is better than a guessed one. */
+		if (!bg) return;
+
+		for (var i = 0; i < metas.length; i++) {
+			metas[i].removeAttribute("media");
+			metas[i].setAttribute("content", bg);
+		}
+	}
+
 	/* The four writes that make a theme change, gathered into one place
      because the turn has to be able to run them at a moment of its choosing
      rather than at the moment of the click: the sheet it animates is a
@@ -167,6 +211,7 @@
 		root.style.colorScheme = next;
 		store("theme", next);
 		paintThemeButton();
+		paintBrowserChrome();
 	}
 
 	if (themeToggle) {
@@ -195,6 +240,13 @@
 			applyTheme(next);
 		});
 	}
+
+	/* The same correction once for a visitor who arrived with a choice already
+     stored. Guarded on the attribute rather than on currentTheme(), which
+     answers with the OS preference when nothing is stored — and in that case
+     the pair is already the right answer and is following the OS live, which a
+     value written here once would freeze. */
+	if (root.getAttribute("data-theme")) paintBrowserChrome();
 
 	/* Follow the OS preference while the visitor has not made an explicit
      choice of their own. */
