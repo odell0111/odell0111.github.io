@@ -81,7 +81,7 @@ Automatización desatendida de flujos de trabajo a escala: gestión de sesiones 
 | **Lenguajes**              | Python, C#, C++, C, Kotlin, JavaScript, Java                                                                                                                                                              |
 | **Frameworks y librerías** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest                               |
 | **Bases de datos**         | PostgreSQL, SQL                                                                                                                                                                                           |
-| **Herramientas**           | Git (avanzado), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh                                                                                                           |
+| **Herramientas**           | Git (avanzado), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh, IDA Pro, x64dbg                                                                                          |
 | **Seguridad**              | Análisis de redes y protocolos · TLS/HTTPS y cadenas de certificados · claves y túneles SSH · seguridad inalámbrica (WiFi) · manejo de proxies y sesiones autenticadas                                    |
 | **Áreas**                  | Ingeniería inversa y análisis de protocolos · automatización e integración de sistemas · desarrollo de escritorio (WPF / .NET) · desarrollo Android (Kotlin, Jetpack Compose) · desarrollo web full stack |
 

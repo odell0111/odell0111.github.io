@@ -81,7 +81,7 @@ Unattended automation of workflows at scale: authenticated session management, r
 | **Languages**              | Python, C#, C++, C, Kotlin, JavaScript, Java                                                                                                                                                   |
 | **Frameworks & libraries** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest                    |
 | **Databases**              | PostgreSQL, SQL                                                                                                                                                                                |
-| **Tools**                  | Git (advanced), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh                                                                                                |
+| **Tools**                  | Git (advanced), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh, IDA Pro, x64dbg                                                                               |
 | **Security**               | Network and protocol analysis · TLS/HTTPS and certificate chains · SSH keys and tunnelling · wireless (WiFi) security · proxy handling and authenticated sessions                              |
 | **Areas**                  | Reverse engineering and protocol analysis · automation and systems integration · desktop development (WPF / .NET) · Android development (Kotlin, Jetpack Compose) · full-stack web development |
 
