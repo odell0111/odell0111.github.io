@@ -101,8 +101,10 @@
      picture of the page as it is now, so the page has to stay as it is until
      that picture has been taken.
 
-     "shatter", "fall", or "" for no turn at all. */
-	var PAGE_TURN = "fall";
+     "shatter", "fall" or "bloom" for one of the three effects, and "" for no
+     turn at all — which is a value the site supports rather than a way of
+     spelling "off", so it is named here even though nothing ships with it. */
+	var PAGE_TURN = "bloom";
 
 	/* Which turn runs, in order of authority: ?turn= for this session, then the
      dev panel's stored choice, then the constant above.
