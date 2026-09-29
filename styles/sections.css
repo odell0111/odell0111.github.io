@@ -331,24 +331,26 @@
 }
 
 /* The ellipsis that closes the tools list, and the only item up there that is
-   a figure of speech rather than a name. It keeps a tag's box — which is what
-   holds a tag's place in the run and keeps it clear of x64dbg, instead of
-   crowding the last pill with nothing but the row's gap between them — but the
-   box draws nothing. A pill around three dots reads as a tag whose name is
-   "...", which is worse than either.
+   a figure of speech rather than a name. It keeps a tag's box — a tag's type
+   size, its radius, its border width — but the box draws nothing. A pill
+   around three dots reads as a tag whose name is "...", which is worse than
+   either.
 
-   Everything not listed here is the tag's own: the type size, the radius, the
-   border width. Only what differs is written.
+   The padding is the one thing a tag has that the dots must not: a tag's
+   0.66rem of it either side is what makes a pill read as a pill, and on a box
+   that draws nothing it just holds the dots off x64dbg. With the padding gone
+   the row's own gap is all that separates them, which is exactly what
+   separates any two tags — so the dots sit beside the last tag the way the
+   next tag would.
 
    The dots rest on the floor of the box rather than floating in the middle of
    it. Level with the tags' text they read as one more item; set down on the
    line the row stands on, they read as the list trailing off — which is what
-   they are for. The horizontal padding is a tag's and the vertical padding is
-   not: a tag's 0.34rem of it would lift the dots back up into the text. */
+   they are for. */
 .tag-more {
   display: flex;
   align-items: flex-end;
-  padding: 0 0.66rem;
+  padding: 0;
   color: var(--faint);
   background: none;
   border-color: transparent;
@@ -640,6 +642,21 @@
   gap: 0.6rem;
   padding-top: 1.15rem;
   border-top: 1px solid var(--border);
+}
+
+/* The two CV buttons, held in a box of their own so the row above wraps them
+   as one thing. Left as two bare items, the row broke wherever it ran out of
+   width — which put one button beside the label and dropped the other to the
+   line below, the two halves of one choice landing in different places.
+
+   As a single item the pair either fits beside the label or moves under it
+   whole. The pair can still break between its own two buttons, but only once
+   it is already on a line of its own and still too wide for it — a width no
+   phone on the site reaches. */
+.contact-doc-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
 }
 
 /* The copy button swaps icon and label together once the address is on the
