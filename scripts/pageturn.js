@@ -285,6 +285,38 @@
        theme toggle, and the stylesheet has to know which is which.
        ==================================================================== */
 
+		/* The box a view transition draws into.
+
+       Not window.innerWidth/innerHeight, which is the trap this exists to
+       avoid. Those report the *dynamic* viewport — on a phone, the height left
+       once the URL bar has taken its share — while the snapshot the browser
+       takes is sized to the LARGE viewport, the one that bar leaves behind
+       when it retracts. Measured on a Redmi 9A, 360 wide: innerHeight said
+       668, the snapshot came out 724.5, so every radius and every drop
+       distance was worked out for a box 56px shorter than the one it had to
+       fill. The bloom's circle stopped 56px above the bottom edge and left
+       both bottom corners in the old theme, which is what a hole in the
+       corners is.
+
+       100lvh/100lvw are exactly that large viewport, so the browser is asked
+       for it rather than it being estimated from screen size — an estimate
+       would be wrong on a desktop, where the window is not the screen and
+       there is no dynamic chrome at all, and this has to be a no-op there.
+       A browser without those units drops the declarations, the probe
+       measures nothing, and the numbers that at least exist are used
+       instead. */
+		function turnBox() {
+			var d = document.createElement("div");
+			d.style.cssText = "position:fixed;top:0;left:0;visibility:hidden;" +
+				"pointer-events:none;width:100lvw;height:100lvh";
+			document.body.appendChild(d);
+			var r = d.getBoundingClientRect();
+			document.body.removeChild(d);
+
+			if (r.width > 0 && r.height > 0) return { w: r.width, h: r.height };
+			return { w: window.innerWidth, h: window.innerHeight };
+		}
+
 		/* Where a button is, in viewport pixels, so an effect can be pinned to
        one. Both effects that hand the page to the browser hang off a button —
        the sheet off the language toggle, the circle off the theme toggle —
@@ -292,7 +324,9 @@
 
        Viewport pixels rather than page pixels because both effects are drawn
        on ::view-transition pseudo-elements, and those cover the viewport with
-       their corner on its corner. A rect is already in that space. */
+       their corner on its corner. A rect is already in that space — the
+       visual viewport's corner and the large viewport's coincide, which is
+       what lets a measured rect be used against turnBox()'s height. */
 		function pinTo(id) {
 			var el = document.getElementById(id);
 			var r = el ? el.getBoundingClientRect() : null;
@@ -340,8 +374,9 @@
 			var a = (tilt + turn) * Math.PI / 180;
 			var sn = Math.sin(a);
 			var cs = Math.cos(a);
-			var W = window.innerWidth;
-			var H = window.innerHeight;
+			var box = turnBox();
+			var W = box.w;
+			var H = box.h;
 			var top = Infinity;
 			var i, j;
 			for (i = 0; i < 2; i++) {
@@ -373,8 +408,9 @@
        larger x offset and the larger y offset taken together. */
 		function pinCircle() {
 			var p = pinTo("themeToggle");
-			var W = window.innerWidth;
-			var H = window.innerHeight;
+			var box = turnBox();
+			var W = box.w;
+			var H = box.h;
 			var dx = Math.max(p.x, W - p.x);
 			var dy = Math.max(p.y, H - p.y);
 
@@ -467,8 +503,14 @@
 		function shatter(next, apply) {
 			busy = true;
 
-			var W = window.innerWidth;
-			var H = window.innerHeight;
+			/* turnBox() for the same reason the two pins use it: the crack,
+         the shards and the snapshot all cover the viewport, and on a phone
+         the viewport they cover is the large one rather than the one
+         window.innerHeight describes. A canvas measured short here is a
+         strip along the bottom with no fracture drawn in it. */
+			var box = turnBox();
+			var W = box.w;
+			var H = box.h;
 			var impact = impactPoint(W, H);
 			var fx = fracture(impact.x, impact.y, W, H);
 
