@@ -977,7 +977,7 @@
 				);
 				blank();
 				line(t("Platforms", "Plataformas"), "t-ok");
-				line("  .NET 6 / WPF · MVVM · Unity · Android · Jetpack Compose");
+				line("  .NET 6 / WPF / WinUI 3 · MVVM · Unity · Android · Jetpack Compose");
 				line("  Docker · Docker Compose · Git · GitHub · Linux · PostgreSQL");
 				line("  Flask · FastAPI · Django · SQLAlchemy · REST APIs · Quart");
 				line("  patchright · Playwright · Selenium · Scrapy · requests");
