@@ -30,14 +30,56 @@
   gap: 1rem;
 }
 
+/* The copy takes the free space on its line rather than sitting at its own
+   content width. On a wide footer that changes nothing visible — the copy's
+   text is left-aligned inside whatever box it gets, and the extra width it
+   swallowed is width the icons were already not using. */
 .footer-copy {
+  flex: 1 1 auto;
   font-size: 0.85rem;
   color: var(--faint);
 }
 
+/* An auto margin absorbs the free space on its own flex line. Where the copy
+   shares that line there is none left to absorb — flex-grow has taken it —
+   so on a wide footer this does nothing and the icons stay flush right. It is
+   the fallback for the row wrapping on its own above the breakpoint below,
+   which the Spanish copy is the likelier of the two to do, its string being
+   the longer. See the block that follows for the case that actually ships. */
 .footer-links {
   display: flex;
   gap: 0.4rem;
+  margin-inline: auto;
+}
+
+/* On a phone the footer stops being a row. The two are stacked and centred
+   together, because a row that has run out of width leaves the copy hard
+   against the left edge and the icons against the right, and the pair read as
+   two unrelated things rather than as one footer.
+
+   Neither child needs a width. align-items takes them off stretch, so each
+   is sized by its content and centred on the cross axis — the icons by the
+   auto margin above, which overrides align-items with the same answer. The
+   copy is given text-align of its own on top of that, because at these
+   widths "© 2026 Odell. Todos los derechos reservados." runs to two lines:
+   the box is then only as wide as its longest line, and without this the
+   shorter one sits against the left edge of it.
+
+   1.5rem between them against the row's 1rem — the stack has no column of
+   text beside it to hold the two together, so the space has to do that work
+   itself. It is set close to the footer's own padding-block (1.6rem) so the
+   gap reads as part of the band's rhythm rather than as a stray hole.
+
+   599px because that is already this site's definition of a phone: the
+   three other places that ask "is this a phone" ask it at exactly this
+   width, and a fourth number here would be one more to keep in step. */
+@media (max-width: 599px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1.5rem;
+  }
 }
 
 .footer-links a {
