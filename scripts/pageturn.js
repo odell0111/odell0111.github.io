@@ -35,10 +35,11 @@
    all. A mode that silently does nothing is worse than one that visibly
    degrades, which is the rule this file has always followed.
 
-   The shatter also has a voice, and it is the one thing in here that a
-   visitor is not given. It is off unless someone has been to /dev and asked
-   for it, and neither take is even fetched until sfxOn() has said yes — see
-   THE SOUND. SFX at the top of the file is the one-word version.
+   The shatter also has a voice: two takes, one under the break and one under
+   the fall. It ships ON and /dev is where it gets turned off, which makes the
+   gate the bandwidth decision as well as the behaviour one — neither file is
+   requested until sfxOn() has said yes. See THE SOUND; SFX at the top of the
+   file is the one-word version of the default.
 
    Publishes exactly one global, window.PAGETURN, and reads nothing from
    main.js except the callback it is handed. A guard on the call site means
@@ -160,19 +161,19 @@
        screen to look at. */
 		var SHATTER_TAIL_MS = 60;
 
-		/* The sound, and it ships off.
+		/* Whether a shatter has a voice, and it ships on.
 
-       The same shape and the same reasoning as scramble.js's ENABLED: a
-       source-level switch that can only ever force the effect ON, never off.
-       Set this true and every shatter has its voice, for every visitor, with
-       no key and no /dev; leave it false and the sound exists only for
-       someone who has been to /dev and asked for it. There is no value of
-       this that takes the sound away from a visitor who wants it.
+       The source-level answer, in the sense main.js's LANG_FADE is one: this
+       is what a visitor gets, and a stored key overrides it only while html
+       carries .is-dev. Set it false and the sound is gone for everyone who
+       has not been to /dev to ask for it back; leave it true and /dev is
+       where it gets turned off, to hear the effect without it.
 
-       It is also the whole budget. sfxOn() is the single gate, both takes are
-       fetched only once it has said yes, and a visitor who never visits /dev
-       downloads none of it. */
-		var SFX = false;
+       It is also the whole budget. sfxOn() is the single gate — the idle
+       warm, the fetch, the decode and the AudioContext are all behind it —
+       so this one word is what decides whether the site's visitors spend
+       126KB on two mp3s. */
+		var SFX = true;
 
 		/* ====================================================================
        STATE
@@ -835,13 +836,25 @@
 
 		/* Whether the shatter plays its takes. Asked at the moment the shatter
        starts rather than resolved once at load — a reader and not a value,
-       the same shape as scramble.js's churnOn(). The stored key is honoured
-       only while html carries .is-dev, so one left behind by a session that
-       ended reaches nobody. */
+       the way scramble.js's churnOn() and main.js's fadeOn() both are.
+
+       The shape is fadeOn()'s and not churnOn()'s, and the two differ because
+       the churn ships off while the fade ships on. A switch that ships off
+       has to be one-way — forcing the effect on for everyone the moment the
+       source says so, or there is no /dev visit that could ever reach it.
+       This one ships on, so the stored key is the override in the other
+       direction: "off" is the only value with a meaning, and anything else
+       stored — a key from an older build, something typed into a console —
+       leaves the sound on rather than turning it off by accident.
+
+       The key is honoured only while html carries .is-dev, so one left behind
+       by a session that ended reaches nobody. */
 		function sfxOn() {
-			if (SFX) return true;
-			if (!root.classList.contains("is-dev")) return false;
-			return store("sfx") === "on";
+			var saved;
+
+			if (!root.classList.contains("is-dev")) return SFX;
+			saved = store("sfx");
+			return saved === null ? SFX : saved !== "off";
 		}
 
 		function context() {
@@ -856,14 +869,16 @@
 			return actx;
 		}
 
-		/* Both takes, fetched and decoded once.
+		/* Both takes, fetched and decoded once, at idle.
 
-       Only ever reached for a page that has already asked for the sound, so a
-       visitor who has not been to /dev downloads nothing. The dev panel calls
-       this again the moment the switch goes on, which is the case idle cannot
-       cover: the visitor who has just turned it on is the one about to click,
-       and waiting for the next idle would make their first shatter the silent
-       one. */
+       Only ever reached while sfxOn() says yes, which is what keeps the two
+       files off the wire for a visitor who has turned the sound off: nothing
+       below runs and neither URL is ever requested.
+
+       The dev panel calls this again the moment the switch goes on. That is
+       the one case idle cannot cover, the visitor who has just turned it on
+       being the visitor about to click, and waiting for the next idle would
+       make their first shatter the silent one. */
 		function warmSfx() {
 			var ctx = context();
 			if (!ctx || warming || (takes[0] && takes[1]) || !window.fetch) return;
@@ -1916,9 +1931,9 @@
 			setTimeout(warmFonts, 1500);
 		}
 
-		/* And the takes, but only for a page that has already asked for them.
-       sfxOn() is the whole gate: a visitor who has never been to /dev reaches
-       neither the fetch nor the decode, and downloads neither file. */
+		/* And the takes, for a page whose sound is on. sfxOn() is the whole
+       gate: with it off there is no fetch, no decode and no AudioContext, and
+       neither file is ever asked for. */
 		if (sfxOn()) {
 			if (window.requestIdleCallback) {
 				window.requestIdleCallback(warmSfx);
