@@ -119,8 +119,26 @@
 
 		/* How long the capture gets before the turn gives up on it and falls
        instead. It has to cover the synchronous clone and serialise plus the
-       asynchronous decode. */
-		var CAPTURE_TIMEOUT_MS = 1500;
+       asynchronous decode.
+
+       It was 1500, and that answered the wrong question. "How long does the
+       capture need" is not "how long is the wait worth", and by the time this
+       clock is running the crack and the veil are already on screen: the
+       visitor is looking at a broken pane, not at a page where nothing has
+       happened yet. Waiting on that costs almost nothing. Losing the race
+       costs the effect — clear() sweeps the crack away and the turn replays
+       as a fall, so the one thing a shatter is seen to do is become a
+       different effect halfway through, which is exactly what being on the
+       wrong mode looks like.
+
+       The capture is the expensive half of this file: it walks every element
+       in the document for its computed style, serialises the clone to an SVG
+       and rasterises that at up to 2x, and on a phone it lands near the old
+       figure with nothing else running. A refused decode is not what this
+       timer catches — that calls back and downgrades at once. What is left is
+       a capture that never returns at all, which is rare enough to be worth
+       seconds of a wait that is not empty. */
+		var CAPTURE_TIMEOUT_MS = 4000;
 
 		/* Extra wait beyond an effect's own duration before the overlay is
        cleared, in case the animation's end event never arrives. */
