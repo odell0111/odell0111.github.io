@@ -52,10 +52,26 @@
   margin-inline: auto;
 }
 
-/* On a phone the footer stops being a row. The two are stacked and centred
-   together, because a row that has run out of width leaves the copy hard
-   against the left edge and the icons against the right, and the pair read as
-   two unrelated things rather than as one footer.
+/* On a phone the footer stops being a row, and centres.
+
+   Centring is not the mobile-footer convention being applied for its own
+   sake — the rest of this page stacks left at this width and stretches its
+   items to fill the band. The icons are the one thing here that cannot
+   stretch: five 40px buttons and the four 0.4rem gaps between them come to
+   226px whatever the viewport does. A 360px phone leaves a 312px band,
+   --gutter being 1.5rem a side, so a left edge stops 86px short of the
+   right one. Centred, that slack splits into 43 a side and the row reads as
+   placed rather than as run out of room. The hero's buttons do not have this
+   problem, which is why they stretch and these do not.
+
+   The icons lead and the copyright falls under them, which is the reverse of
+   the desktop row. That is deliberate and it is the one thing the two
+   layouts disagree about: the buttons are what the footer is for, and a
+   copyright line is fine print, which belongs under the thing it qualifies.
+   Achieved with order rather than by moving the markup, so the document
+   still reads copy-then-links to anything that is not looking at the screen.
+   The two are independent — neither is a step in the other — so the visual
+   order differing from the DOM order costs nothing here.
 
    Neither child needs a width. align-items takes them off stretch, so each
    is sized by its content and centred on the cross axis — the icons by the
@@ -65,10 +81,11 @@
    the box is then only as wide as its longest line, and without this the
    shorter one sits against the left edge of it.
 
-   1.5rem between them against the row's 1rem — the stack has no column of
-   text beside it to hold the two together, so the space has to do that work
-   itself. It is set close to the footer's own padding-block (1.6rem) so the
-   gap reads as part of the band's rhythm rather than as a stray hole.
+   The band gets taller — 2rem against 1.6rem — because the stack has no
+   column of text beside it to hold it together, so the space around it has
+   to. The 1rem between the two is the row's own gap, untouched: at this
+   width that space is doing a different job than it was in the row, and it
+   is the one number here worth adjusting by eye.
 
    599px because that is already this site's definition of a phone: the
    three other places that ask "is this a phone" ask it at exactly this
@@ -78,7 +95,14 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 1.5rem;
+  }
+
+  .footer-links {
+    order: -1;
+  }
+
+  .site-footer {
+    padding-block: 2rem;
   }
 }
 
