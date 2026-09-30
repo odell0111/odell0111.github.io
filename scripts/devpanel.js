@@ -1,16 +1,18 @@
 /* ==========================================================================
    Odell — the dev panel
 
-   A gear in the navbar and a card under it, carrying the three settings this
+   A gear in the navbar and a card under it, carrying the four settings this
    site has that are otherwise only changeable by editing a file and
-   reloading: which theme-switch transition runs, whether the language switch
-   churns its copy, and whether it fades at all.
+   reloading: which theme-switch transition runs, whether the shatter plays
+   its sound, whether the language switch churns its copy, and whether it
+   fades at all.
 
    Reached by visiting /dev, which writes one key and sends the visitor back.
    Everything here is downstream of that key:
 
      dev    "1"                          absent: not in dev mode
      turn   "none" | "fall" | "shatter"  absent: PAGE_TURN
+     sfx    "on" | "off"                 absent: pageturn.js's own
      churn  "on" | "off"                 absent: scramble.js's own
      fade   "on" | "off"                 absent: LANG_FADE
 
@@ -24,13 +26,20 @@
    Every one of those keys is read only while html carries .is-dev. A key left
    behind by a session that ended cannot reach a visitor's page.
 
-   Nothing here is the truth about anything. The card writes keys; the three
+   Nothing here is the truth about anything. The card writes keys; the four
    consumers read their own key at the moment they need it. That is why there
    is no setter to call and nothing to keep in sync — and why the card paints
    itself from the page's own readers rather than from the keys it wrote,
    since ?turn= can beat a stored mode and scramble.js can be shipped with its
    churn on whatever is stored. A card that rendered its own belief would be
    able to disagree with the page it is describing.
+
+   The sound is the one control whose reader is also given work to do. Every
+   other consumer can wait until the moment it needs its key; pageturn.js
+   cannot, because by the time it reads "on" it is already inside a click and
+   has no time left to fetch two files. So the panel calls its warm() — the
+   only call in this file that does anything other than write a key, and it
+   is still the consumer's own function, called on the consumer's own terms.
 
    Sets no global: it has no consumer. The card is its whole interface.
 
@@ -67,6 +76,13 @@
      here a second time. It is what the markup is checked against below. */
 	var MODES = (window.PAGETURN && window.PAGETURN.modes) || [];
 
+	/* The sound's half of pageturn.js, or undefined if that file is not there.
+     Not part of the guard above, deliberately: the turn modes already degrade
+     to an empty list and a card full of disabled buttons, and churn and fade
+     would still work. Only the sound has nothing to say without it, so only
+     the sound goes down with it — see the switch below. */
+	var SFX = window.PAGETURN && window.PAGETURN.sfx;
+
 	/* The same read/write overload main.js carries. Duplicated rather than
      shared for the reason scramble.js duplicates its layout read: this file
      must keep working if that one is restructured, and a shared helper is
@@ -90,6 +106,7 @@
 	}
 
 	var turnButtons = card.querySelectorAll("[data-turn]");
+	var sfxSwitch = document.getElementById("devSfx");
 	var churnSwitch = document.getElementById("devChurn");
 	var fadeSwitch = document.getElementById("devFade");
 	var turnNote = document.getElementById("devTurnNote");
@@ -116,6 +133,12 @@
 			b = turnButtons[i];
 			b.setAttribute("aria-pressed", String(valueOf(b.getAttribute("data-turn")) === mode));
 		}
+
+		/* Painted only when there is a reader to paint from. The switch is
+       disabled in the same pass, so it can never be left live over a stale
+       answer — which is the one thing this file must not do. */
+		if (SFX) sfxSwitch.setAttribute("aria-pressed", String(SFX.on()));
+		sfxSwitch.disabled = !SFX;
 
 		var churn = SCRAMBLE.enabled();
 		var fade = API.fadeOn();
@@ -176,6 +199,23 @@
 			}
 			paint();
 		});
+	});
+
+	/* The sound. Flipped from the reader like the two below it, and then the
+     reader is asked to get ready — but off the reader's answer and not off
+     the click. The write fails silently in private mode, and warm() fetches:
+     warming on the strength of the click alone would have a switch that is
+     visibly still off downloading two files. Reading back is what keeps those
+     two from disagreeing.
+
+     Guarded on SFX as well, though the switch above is disabled without it.
+     Two locks on the same door, because the one thing this file cannot do is
+     act on a state it has no reader for. */
+	sfxSwitch.addEventListener("click", function () {
+		if (!SFX) return;
+		store("sfx", SFX.on() ? "off" : "on");
+		if (SFX.on()) SFX.warm();
+		paint();
 	});
 
 	/* Flipped from what the page reports rather than from a copy of it, so the

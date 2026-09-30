@@ -35,6 +35,11 @@
    all. A mode that silently does nothing is worse than one that visibly
    degrades, which is the rule this file has always followed.
 
+   The shatter also has a voice, and it is the one thing in here that a
+   visitor is not given. It is off unless someone has been to /dev and asked
+   for it, and neither take is even fetched until sfxOn() has said yes — see
+   THE SOUND. SFX at the top of the file is the one-word version.
+
    Publishes exactly one global, window.PAGETURN, and reads nothing from
    main.js except the callback it is handed. A guard on the call site means
    this file can 404 or die on parse without taking the theme switch with it.
@@ -155,6 +160,20 @@
        screen to look at. */
 		var SHATTER_TAIL_MS = 60;
 
+		/* The sound, and it ships off.
+
+       The same shape and the same reasoning as scramble.js's ENABLED: a
+       source-level switch that can only ever force the effect ON, never off.
+       Set this true and every shatter has its voice, for every visitor, with
+       no key and no /dev; leave it false and the sound exists only for
+       someone who has been to /dev and asked for it. There is no value of
+       this that takes the sound away from a visitor who wants it.
+
+       It is also the whole budget. sfxOn() is the single gate, both takes are
+       fetched only once it has said yes, and a visitor who never visits /dev
+       downloads none of it. */
+		var SFX = false;
+
 		/* ====================================================================
        STATE
        ==================================================================== */
@@ -239,12 +258,25 @@
        late relative to the pieces leaving. */
 		var BREAK_SHARE = 0.4;
 
-		/* How long the whole shatter runs for, from the first piece letting go to
-       the last one clearing the bottom of the frame.
+		/* How long the break takes, from the first piece letting go to the last
+       one starting to fall.
 
        The last piece is the one with the longest delay, so LAG_MAX opens it;
-       then the break, which is over at BREAK_SHARE of --pt-shatter; then
-       --pt-gap; then the fall, which is --pt-drop-ms long.
+       then the break itself, which is over at BREAK_SHARE of --pt-shatter;
+       then --pt-gap.
+
+       It has a function of its own because two things are measured off it and
+       neither of them is the whole effect: the overlay comes off a fall later
+       than this, and the sound changes over on exactly this. */
+		function breakMs() {
+			return LAG_MAX
+				+ durationMs("--pt-shatter", 1000) * BREAK_SHARE
+				+ durationMs("--pt-gap", 10);
+		}
+
+		/* How long the whole shatter runs for, from the first piece letting go to
+       the last one clearing the bottom of the frame: the break above, then
+       the fall, which is --pt-drop-ms long.
 
        The fall used to be the rest of --pt-shatter, which is why this reads
        like one duration split in two. It is not any more, and it must not go
@@ -253,10 +285,7 @@
        matching the moment either moved. Everything here is read back off the
        page so retiming the effect in motion.css is all there is to it. */
 		function shatterMs() {
-			return LAG_MAX
-				+ durationMs("--pt-shatter", 1000) * BREAK_SHARE
-				+ durationMs("--pt-gap", 10)
-				+ durationMs("--pt-drop-ms", 300);
+			return breakMs() + durationMs("--pt-drop-ms", 300);
 		}
 
 		/* Run `fn` once the browser has actually painted. Two frames, not one:
@@ -635,6 +664,10 @@
 			flushLayout();
 			crack.classList.add("is-in");
 
+			/* The crack is the shatter's first frame, so its voice starts here
+         and not at the mount. See sfxBegin(). */
+			sfxBegin();
+
 			var settled = false;
 			var timer = null;
 
@@ -643,6 +676,9 @@
 				settled = true;
 				clearTimeout(timer);
 				clear();
+
+				/* A shatter that is not happening has no sound either. */
+				sfxCut();
 
 				/* The capture is the risky half — the browser can refuse to
            decode the SVG, or take longer over it than anyone will wait.
@@ -687,6 +723,13 @@
 						flushLayout();
 						crack.classList.remove("is-in");
 
+						/* After the recalculation above, because that is where the
+               pieces start moving and the sound changes over on the same
+               beat. Both takes are placed against the audio clock from in
+               there, so neither waits on the sixty-six elements that were
+               just mounted. */
+						sfxBreak();
+
 						/* Armed from here rather than from the click. The pieces are
                already in the document and their animation starts on the
                next style recalculation, which is before a frame is out, so
@@ -718,6 +761,260 @@
 					}, "image/png");
 				});
 			});
+		}
+
+		/* ====================================================================
+       THE SOUND
+
+       Two takes and a cut. glass-shattering plays under the break and
+       glass-shattered under the fall, and the handover between them is
+       scheduled at the mount against the same clock the first take started
+       on — so the two are locked to each other rather than to whatever the
+       main thread has got to by then.
+
+       Web Audio rather than an <audio> element, and the cut is the whole
+       reason. The first take plays across the capture, which is the busiest
+       the main thread ever gets in this file — a setTimeout asked to land on
+       the break lands late by however long the rasterise overran, and the cut
+       slides off the moment the pieces let go. ctx.currentTime is the audio
+       clock: a start placed against it happens on the audio thread whatever
+       the page is doing, which at the mount is mounting sixty-six pieces and
+       repainting the page.
+
+       Nothing here may break the effect. No AudioContext, a decode that
+       fails, a context that will not resume — each of them leaves the turn
+       running exactly as it would have with the sound switched off.
+       ==================================================================== */
+
+		/* The two takes, in the order they play. Relative, like every other
+       asset on this site. */
+		var SFX_TAKES = ["assets/glass-shattering.mp3", "assets/glass-shattered.mp3"];
+
+		/* The first take opens on 178ms of nothing — the encoder's rather than
+       the composer's: exact zero for the first 40 of them, the rest sitting
+       on a -96dB floor — and the strike is at 220. Playing from the top would
+       put the sound of the break a fifth of a second behind the picture of
+       it; skipping the pad lands the first transient inside the crack's own
+       90ms fade-in.
+
+       Measured off this file. It is a number to re-measure whenever the take
+       is replaced, and it is the one that has to go to zero the moment the
+       pad is trimmed out of the file — left at the old value on a trimmed
+       take, it would eat the strike instead of the silence. */
+		var SFX_LEAD = 0.178;
+
+		/* How long a take takes to get out of the way. Never zero: stopping is
+       a step in the waveform and a step is a click.
+
+       At the break the length is the point. The first take runs 3.1s and the
+       break lands somewhere in the middle of it, so the cut has to be a fade
+       or the loudest thing in the effect becomes the edit. */
+		var SFX_FADE = 0.2;
+
+		/* The same, for a take that is being abandoned rather than cut — a
+       second shatter arriving on top of the last one's tail. Short, because
+       the next sound is already starting underneath it. */
+		var SFX_CUT = 0.03;
+
+		var actx = null;
+		var takes = [null, null];
+		var warming = false;
+		var first = null;
+		var second = null;
+
+		/* The same read main.js, scramble.js and devpanel.js each carry,
+       duplicated for the reason they duplicate it: this is a separate request
+       and has to keep working if any of them is restructured. */
+		function store(key) {
+			try {
+				return localStorage.getItem(key);
+			} catch (e) {
+				return null;
+			}
+		}
+
+		/* Whether the shatter plays its takes. Asked at the moment the shatter
+       starts rather than resolved once at load — a reader and not a value,
+       the same shape as scramble.js's churnOn(). The stored key is honoured
+       only while html carries .is-dev, so one left behind by a session that
+       ended reaches nobody. */
+		function sfxOn() {
+			if (SFX) return true;
+			if (!root.classList.contains("is-dev")) return false;
+			return store("sfx") === "on";
+		}
+
+		function context() {
+			if (actx) return actx;
+			var C = window.AudioContext || window.webkitAudioContext;
+			if (!C) return null;
+			try {
+				actx = new C();
+			} catch (e) {
+				actx = null;
+			}
+			return actx;
+		}
+
+		/* Both takes, fetched and decoded once.
+
+       Only ever reached for a page that has already asked for the sound, so a
+       visitor who has not been to /dev downloads nothing. The dev panel calls
+       this again the moment the switch goes on, which is the case idle cannot
+       cover: the visitor who has just turned it on is the one about to click,
+       and waiting for the next idle would make their first shatter the silent
+       one. */
+		function warmSfx() {
+			var ctx = context();
+			if (!ctx || warming || (takes[0] && takes[1]) || !window.fetch) return;
+			warming = true;
+
+			each(SFX_TAKES, function (url, i) {
+				window
+					.fetch(url)
+					.then(function (res) {
+						return res.arrayBuffer();
+					})
+					.then(function (buf) {
+						/* The callback form, which is the one every browser that
+               has decodeAudioData at all agrees on. A take that will not
+               decode stays null and the shatter goes on without it. */
+						ctx.decodeAudioData(
+							buf,
+							function (decoded) {
+								takes[i] = decoded;
+							},
+							function () {}
+						);
+					})
+					.catch(function () {
+						/* No file, or no network. The same as undecodable. */
+					});
+			});
+		}
+
+		/* One take, placed on the audio clock at `at`, read from `offset`
+       seconds into itself. */
+		function voice(ctx, i, at, offset) {
+			var src = ctx.createBufferSource();
+			var vol = ctx.createGain();
+			src.buffer = takes[i];
+			src.connect(vol);
+			vol.connect(ctx.destination);
+			src.start(at, offset);
+			return { src: src, vol: vol };
+		}
+
+		/* A voice taken off, arriving at silence exactly at `at` and holding
+       full until SFX_FADE before it.
+
+       The hold is as much of this as the ramp is. A ramp scheduled from here
+       would begin the moment this is called, which at the break would be half
+       a second of the take quietly disappearing under the throw instead of
+       getting out of the way at the end of it. */
+		function fadeOut(v, at) {
+			var t = actx.currentTime;
+			var from = Math.max(t, at - SFX_FADE);
+			var level = v.vol.gain.value;
+
+			try {
+				v.vol.gain.cancelScheduledValues(t);
+				v.vol.gain.setValueAtTime(level, t);
+				v.vol.gain.setValueAtTime(level, from);
+				v.vol.gain.linearRampToValueAtTime(0, at);
+				v.src.stop(at);
+			} catch (e) {}
+		}
+
+		/* Every voice off, reaching silence at `at`. With no context to ramp
+       against there is nothing to fade, and stopping where they stand is the
+       only thing left. */
+		function sfxOff(at) {
+			var live = [first, second];
+			first = null;
+			second = null;
+
+			each(live, function (v) {
+				if (!v) return;
+				if (at === null || !actx || actx.state !== "running") {
+					try {
+						v.src.stop();
+					} catch (e) {}
+					return;
+				}
+				fadeOut(v, at);
+			});
+		}
+
+		/* Off now, over the short fade. */
+		function sfxCut() {
+			sfxOff(actx && actx.state === "running" ? actx.currentTime + SFX_CUT : null);
+		}
+
+		/* The strike, from the click.
+
+       From the click rather than from the mount, and that is the judgment
+       call in here. On a phone the capture runs over a second and every frame
+       of it is a visibly broken pane, so a crack that arrives silently and
+       only makes a noise once the pieces move would be voicing the effect's
+       second beat and skipping its first. */
+		function sfxBegin() {
+			var ctx;
+			var p;
+
+			/* Not sfxOn() alone: without the first take there is nothing to
+         start, and a context created here would be one built for nothing. */
+			if (!sfxOn() || !takes[0]) return;
+			ctx = context();
+			if (!ctx) return;
+
+			/* A context born before the page had a gesture starts suspended, and
+         this click is that gesture. Nothing waits on the promise — there is
+         nothing useful to do if it is refused. */
+			if (ctx.state === "suspended" && ctx.resume) {
+				try {
+					p = ctx.resume();
+					if (p && p.catch) p.catch(function () {});
+				} catch (e) {}
+			}
+
+			/* A shatter can begin on the tail of the last one, and two breaks
+         over each other is not what any of this is for. */
+			sfxCut();
+
+			try {
+				first = voice(ctx, 0, ctx.currentTime, SFX_LEAD);
+			} catch (e) {
+				first = null;
+			}
+		}
+
+		/* The break: the first take gets out of the way and the second one
+       starts, both at the moment the pieces let go.
+
+       The second is not cut at all. It runs its 1.1s out, past the point the
+       overlay comes off, which is the point of it: the pieces are still
+       falling when the page is already back. */
+		function sfxBreak() {
+			var ctx;
+			var at;
+
+			/* Nothing to change over. A first take that is not playing means the
+         sound is off, or it is on and the take did not load, and either way
+         this turn is silent — but the test is here rather than at the top of
+         the file for a second reason: context() is what creates the context,
+         and a turn with the sound off must not leave one behind on every
+         visitor's machine. */
+			if (!first) return;
+
+			ctx = context();
+			if (!ctx) return;
+			at = ctx.currentTime + breakMs() / 1000;
+
+			try {
+				sfxOff(at);
+				if (takes[1]) second = voice(ctx, 1, at, 0);
+			} catch (e) {}
 		}
 
 		/* ====================================================================
@@ -1619,12 +1916,33 @@
 			setTimeout(warmFonts, 1500);
 		}
 
+		/* And the takes, but only for a page that has already asked for them.
+       sfxOn() is the whole gate: a visitor who has never been to /dev reaches
+       neither the fetch nor the decode, and downloads neither file. */
+		if (sfxOn()) {
+			if (window.requestIdleCallback) {
+				window.requestIdleCallback(warmSfx);
+			} else {
+				setTimeout(warmSfx, 1500);
+			}
+		}
+
 		return {
 			play: play,
 			/* For the dev panel and for tests, so a mode can be named without
          main.js having to know the list. */
 			modes: ["", "fall", "shatter", "bloom"],
-			warm: warmFonts
+			warm: warmFonts,
+			/* The dev panel's half of the sound: a reader and a "get ready",
+         never a setter. The panel writes the key and this file reads it at
+         the moment of the shatter; warm() is published because of the one
+         case idle cannot cover — the visitor who has just switched the sound
+         on is the one about to click, and their first shatter should not be
+         the silent one. */
+			sfx: {
+				on: sfxOn,
+				warm: warmSfx
+			}
 		};
 	})();
 
