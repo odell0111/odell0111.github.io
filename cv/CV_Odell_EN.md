@@ -34,11 +34,11 @@ Desktop and mobile application that keeps accounts and passwords in one place.
 
 ### Custom GUI SFX — self-extracting archive builder for Windows
 
-_C# / .NET 6 / WPF / WinUI 3 · 2023–2025_
+_C# / .NET 6 / WPF · 2023–2025_
 
 Desktop tool that packages an archive, custom info, links and images into a single self-extracting `.exe` that runs on a machine with no unzip utility installed.
 
-- **MVVM** architecture over .NET 6, WPF and WinUI 3.
+- **MVVM** architecture over .NET 6 and WPF.
 - The finished executable has to stay under 4 GB. The limit is in the Win64 format itself: the in-memory image is capped at 2 GB because AMD64 relative addressing keeps its offsets in a dword, and everything merged onto the binary pushes the file toward that ceiling. The constraint applies to the output binary, not the archive going in.
 - **334 downloads** of the published builds (GitHub, September 2026).
 

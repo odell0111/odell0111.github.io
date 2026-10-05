@@ -34,11 +34,11 @@ Aplicación de escritorio y móvil para reunir cuentas y contraseñas en un solo
 
 ### Custom GUI SFX — empaquetador autoextraíble para Windows
 
-_C# / .NET 6 / WPF / WinUI 3 · 2023–2025_
+_C# / .NET 6 / WPF · 2023–2025_
 
 Herramienta de escritorio que empaqueta un archivo comprimido, información personalizada, enlaces e imágenes en un único `.exe` autoextraíble, capaz de ejecutarse en una máquina que no tiene ningún descompresor instalado.
 
-- Arquitectura **MVVM** sobre .NET 6, WPF y WinUI 3.
+- Arquitectura **MVVM** sobre .NET 6 y WPF.
 - El ejecutable final tiene que quedarse por debajo de 4 GB. El límite está en el propio formato Win64: la imagen en memoria está topada en 2 GB porque el direccionamiento relativo de AMD64 guarda sus desplazamientos en un dword, y todo lo que se fusiona sobre el binario acerca el archivo a ese techo. La restricción aplica al binario de salida, no al archivo que se introduce.
 - **334 descargas** de las versiones publicadas (GitHub, septiembre de 2026).
 
