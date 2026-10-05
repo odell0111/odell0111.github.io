@@ -15,6 +15,7 @@ No caching, so an edit plus a reload shows the edit.
 
 import functools
 import http.server
+import socket
 import socketserver
 import sys
 import webbrowser
@@ -43,14 +44,41 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     # seeking to.
     super().end_headers()
 
-  def log_message(self, fmt, *args):
+  # log_request and log_error are overridden rather than log_message, which is
+  # the single funnel the two of them share. That funnel sees two shapes with
+  # nothing in common -- a request line as (requestline, code, size), and an
+  # error as (code, message) -- and reading one as the other is what broke
+  # here. A 404 for /favicon.ico put an HTTPStatus where the request line was
+  # expected, and socketserver reported the AttributeError that followed as an
+  # exception during request processing. The 404 was correct. The logger was
+  # not, and the traceback pointed at the wrong one of the two.
+
+  def log_request(self, code="-", size="-"):
     # One line per asset, and the page has eighteen of them, which buries the
-    # one line worth reading. 200s and 304s are expected and stay quiet;
-    # everything else is printed. A 206 would be one of those - nothing here
-    # advertises byte ranges, so a partial response would mean something
-    # unexpected is asking for one.
-    if args and str(args[1]) not in ("200", "304"):
-      sys.stderr.write("  %s %s\n" % (args[1], args[0].split()[1]))
+    # one line worth reading. Successes stay quiet; anything else gets a line.
+    # A 206 would land here too: nothing here advertises byte ranges, so a
+    # partial response would mean something unexpected is asking for one.
+    if isinstance(code, http.HTTPStatus):
+      code = code.value
+    if str(code) in ("200", "304"):
+      return
+    sys.stderr.write("  %s %s\n" % (code, self.requestline))
+
+  def log_error(self, fmt, *args):
+    # One line, never a traceback. Most often this is /favicon.ico, which
+    # browsers ask for unprompted and which this repo has no copy of at its
+    # root -- expected, and worth one line rather than a page.
+    #
+    # The formatting is guarded rather than trusted to match, because an
+    # exception raised in here is reported as a failure of the request instead
+    # of a failure of the logging. That is the exact confusion that made the
+    # bug above take a stack trace to find, and it should not be possible to
+    # recreate it from inside the error path.
+    try:
+      line = fmt % args
+    except (TypeError, ValueError):
+      line = " ".join(str(a) for a in (fmt,) + args)
+    sys.stderr.write("  " + line + "\n")
 
   def guess_type(self, path):
     # Nothing here uses either format yet - the images are PNG and SVG, and
@@ -66,13 +94,39 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 
 class Server(socketserver.ThreadingTCPServer):
+  # Kept for TIME_WAIT, when a just-stopped server's port is still closing and
+  # a restart would otherwise be refused. It is not what guards against a
+  # second live server -- on Windows SO_REUSEADDR permits that bind, which is
+  # exactly why main() asks the port a question instead.
   allow_reuse_address = True
   daemon_threads = True
+
+
+def in_use(port):
+  # A connect test, not a bind test. Binding proves nothing here: on Windows
+  # SO_REUSEADDR lets a second server bind a port that is already being
+  # listened on, so it starts, prints its banner, and then competes with the
+  # first one for connections. A restart can therefore look like it worked
+  # while the older process is still the one answering -- which is what
+  # happened while this was being tested, where a fix appeared to fail because
+  # the requests were reaching a server started before it. Connecting asks the
+  # only question worth asking.
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as probe:
+    probe.settimeout(0.4)
+    return probe.connect_ex(("127.0.0.1", port)) == 0
 
 
 def main():
   if not (ROOT / "index.html").exists():
     print("no index.html beside serve.py -- it has to sit in the site root")
+    return 1
+
+  if in_use(PORT):
+    print(f"port {PORT} is already answering something.")
+    print("  Most likely an older serve.py is still running, and it will keep")
+    print("  serving the code it started with -- so an edit here appears to do")
+    print("  nothing at all. Stop that one, or change PORT at the top of this")
+    print("  file.")
     return 1
 
   handler = functools.partial(Handler, directory=str(ROOT))
