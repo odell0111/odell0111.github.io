@@ -57,10 +57,10 @@
    Centring is not the mobile-footer convention being applied for its own
    sake — the rest of this page stacks left at this width and stretches its
    items to fill the band. The icons are the one thing here that cannot
-   stretch: five 40px buttons and the four 0.4rem gaps between them come to
-   226px whatever the viewport does. A 360px phone leaves a 312px band,
-   --gutter being 1.5rem a side, so a left edge stops 86px short of the
-   right one. Centred, that slack splits into 43 a side and the row reads as
+   stretch: five 44px buttons and the four 0.4rem gaps between them come to
+   246px whatever the viewport does. A 360px phone leaves a 312px band,
+   --gutter being 1.5rem a side, so a left edge stops 66px short of the
+   right one. Centred, that slack splits into 33 a side and the row reads as
    placed rather than as run out of room. The hero's buttons do not have this
    problem, which is why they stretch and these do not.
 
@@ -106,13 +106,26 @@
   }
 }
 
+/* 44px, and the mark grows with it. .icon is sized in em, so raising only the
+   box would spend the extra on padding — 2px a side, and nothing a visitor
+   could see. The font-size is what actually reads as bigger: 1.1rem is the
+   same 10% the box took, which puts the icon at 20.24px against the 18.4px it
+   was, so the two keep their proportion. The radius keeps it too — 11px is
+   the same 25% of the side that 10px was at 40.
+
+   44 rather than the header's 38 because these five are aimed at with a thumb.
+   On a phone they are the whole of the footer above the copyright, and 44 is
+   the size a thumb wants where 24 is the floor this site holds itself to
+   everywhere else. The row still fits a 320px viewport, where its 246px
+   leaves 13px a side. */
 .footer-links a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+  border-radius: 11px;
   color: var(--muted);
   border: 1px solid transparent;
   transition: color 0.18s var(--ease), background 0.18s var(--ease), border-color 0.18s var(--ease);
