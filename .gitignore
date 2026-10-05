@@ -1,5 +1,15 @@
 # Everything in this folder is published. Nothing private goes here.
 
+# The one file here that is about the repo rather than part of the site. It is
+# written for whoever works on the code next, so it names the traps, the things
+# that have already gone wrong, and the material that has to stay off the page -
+# which makes it the single worst file to serve. It also has to be free to say
+# what is true rather than what is publishable, and those are different
+# documents. Listed first because it is the one most likely to be added by
+# accident: it sits at the root, git offers it on every `git add .`, and a
+# README is the file people assume a repo is supposed to have.
+README.md
+
 # markdown-pdf and its PhantomJS binary: ~32 MB, used only to rebuild the CV
 # PDFs locally. The PDFs themselves are committed, so the site never needs it.
 cv/node_modules/
