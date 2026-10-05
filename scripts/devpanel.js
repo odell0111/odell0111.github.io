@@ -105,6 +105,13 @@
 		} catch (e) {}
 	}
 
+	/* The same guarded call main.js makes into stats.js, and guarded for the
+     same reason: stats.js is the last script on the page and defines the
+     global it is called on, so a click that beat it there would throw. */
+	function report(name, value) {
+		if (window.STATS) window.STATS.pref(name, value);
+	}
+
 	var turnButtons = card.querySelectorAll("[data-turn]");
 	var sfxSwitch = document.getElementById("devSfx");
 	var churnSwitch = document.getElementById("devChurn");
@@ -181,6 +188,7 @@
 		b.disabled = MODES.indexOf(valueOf(b.getAttribute("data-turn"))) < 0;
 		b.addEventListener("click", function () {
 			store("turn", b.getAttribute("data-turn"));
+			report("turn", b.getAttribute("data-turn"));
 
 			/* A ?turn= in the address bar outranks the stored value, so a click
          that left it there would write a choice and then appear to ignore it.
@@ -213,15 +221,27 @@
      act on a state it has no reader for. */
 	sfxSwitch.addEventListener("click", function () {
 		if (!SFX) return;
-		store("sfx", SFX.on() ? "off" : "on");
-		if (SFX.on()) SFX.warm();
+
+		/* The new value is settled before it is written rather than read back
+       after. SFX.on() consults storage every time it is asked, so the second
+       call in the shape this used to have was already answering with the new
+       value — and a report written the same way would have named the setting
+       being replaced, not the one being chosen. `next` is the chosen value,
+       and warm() tests it directly rather than re-reading to reach the same
+       answer by a longer route. */
+		var next = SFX.on() ? "off" : "on";
+		store("sfx", next);
+		report("sfx", next);
+		if (next === "on") SFX.warm();
 		paint();
 	});
 
 	/* Flipped from what the page reports rather than from a copy of it, so the
      two switches need no state of their own. */
 	churnSwitch.addEventListener("click", function () {
-		store("churn", SCRAMBLE.enabled() ? "off" : "on");
+		var next = SCRAMBLE.enabled() ? "off" : "on";
+		store("churn", next);
+		report("churn", next);
 		paint();
 	});
 
@@ -230,7 +250,9 @@
      instead of silently clearing it — and nothing can act on it in the
      meantime, because the instant path never starts a churn. */
 	fadeSwitch.addEventListener("click", function () {
-		store("fade", API.fadeOn() ? "off" : "on");
+		var next = API.fadeOn() ? "off" : "on";
+		store("fade", next);
+		report("fade", next);
 		paint();
 	});
 

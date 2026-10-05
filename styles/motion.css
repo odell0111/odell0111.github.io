@@ -77,9 +77,14 @@
   .pt-shard,
   .pt-crack,
   .pt-glass,
-  .toast {
+  .toast,
+  #rate {
     display: none;
   }
+
+  /* #rate is the one id in that list rather than a class, because it is not
+     one element to hide but a whole section: five stars and a heading asking
+     to be rated are a dead control and a dead question on paper. */
 
   body {
     background: #fff;

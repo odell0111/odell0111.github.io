@@ -10,6 +10,10 @@
    The five content sections, in the order they appear on the page.
    This is the bulk of the stylesheet and the part that changes most
    often.
+
+   One dashed sub-block follows Contact: the rating section. It is not
+   a sixth section and is deliberately unnumbered, for the reason
+   footer.css gives.
    ========================================================================== */
 
 /* ==========================================================================
@@ -703,3 +707,151 @@
   display: inline;
 }
 
+/* ---- Rating -------------------------------------------------------------- */
+
+/* The last section in <main>, and it takes no number: 15 is FOOTER, and
+   footer.css records that renumbering is the hazard the dev entry was placed
+   to avoid. So this is a sub-block at the end rather than a section of its
+   own. */
+
+/* A section whose whole content is a heading, one line of reassurance and five
+   stars. Every other band on this page carries a grid of cards and earns the
+   full clamp for it; this one took the same padding and then stood in it,
+   which is what made the close of the page read as an empty room rather than
+   as a section. At the desktop end this is 56px a side against the standard
+   96px, which takes about 80px off a band holding roughly 150px of content.
+
+   It is also the one section on the page with no band of its own — no
+   .section-alt, so no --band wash and no border. The alternation earns its
+   keep where an alternate band meets a plain one; this one met the footer,
+   which is banded too, so the pattern bought nothing here and cost something:
+   --band is translucent, and drawn over a .backdrop whose orbs never stop
+   moving it read as a haze with two hard edges across it rather than as a
+   band. Plain, the section reads as the page continuing, which is what it
+   is. */
+#rate {
+  padding-block: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+/* A browser that has already rated is not asked twice. Hidden as the whole
+   section rather than as the stars alone, because a heading asking to be rated
+   with nothing under it is a dead question — the same thing, for the same
+   reason, as the print rule in motion.css.
+
+   `html.is-rated` rather than a class on the section: the class is set by the
+   inline script in the head, which has only the document element to work with
+   before the body exists, and it has to be set there or the section paints and
+   then disappears. Two selectors' worth of weight also puts it beyond anything
+   in this file that might later give #rate a display of its own. */
+html.is-rated #rate {
+  display: none;
+}
+
+/* The heading-to-body gap, cut for the same reason. The standard margin
+   separates a heading from a grid of cards; here the body is one row of
+   stars, and at the standard size the gap is wider than the row it
+   introduces. */
+#rate .section-head {
+  margin-bottom: clamp(1.1rem, 2.5vw, 1.5rem);
+}
+
+/* The five buttons and the gaps between them: 5 x 40px + 4 x 4px = 216px,
+   which fits the narrowest viewport the site serves with room to spare —
+   320px less the two 1.5rem gutters leaves 272px. So the row never has to
+   wrap, shrink or scroll on a phone. */
+.rate-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* 40px square: above .icon-btn's 38px, and well above the 24px minimum
+   target the dev switch names as the floor this site holds itself to
+   everywhere else. The star inside is 28px of it, so most of the button is
+   padding — which is the point, and is what makes five of them comfortable
+   in a row. */
+.rate-star {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  transition: color 0.15s var(--ease), background 0.15s var(--ease);
+}
+
+/* The only icon in the sprite that takes a fill, which is why these two rules
+   are here and not in base.css with the rest of .icon: every other symbol
+   carries fill="none" of its own, and a presentation attribute on the symbol
+   beats anything this stylesheet says, so a star so marked could never be
+   filled at all.
+
+   Measured against the page background, which is what this section stands on
+   now that its band has gone: --faint is 5.28:1 in light and 6.26:1 in dark,
+   and --accent is 6.01:1 and 9.62:1 once filled. WCAG 1.4.11 asks 3:1 of a
+   graphical object and both clear it. The state is not signalled by colour
+   alone either — the shape fills in, which is the half a colour-blind visitor
+   reads. */
+.rate-star .icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: none;
+  transition: fill 0.15s var(--ease);
+}
+
+.rate-star.is-on {
+  color: var(--accent);
+}
+
+.rate-star.is-on .icon {
+  fill: currentColor;
+}
+
+/* The hover preview has no rule here on purpose. stats.js fills the stars up
+   to the one under the pointer itself, because the preview has to stop at the
+   pointer — a fact about which star was entered, which no :hover can express
+   for the stars before it. A rule here would be fighting it, not helping. */
+
+/* The closing row, which held the answer on the left and the way into dev mode
+   on the right. The link lives above the footer again, so what is left is a
+   box with a gap above it. Kept as a row rather than folded into .rate-note
+   because it is the line the section closes on, and whatever joins that line
+   next should not have to move the margin to do it.
+
+   No flex here any more. space-between across a single child says nothing,
+   and the wrap existed for two things that no longer share the width. */
+.rate-foot {
+  margin-top: 0.9rem;
+}
+
+/* The answer, held open at one line so nothing below it moves when it
+   arrives. All three sentences are in the markup and the classes pick one,
+   the way the two languages do, so nothing here writes a word.
+
+   No margin of its own: the gap above it belongs to .rate-foot, which is the
+   only thing that row still does. */
+.rate-note {
+  min-height: 1.35rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.rate-said {
+  display: none;
+}
+
+/* :not(.is-again) rather than a fourth class, because "recorded" and "replaced
+   the last one" are the same outcome with different history — stats.js sets
+   is-again on a repeat, and exactly one of the two may show. The failed line
+   ignores the distinction: a rating that did not arrive did not replace
+   anything, whether or not an earlier one did. */
+.rate-note.is-done:not(.is-again) .rate-thanks,
+.rate-note.is-done.is-again .rate-again,
+.rate-note.is-failed .rate-failed {
+  display: inline;
+}

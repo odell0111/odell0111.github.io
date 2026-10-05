@@ -73,11 +73,13 @@
     <link rel="stylesheet" href="styles/motion.css">
 
     <!-- Runs before first paint: applies the saved theme, picks the starting
-     language, marks JS as available, and reveals the dev gear. All four jobs
-     have to happen here — any later and the wrong theme and the wrong language
-     each paint once before being corrected, and the gear lands in the navbar
-     after it has settled, which is a visible jump. .no-js stays until this
-     runs, so the content is visible when scripting is unavailable. -->
+     language, hides the rating for a browser that has already given one, marks
+     JS as available, and reveals the dev gear. All five jobs have to happen
+     here — any later and the wrong theme and the wrong language each paint once
+     before being corrected, a returning visitor watches the stars appear and
+     then vanish, and the gear lands in the navbar after it has settled, which
+     is a visible jump. .no-js stays until this runs, so the content is visible
+     when scripting is unavailable. -->
     <script>
 (function () {
   var root = document.documentElement;
@@ -119,6 +121,17 @@
   } else {
     /* Nothing saved — the system preference, via the stylesheet, decides. */
   }
+
+  /* Whether this browser has already rated the page, asked here for the reason
+     the theme is asked here: the section is going to be hidden, and a section
+     hidden from a deferred script is one the visitor watches disappear.
+
+     The key is written by stats.js, and only once the server has taken the
+     rating — so this hides the prompt for a vote that counted and never for
+     one that failed. A value outside 1–5 is not a rating this page wrote, and
+     is ignored rather than acted on. */
+  var rated = parseInt(get('rated'), 10);
+  if (rated >= 1 && rated <= 5) root.classList.add('is-rated');
 
   /* Language, in order of authority: a choice the visitor made here before,
      then what the browser says it prefers, then English.
@@ -417,6 +430,18 @@
         <path
           d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
         <circle cx="12" cy="12" r="3" />
+      </symbol>
+      <!-- The one symbol in the sprite with no fill="none", and the omission
+           is the feature. A presentation attribute on the symbol beats
+           anything inherited from the <use> host, so a star carrying
+           fill="none" could not be filled by the stylesheet at all — it
+           would be stuck as an outline in both states. Left off, the fill
+           falls through to .rate-star .icon, which sets none by default and
+           currentColor once the star is chosen. -->
+      <symbol id="i-star" viewBox="0 0 24 24" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path
+          d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
       </symbol>
     </svg>
 
@@ -1529,6 +1554,122 @@ image-in-terminal  workflow-automation</code></pre>
         </div>
       </section>
 
+      <!-- ============================== RATE ============================= -->
+      <!-- Part of the portfolio rather than a tool, so it is here for
+           everyone and it sits in <main> with the rest of the page.
+
+           The one section on the page with no band of its own. The
+           alternation earns its keep where an alternate band meets a plain
+           neighbour; this one met the footer, which is banded too, so it was
+           separating nothing and drawing a translucent wash over the moving
+           backdrop instead. sections.css carries the long version of that.
+
+           What the ratings add up to is not on this page, and there is no
+           longer anywhere on it they could be. A score printed underneath the
+           thing being scored invites an argument with the number instead of an
+           answer to it, and a page that opens by counting its own visitors is
+           a page about itself. The figures come out of get_stats() and are
+           read somewhere that is not the site. -->
+      <section class="section" id="rate">
+        <div class="wrap">
+          <header class="section-head">
+            <h2 class="section-title" id="rateTitle">
+              <span class="lang-en" lang="en">Rate This Page</span>
+              <span class="lang-es" lang="es">Califica Esta Página</span>
+            </h2>
+            <p class="section-sub">
+              <span class="lang-en" lang="en">No account, no name, no email.
+                One click and it counts.</span>
+              <span class="lang-es" lang="es">Sin cuenta, sin nombre, sin
+                correo. Un clic y queda contado.</span>
+            </p>
+          </header>
+
+          <!-- One tab stop for the group; the arrows move within it. That is
+               the radio pattern rather than five separate stops, and it is
+               why the buttons are tabindex="-1" until rove() picks one —
+               without scripting the first is reachable and the rest are
+               not, which is the honest thing for a control that cannot be
+               submitted without it. -->
+          <div class="rate-stars" id="rateStars" role="radiogroup"
+            aria-labelledby="rateTitle">
+            <button class="rate-star" type="button" role="radio"
+              aria-checked="false" data-star="1">
+              <svg class="icon" aria-hidden="true"><use
+                  href="#i-star"></use></svg>
+              <span class="visually-hidden">
+                <span class="lang-en" lang="en">1 out of 5</span>
+                <span class="lang-es" lang="es">1 de 5</span>
+              </span>
+            </button>
+            <button class="rate-star" type="button" role="radio"
+              aria-checked="false" data-star="2">
+              <svg class="icon" aria-hidden="true"><use
+                  href="#i-star"></use></svg>
+              <span class="visually-hidden">
+                <span class="lang-en" lang="en">2 out of 5</span>
+                <span class="lang-es" lang="es">2 de 5</span>
+              </span>
+            </button>
+            <button class="rate-star" type="button" role="radio"
+              aria-checked="false" data-star="3">
+              <svg class="icon" aria-hidden="true"><use
+                  href="#i-star"></use></svg>
+              <span class="visually-hidden">
+                <span class="lang-en" lang="en">3 out of 5</span>
+                <span class="lang-es" lang="es">3 de 5</span>
+              </span>
+            </button>
+            <button class="rate-star" type="button" role="radio"
+              aria-checked="false" data-star="4">
+              <svg class="icon" aria-hidden="true"><use
+                  href="#i-star"></use></svg>
+              <span class="visually-hidden">
+                <span class="lang-en" lang="en">4 out of 5</span>
+                <span class="lang-es" lang="es">4 de 5</span>
+              </span>
+            </button>
+            <button class="rate-star" type="button" role="radio"
+              aria-checked="false" data-star="5">
+              <svg class="icon" aria-hidden="true"><use
+                  href="#i-star"></use></svg>
+              <span class="visually-hidden">
+                <span class="lang-en" lang="en">5 out of 5</span>
+                <span class="lang-es" lang="es">5 de 5</span>
+              </span>
+            </button>
+          </div>
+
+          <!-- The closing row. The note holds its own line open even when it
+               is empty — the min-height in its rule — so nothing below it
+               moves when a sentence arrives. -->
+          <div class="rate-foot">
+            <!-- Both answers live in the markup and the stylesheet picks
+                 one, the way everything else on this page is written, so
+                 nothing here has to be told the language or told again when
+                 it changes. stats.js only moves the class on the <p>. -->
+            <p class="rate-note" id="rateNote" role="status" aria-live="polite">
+              <span class="rate-said rate-thanks">
+                <span class="lang-en" lang="en">Thanks — recorded.</span>
+                <span class="lang-es" lang="es">Gracias — registrado.</span>
+              </span>
+              <span class="rate-said rate-again">
+                <span class="lang-en" lang="en">Updated — your rating
+                  replaced the last one.</span>
+                <span class="lang-es" lang="es">Actualizado — tu valoración
+                  reemplazó la anterior.</span>
+              </span>
+              <span class="rate-said rate-failed">
+                <span class="lang-en" lang="en">That did not reach the server.
+                  Nothing was recorded.</span>
+                <span class="lang-es" lang="es">No llegó al servidor. No se
+                  registró nada.</span>
+              </span>
+            </p>
+          </div>
+        </div>
+      </section>
+
     </main>
 
     <!-- The way into dev mode. Above the footer rather than inside it: the
@@ -1587,28 +1728,35 @@ image-in-terminal  workflow-automation</code></pre>
       </button>
     </div>
 
-    <!-- Five files, one program. `defer` scripts run in document order, and the
+    <!-- Six files, one program. `defer` scripts run in document order, and the
          order here is the dependency: main.js defines the page and publishes the
          three helpers the rest use as window.Odell; scramble.js needs nothing
          from anyone; figures.js reads that namespace and does nothing at all if
          it is missing; pageturn.js is called back into by main.js rather than
          calling it, so it only has to have run before the first click — which
-         `defer` guarantees. devpanel.js is last because it is the only one that
+         `defer` guarantees. devpanel.js is next because it is the only one that
          reads from three others: window.Odell for the mode actually in force,
          window.SCRAMBLE for the churn, window.PAGETURN for the list of modes
-         the markup is allowed to offer. Each of the four sets one global and no
-         more; devpanel.js sets none, because it has no consumer — the card is
-         its whole interface.
+         the markup is allowed to offer.
 
-         Nothing in it runs unless /dev has been visited: its first line returns
-         when html lacks .is-dev. Delete that file, this tag, the gear and card
-         markup above, and the dev block at the end of layout.css, and the page
-         is exactly as it was — the three reads left behind in main.js and
-         scramble.js are inert without a writer. -->
+         stats.js is last and reads from none of them. It publishes
+         window.STATS, which main.js calls into the same guarded way it calls
+         the other two, and it reads only the DOM — so running after everything
+         else means the sections it times already exist by the time it looks,
+         and its own first measurement is not taken against a half-built page.
+         Each of the five sets one global and no more; devpanel.js sets none,
+         because it has no consumer — the card is its whole interface.
+
+         Nothing in devpanel.js runs unless /dev has been visited: its first
+         line returns when html lacks .is-dev. Delete that file, this tag, the
+         gear and card markup above, and the dev block at the end of
+         layout.css, and the page is exactly as it was — the three reads left
+         behind in main.js and scramble.js are inert without a writer. -->
     <script src="scripts/main.js" defer></script>
     <script src="scripts/scramble.js" defer></script>
     <script src="scripts/figures.js" defer></script>
     <script src="scripts/pageturn.js" defer></script>
     <script src="scripts/devpanel.js" defer></script>
+    <script src="scripts/stats.js" defer></script>
   </body>
 </html>

@@ -61,6 +61,45 @@
     <script>
       (function () {
         var root = document.documentElement;
+
+        /* The track endpoint, written out here for the second time. The other
+           copy is at the top of scripts/stats.js, and the two have to be
+           edited together — the house duplicates small helpers on purpose
+           rather than sharing them, but this one is a value rather than a
+           function, so nothing fails loudly if they drift. This page loads no
+           other script and must not start to. */
+        var TRACK_URL =
+          "https://llbtwjrfsuwfjgswbvpq.supabase.co/functions/v1/track";
+
+        /* The fact this page exists to record: /dev was reached. Sent first,
+           before storage is even attempted, because the count wanted is "how
+           many people hit the dev entry" — and someone whose browser refused
+           local storage hit it just as much as anyone else, even though they
+           leave without dev mode on.
+
+           A beacon rather than a fetch, because this page is leaving in the
+           next statement and a beacon is the one request the browser keeps
+           alive across that on its own. Never waited on: there is no answer
+           worth delaying a redirect for, and nothing here can report a
+           failure without becoming a lie.
+
+           text/plain, though the body is json and the function parses it as
+           json. The type is chosen for the browser rather than the server:
+           text/plain is one of the three CORS-safelisted types, so this goes
+           out as a simple request with no preflight. application/json would
+           need an OPTIONS round trip first and this page has no time to make
+           one. scripts/stats.js sends the real type because by the time it
+           flushes, it has been on the page for fifteen seconds and its
+           preflight is already cached. */
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon(
+            TRACK_URL,
+            new Blob([JSON.stringify({ events: [{ kind: "dev" }] })], {
+              type: "text/plain;charset=UTF-8"
+            })
+          );
+        }
+
         try {
           localStorage.setItem("dev", "1");
         } catch (e) {
@@ -73,8 +112,14 @@
 
            Relative rather than "/", so it is correct served from the repo root
            on Pages and equally correct from any local server that serves the
-           folder under a subpath. */
-        location.replace("../");
+           folder under a subpath.
+
+           The search string is carried across because ?turn= is read on the
+           other side and outranks the stored key — so /dev?turn=fall would
+           otherwise have its override consumed by this page and silently
+           dropped. It used to matter for ?stats=true too; that panel is gone,
+           and the parameter with it. */
+        location.replace("../" + location.search);
       })();
     </script>
 

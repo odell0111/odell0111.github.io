@@ -180,15 +180,20 @@ html[lang="es"] .lang-en {
    Everything leaves together on a quick ease-in; it returns on a slower
    ease-out staggered by section, so the page reads as re-lettering itself
    rather than as a jump cut. `:nth-of-type` finds the sections, so nothing
-   has to be tagged in the markup and a seventh section would slot in on its
-   own without a rule to add.
+   has to be tagged in the markup — but a new section does still need its own
+   delay below, and leaving one out is quiet rather than loud. An unstaggered
+   section does not fail to animate; it animates first, so the bottom of the
+   page lights up before the top. That is exactly what the rating section did
+   when it was added, and it is why the list runs to seven rather than
+   stopping at the six the page had.
 
    Only opacity and transform are animated. Both are composited, neither
-   triggers layout, and the stagger is small enough that six sections are
+   triggers layout, and the stagger is small enough that seven sections are
    never individually expensive. Under reduced motion the global rule in
    section 17 pins these durations to nothing, and main.js skips the sequence
-   outright so not even the wait before the swap is felt. */
-/* The dev entry is named alongside the footer in both halves. It is not
+   outright so not even the wait before the swap is felt.
+
+   The dev entry is named alongside the footer in both halves. It is not
    bilingual and has nothing to relabel, but it sits in the footer's own band
    and is covered by neither `#main>section` nor `.site-footer` — left out
    here it would be the one thing still lit while the page around it empties,
@@ -229,9 +234,13 @@ html.lang-in #main>section:nth-of-type(6) {
   transition-delay: 175ms;
 }
 
+html.lang-in #main>section:nth-of-type(7) {
+  transition-delay: 210ms;
+}
+
 html.lang-in .site-footer,
 html.lang-in .dev-entry {
-  transition-delay: 210ms;
+  transition-delay: 245ms;
 }
 
 /* The navigation is the one exception to the header holding still. Those five

@@ -12,3 +12,18 @@ Desktop.ini
 # Python bytecode from tools/*.py - regenerated on every run, never published
 __pycache__/
 *.pyc
+
+# The stats dashboard. It reads the Supabase project, so it is the one file
+# here that is about the site rather than part of it - and it is the only place
+# the ratings are ever visible, which is exactly why it must not ship. Opened
+# from disk, never from the site.
+stats.local.html
+
+# flag-icons (MIT, lipis/flag-icons), fetched by hand for the dashboard above.
+# 271 flags in two ratios plus their CSS and tooling, around 5 MB, and nothing
+# the published site draws uses any of it - the one page that does is itself
+# ignored four lines up. The whole folder rather than flags/ alone, because
+# the rest is a package.json, a README and a GitHub workflow for a project
+# this repo is not building, and a half-ignored vendor folder is how those
+# end up committed one file at a time.
+assets/flag-icons/

@@ -212,6 +212,19 @@
 		store("theme", next);
 		paintThemeButton();
 		paintBrowserChrome();
+
+		/* Read off window and guarded, the way the scramble and the turn above
+       are, and for the same reason: stats.js is a separate file and so a
+       separate way to fail. In strict mode a bare reference to a global that
+       never arrived is a ReferenceError, and an unguarded call here would take
+       the theme switch down with it — a visitor would click the toggle and
+       watch nothing happen, over an analytics count.
+
+       This is also the only place a change is recorded, and it is the right
+       one: everything that alters the theme routes through this function, so
+       there is nothing to keep in step. The theme a visitor ARRIVES with is a
+       different fact and is recorded by the view event instead. */
+		if (window.STATS) window.STATS.theme(next);
 	}
 
 	if (themeToggle) {
