@@ -1041,7 +1041,12 @@
 						t("forks", "bifurcaciones"),
 				);
 				line("  4. image-in-terminal      PyPI v" + stat("iit-ver"));
-				line("  5. Workflow automation    " + t("private", "privado"));
+				line(
+					"     " +
+						t("Workflow Automation", "Automatización de flujos de trabajo") +
+						"  " +
+						t("Private / NDA", "Confidencial / NDA"),
+				);
 				blank();
 				line(
 					"  → " +
