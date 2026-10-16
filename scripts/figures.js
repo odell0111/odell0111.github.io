@@ -215,7 +215,7 @@
 
 		if (!work.length) return;
 
-		/* ---- The note under the grid ---------------------------------------- */
+		/* ---- The note under the grid, scoped to linked projects -------------- */
 
 		var note = $("#statsNote");
 		var noteEn = note && $(".lang-en", note);
