@@ -305,8 +305,8 @@
 			desc.setAttribute(
 				"content",
 				lang === "es"
-					? "Desarrollador de software autodidacta enfocado en automatización, integración de sistemas e ingeniería inversa. Python, C#, C++. Trabajo seleccionado con cifras verificables."
-					: "Self-taught software developer working in automation, systems integration and reverse engineering. Python, C#, C++. Selected work with verifiable numbers.",
+					? "Desarrollador de software enfocado en automatización, integración de sistemas e ingeniería inversa. Python, C#, C++. Trabajo seleccionado con cifras verificables."
+					: "Software developer working in automation, systems integration and reverse engineering. Python, C#, C++. Selected work with verifiable numbers.",
 			);
 		}
 
@@ -914,8 +914,8 @@
 				blank();
 				line(
 					t(
-						"Odell — self-taught software developer since 2018.",
-						"Odell — desarrollador de software autodidacta desde 2018.",
+						"Odell — software developer since 2018.",
+						"Odell — desarrollador de software desde 2018.",
 					),
 					"t-ok",
 				);
@@ -939,14 +939,14 @@
 				blank();
 				line(
 					t(
-						"Most of what I know came from taking apart software that already",
-						"La mayor parte de lo que sé vino de desarmar software que ya",
+						"I focus on understanding how a system works, from its APIs and",
+						"Me centro en entender cómo funciona un sistema, desde sus APIs y",
 					),
 				);
 				line(
 					t(
-						"worked and figuring out why. I build tools: things that automate",
-						"funcionaba y averiguar por qué. Construyo herramientas: cosas que automatizan",
+						"protocols to the software underneath. I build tools that automate",
+						"protocolos hasta el software que hay debajo. Construyo herramientas que automatizan",
 					),
 				);
 				line(
@@ -992,9 +992,11 @@
 				line(t("Platforms", "Plataformas"), "t-ok");
 				line("  .NET 6 / WPF / WinUI 3 · MVVM · Unity · Android · Jetpack Compose");
 				line("  Docker · Docker Compose · Git · GitHub · Linux · PostgreSQL");
-				line("  Flask · FastAPI · Django · SQLAlchemy · REST APIs · Quart");
-				line("  patchright · Playwright · Selenium · Scrapy · requests");
-				line("  NumPy · Pandas · OpenCV · Rich · pytest · PyPI");
+				line("  Flask / Quart · FastAPI · Django · SQLAlchemy · Pydantic · REST APIs");
+				line("  React · Node.js · Tailwind CSS · Playwright / Playwright JS");
+				line("  Selenium · SQLite3 · PostgreSQL · MongoDB");
+				line("  IDA Pro · Ghidra · x64dbg · Binary Analysis · Reverse Proxy");
+				line("  Network Analysis · Algorithm Design · Blender · Photoshop");
 				line(
 					"  SSH · TLS / HTTPS · " +
 						t(

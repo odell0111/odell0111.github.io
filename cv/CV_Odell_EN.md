@@ -10,7 +10,7 @@ odellgm11012001@gmail.com · [t.me/odell0111](https://t.me/odell0111) · [github
 
 ## Profile
 
-Self-taught developer since 2018. I build automation, integrations and desktop tools. I work mainly in Python and C#, with C and C++ where the problem calls for them. My projects tend to be tools: something that automates a process, packages a build, or reaches data that isn't exposed cleanly. That work sits close to the network — TLS and certificate chains, SSH, proxy rotation, authenticated sessions — so I read the protocol underneath before I trust it.
+I build automation, integrations and desktop tools. I work mainly in Python and C#, with C and C++ where the problem calls for them. My projects tend to be tools: something that automates a process, packages a build, or reaches data that isn't exposed cleanly. That work sits close to the network — TLS and certificate chains, SSH, proxy rotation, authenticated sessions — so I read the protocol underneath before I trust it.
 
 Most of my client work is private and cannot be published. The projects below are the part that is.
 
@@ -79,17 +79,15 @@ Unattended automation of workflows at scale: authenticated session management, r
 |                            |                                                                                                                                                                                                |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Languages**              | Python, C#, C++, C, Kotlin, JavaScript, Java                                                                                                                                                   |
-| **Frameworks & libraries** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest                    |
-| **Databases**              | PostgreSQL, SQL                                                                                                                                                                                |
-| **Tools**                  | Git (advanced), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh, IDA Pro, x64dbg                                                                               |
-| **Security**               | Network and protocol analysis · TLS/HTTPS and certificate chains · SSH keys and tunnelling · wireless (WiFi) security · proxy handling and authenticated sessions                              |
-| **Areas**                  | Reverse engineering and protocol analysis · automation and systems integration · desktop development (WPF / WinUI 3 / .NET) · Android development (Kotlin, Jetpack Compose) · full-stack web development |
+| **Frameworks & libraries** | Flask / Quart, FastAPI, Django, SQLAlchemy, Pydantic · React, Node.js, Tailwind CSS · Playwright, Playwright JS, Selenium                                                        |
+| **Databases**              | PostgreSQL, SQLite3, MongoDB, SQL                                                                                                                                                             |
+| **Tools**                  | Git (advanced), GitHub, Docker, Docker Compose, Linux, Visual Studio, Odoo.sh, IDA Pro, Ghidra, x64dbg, Blender, Photoshop                                                                    |
+| **Security**               | Binary analysis · Network and protocol analysis · TLS/HTTPS and certificate chains · SSH keys and tunnelling · wireless (WiFi) security · proxy handling and reverse proxies                 |
+| **Areas**                  | Algorithm design · Reverse engineering and protocol analysis · automation and systems integration · desktop development (WPF / WinUI 3 / .NET) · Android development (Kotlin, Jetpack Compose) · full-stack web development |
 
 ---
 
-## Education
-
-**Self-taught since 2018.** No formal computer science qualification, but a structured education rather than an incidental one: programming courses and technical books, worked through properly and then applied. The theory came first — memory management, protocol analysis, system architecture — and taking apart software that already worked came after, to check I had actually understood it.
+## Professional development
 
 **Currently learning — Odoo.** Modular architecture built on Python, PostgreSQL and XML, with Odoo.sh deployments over Git and GitHub. No production experience yet.
 

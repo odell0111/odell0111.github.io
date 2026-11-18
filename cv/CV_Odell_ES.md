@@ -10,7 +10,7 @@ odellgm11012001@gmail.com · [t.me/odell0111](https://t.me/odell0111) · [github
 
 ## Perfil
 
-Desarrollador autodidacta desde 2018. Construyo automatizaciones, integraciones y herramientas de escritorio. Trabajo principalmente en Python y C#, con C y C++ cuando el problema lo pide. Mis proyectos suelen ser herramientas: algo que automatiza un proceso, empaqueta una build u obtiene datos que no están expuestos de forma limpia. Ese trabajo vive cerca de la red — TLS y cadenas de certificados, SSH, rotación de proxies, sesiones autenticadas — así que leo el protocolo que hay debajo antes de confiar en él.
+Construyo automatizaciones, integraciones y herramientas de escritorio. Trabajo principalmente en Python y C#, con C y C++ cuando el problema lo pide. Mis proyectos suelen ser herramientas: algo que automatiza un proceso, empaqueta una build u obtiene datos que no están expuestos de forma limpia. Ese trabajo vive cerca de la red — TLS y cadenas de certificados, SSH, rotación de proxies, sesiones autenticadas — así que leo el protocolo que hay debajo antes de confiar en él.
 
 La mayor parte de mi trabajo para clientes es privado y no puede publicarse. Los proyectos de abajo son la parte que sí lo está.
 
@@ -79,17 +79,15 @@ Automatización desatendida de flujos de trabajo a escala: gestión de sesiones 
 |                            |                                                                                                                                                                                                           |
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Lenguajes**              | Python, C#, C++, C, Kotlin, JavaScript, Java                                                                                                                                                              |
-| **Frameworks y librerías** | Flask, FastAPI, Django, SQLAlchemy, Quart · Playwright, Selenium, Scrapy, BeautifulSoup, requests, aiohttp/httpx · NumPy, Pandas, Matplotlib, OpenCV, Pillow · Rich, pytest                               |
-| **Bases de datos**         | PostgreSQL, SQL                                                                                                                                                                                           |
-| **Herramientas**           | Git (avanzado), GitHub, Docker, Docker Compose, Linux, Visual Studio, PyPI, setuptools, Odoo.sh, IDA Pro, x64dbg                                                                                          |
-| **Seguridad**              | Análisis de redes y protocolos · TLS/HTTPS y cadenas de certificados · claves y túneles SSH · seguridad inalámbrica (WiFi) · manejo de proxies y sesiones autenticadas                                    |
-| **Áreas**                  | Ingeniería inversa y análisis de protocolos · automatización e integración de sistemas · desarrollo de escritorio (WPF / WinUI 3 / .NET) · desarrollo Android (Kotlin, Jetpack Compose) · desarrollo web full stack |
+| **Frameworks y librerías** | Flask / Quart, FastAPI, Django, SQLAlchemy, Pydantic · React, Node.js, Tailwind CSS · Playwright, Playwright JS, Selenium                                                         |
+| **Bases de datos**         | PostgreSQL, SQLite3, MongoDB, SQL                                                                                                                                                                          |
+| **Herramientas**           | Git (avanzado), GitHub, Docker, Docker Compose, Linux, Visual Studio, Odoo.sh, IDA Pro, Ghidra, x64dbg, Blender, Photoshop                                                                     |
+| **Seguridad**              | Análisis binario · análisis de redes y protocolos · TLS/HTTPS y cadenas de certificados · claves y túneles SSH · seguridad inalámbrica (WiFi) · manejo de proxies inversos y sesiones autenticadas |
+| **Áreas**                  | Diseño de algoritmos · ingeniería inversa y análisis de protocolos · automatización e integración de sistemas · desarrollo de escritorio (WPF / WinUI 3 / .NET) · desarrollo Android (Kotlin, Jetpack Compose) · desarrollo web full stack |
 
 ---
 
-## Formación
-
-**Autodidacta desde 2018.** Sin titulación reglada en informática, pero con una formación estructurada, no improvisada: cursos de programación y libros técnicos, trabajados a fondo y luego puestos en práctica. La teoría vino primero — gestión de memoria, análisis de protocolos, arquitectura de sistemas — y desarmar software que ya funcionaba llegó después, para comprobar que la había entendido de verdad.
+## Desarrollo profesional
 
 **En aprendizaje activo — Odoo.** Arquitectura modular basada en Python, PostgreSQL y XML, y despliegues con Odoo.sh sobre Git y GitHub. Todavía sin experiencia en producción.
 
