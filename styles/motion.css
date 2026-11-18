@@ -16,7 +16,7 @@
    ========================================================================== */
 
 /* Anyone who has asked their OS to reduce motion gets a completely static
-   page — no drifting background, no growing bars, no typing. */
+   page — no drifting background, no typing. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -41,11 +41,6 @@
 
   .btn-primary:hover {
     transform: none;
-  }
-
-  /* Bars still end up at their real value — only the growth is skipped. */
-  .js .skill-bar {
-    width: var(--level, 0%);
   }
 
   /* A sweeping shimmer is exactly the kind of motion this setting is about.

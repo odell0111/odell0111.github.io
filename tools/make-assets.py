@@ -101,7 +101,7 @@ def build_og_image() -> Image.Image:
         font=role_font,
         fill=INDIGO,
     )
-    role2 = "Automation  ·  Systems Integration  ·  Reverse Engineering"
+    role2 = "Automation  ·  Backend & Web  ·  Systems Integration"
     draw.text((margin, 336), role2, font=font(SANS_REG, 30), fill=MUTED)
 
     # The line Odell asked to keep, set in mono so it reads as a terminal voice.

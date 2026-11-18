@@ -2,19 +2,18 @@
    Odell — portfolio script
 
    Everything here is progressive enhancement. With this file blocked or
-   broken the page still renders, fully readable, in English, with the skill
-   bars at their real widths and a static terminal transcript in place.
+   broken the page still renders, fully readable, in English, with language
+   groups and a static terminal transcript in place.
 
     1  Helpers
     2  Theme
     3  Language
     4  Navigation
     5  Header scroll state
-    6  Skill bars
-    7  Terminal
-    8  Copy email
-    9  Footer year
-   10  Toast
+    6  Terminal
+    7  Copy email
+    8  Footer year
+    9  Toast
 
    The live figures and the scramble used to be 11 and 12. They are now
    figures.js and scramble.js, beside this file and loaded after it, because
@@ -293,22 +292,29 @@
 		if (langToggle)
 			langToggle.setAttribute("lang", lang === "en" ? "es" : "en");
 
-		/* The <title> and meta description are the two pieces of copy the language
-       rules cannot reach, so they are swapped here. */
-		document.title =
+		/* Visible language spans cannot reach the document title or the social
+       preview metadata, so all of them follow the selected language here. */
+		var pageTitle =
 			lang === "es"
-				? "Odell — Desarrollador de software: automatización e integración"
-				: "Odell — Software Developer: Automation & Systems Integration";
+				? "Odell — Desarrollador de software: Automatización, backend e integración de sistemas"
+				: "Odell — Software Developer: Automation, Backend & Systems Integration";
+		var pageDescription =
+			lang === "es"
+				? "Desarrollador de software que crea automatizaciones, servicios backend, aplicaciones web y de escritorio e integraciones de sistemas. Python, C#, C/C++."
+				: "Software developer building automation, backend services, web and desktop applications, and system integrations. Python, C#, C/C++.";
+		document.title = pageTitle;
 
-		var desc = document.querySelector('meta[name="description"]');
-		if (desc) {
-			desc.setAttribute(
-				"content",
-				lang === "es"
-					? "Desarrollador de software enfocado en automatización, integración de sistemas e ingeniería inversa. Python, C#, C++. Trabajo seleccionado con cifras verificables."
-					: "Software developer working in automation, systems integration and reverse engineering. Python, C#, C++. Selected work with verifiable numbers.",
-			);
-		}
+		var pageMetadata = [
+			['meta[name="description"]', pageDescription],
+			['meta[property="og:title"]', pageTitle],
+			['meta[property="og:description"]', pageDescription],
+			['meta[name="twitter:title"]', pageTitle],
+			['meta[name="twitter:description"]', pageDescription],
+		];
+		pageMetadata.forEach(function (entry) {
+			var meta = document.querySelector(entry[0]);
+			if (meta) meta.setAttribute("content", entry[1]);
+		});
 
 		/* The CV button follows the page language, so a Spanish reader gets the
        Spanish PDF without having to go looking. Both are offered explicitly
@@ -737,39 +743,7 @@
 	}
 
 	/* ========================================================================
-     6  SKILL BARS
-     The markup already carries the final width via --level, so the bars are
-     correct with no JavaScript. This only collapses and re-grows them for the
-     reveal. Under reduced-motion the stylesheet pins them at full width.
-     ======================================================================== */
-
-	var skills = $$(".skill");
-
-	if (skills.length) {
-		if ("IntersectionObserver" in window && !reduceMotion.matches) {
-			var skillObserver = new IntersectionObserver(
-				function (entries) {
-					entries.forEach(function (entry) {
-						if (!entry.isIntersecting) return;
-						entry.target.classList.add("is-visible");
-						skillObserver.unobserve(entry.target);
-					});
-				},
-				{ threshold: 0.4, rootMargin: "0px 0px -40px 0px" },
-			);
-
-			skills.forEach(function (skill) {
-				skillObserver.observe(skill);
-			});
-		} else {
-			skills.forEach(function (skill) {
-				skill.classList.add("is-visible");
-			});
-		}
-	}
-
-	/* ========================================================================
-     7  TERMINAL
+     6  TERMINAL
      A real input with real output. Every answer it gives also exists as a
      section on this page, so nothing is available only through the terminal.
      ======================================================================== */
@@ -921,14 +895,14 @@
 				);
 				line(
 					t(
-						"Automation · Systems integration · Reverse engineering",
-						"Automatización · Integración de sistemas · Ingeniería inversa",
+						"Automation · Backend and web development · Systems integration · Reverse engineering",
+						"Automatización · Desarrollo backend y web · Integración de sistemas · Ingeniería inversa",
 					),
 				);
 				line(
 					t(
-						"Python, C#, C++, Kotlin, JavaScript, Java",
-						"Python, C#, C++, Kotlin, JavaScript, Java",
+						"Python, C#, C, C++, Java, Kotlin, JavaScript",
+						"Python, C#, C, C++, Java, Kotlin, JavaScript",
 					),
 					"t-dim",
 				);
@@ -939,20 +913,20 @@
 				blank();
 				line(
 					t(
-						"I focus on understanding how a system works, from its APIs and",
-						"Me centro en entender cómo funciona un sistema, desde sus APIs y",
+						"Independent projects and private client work across software.",
+						"Proyectos independientes y trabajos privados para clientes en distintas áreas del software.",
 					),
 				);
 				line(
 					t(
-						"protocols to the software underneath. I build tools that automate",
-						"protocolos hasta el software que hay debajo. Construyo herramientas que automatizan",
+						"I take on unfamiliar systems and build tools for practical problems.",
+						"Me enfrento a sistemas desconocidos y creo herramientas para resolver problemas prácticos.",
 					),
 				);
 				line(
 					t(
-						"a process, package a build, or reach data that is not exposed cleanly.",
-						"un proceso, empaquetan una build u obtienen datos que no están expuestos limpiamente.",
+						"Mainly Python and C#, with C/C++ for lower-level control.",
+						"Principalmente Python y C#, con C/C++ cuando hace falta control de más bajo nivel.",
 					),
 				);
 				blank();
@@ -968,25 +942,17 @@
 				blank();
 				line(t("Languages", "Lenguajes"), "t-ok");
 				line(
-					"  Python     turnstile_solver · image-in-terminal + " +
-						t("client work", "trabajo de cliente"),
-				);
-				line("  C#         custom-gui-sfx · Account Manager");
-				line(
-					"  Java       " +
-						t("private client work", "trabajo privado con clientes"),
+					"  " + t("Primary", "Principales") + "  Python · C#",
 				);
 				line(
-					"  Kotlin     " +
-						t("private client work", "trabajo privado con clientes"),
+					"  " + t("Also work with", "También trabajo con") +
+						"  C · C++ · Java · Kotlin · JavaScript",
 				);
+				line("  Python  Turnstile Solver · image-in-terminal");
+				line("  C#      Custom GUI SFX · Account Manager");
 				line(
-					"  C / C++    " +
-						t("private client work", "trabajo privado con clientes"),
-				);
-				line(
-					"  JavaScript " +
-						t("private client work", "trabajo privado con clientes"),
+					"  " +
+						t("Also used in private client work", "También utilizados en trabajos privados para clientes"),
 				);
 				blank();
 				line(t("Platforms", "Plataformas"), "t-ok");
@@ -1430,7 +1396,7 @@
 	})();
 
 	/* ========================================================================
-     8  COPY EMAIL
+     7  COPY EMAIL
      ======================================================================== */
 
 	var copyBtn = $("#copyEmail");
@@ -1482,14 +1448,14 @@
 	}
 
 	/* ========================================================================
-     9  FOOTER YEAR
+     8  FOOTER YEAR
      ======================================================================== */
 
 	var year = $("#year");
 	if (year) year.textContent = String(new Date().getFullYear());
 
 	/* ========================================================================
-     10  TOAST
+     9  TOAST
      One message, at most, ever. The element ships in the markup rather than
      being created when it is needed: a live region has to be in the document
      before anything is put into it, or the change is never announced.

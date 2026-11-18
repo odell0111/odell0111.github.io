@@ -65,8 +65,8 @@
   --accent-line: rgba(79, 70, 229, 0.28);
 
   /* Gradients — two pairs, because they answer to different constraints.
-     --grad carries large display text and the skill bars, so it is free to be
-     the lighter, more vivid one. --cta carries white text in BOTH themes, so
+     --grad carries large display text, so it is free to be the lighter, more
+     vivid one. --cta carries white text in BOTH themes, so
      it has to stay dark in both. They were a single hardcoded string before,
      which is precisely why the light theme failed: a gradient tuned to look
      right on #0b0f17 cannot also clear 4.5:1 on #f8fafc. */
@@ -98,7 +98,7 @@
      weight that the terminal read lighter than the page around it, and the
      terminal is where a mono face is most of what you see. JetBrains Mono is
      asked for as a weight range rather than as the two weights the stylesheet
-     names today — 400, and 600 on the stats, the skill names and the address
+     names today — 400, and 600 on stats, language-group headings and the address
      — so a weight added later cannot land on a synthesised bold. */
   --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,

@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Odell — Software Developer: Automation &amp; Systems
-      Integration</title>
+    <title>Odell — Software Developer: Automation, Backend &amp; Systems Integration</title>
     <meta name="description"
-      content="Software developer working in automation, systems integration and reverse engineering. Python, C#, C++. Selected work with verifiable numbers.">
+      content="Software developer building automation, backend services, web and desktop applications, and system integrations. Python, C#, C/C++.">
 
     <!-- Change both of these together when the site moves to its own domain. -->
     <link rel="canonical" href="https://odell0111.github.io/">
@@ -28,9 +27,9 @@
 
     <meta property="og:type" content="website">
     <meta property="og:title"
-      content="Odell — Software Developer: Automation &amp; Systems Integration">
+      content="Odell — Software Developer: Automation, Backend &amp; Systems Integration">
     <meta property="og:description"
-      content="Software developer working in automation, systems integration and reverse engineering.">
+      content="Software developer building automation, backend services, web and desktop applications, and system integrations. Python, C#, C/C++.">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <!-- No og:locale: the OG locale format requires a territory (es_ES, es_MX …),
@@ -38,9 +37,9 @@
      language signal without it. -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title"
-      content="Odell — Software Developer: Automation &amp; Systems Integration">
+      content="Odell — Software Developer: Automation, Backend &amp; Systems Integration">
     <meta name="twitter:description"
-      content="Software developer working in automation, systems integration and reverse engineering.">
+      content="Software developer building automation, backend services, web and desktop applications, and system integrations. Python, C#, C/C++.">
 
     <!-- One URL serves both languages; these declare that, they do not split it. -->
     <link rel="alternate" hreflang="en" href="https://odell0111.github.io/">
@@ -170,16 +169,18 @@
 {
   "@context": "https://schema.org",
   "@type": "ProfilePage",
-  "dateModified": "2026-09-27",
+  "dateModified": "2026-11-18",
+  "description": "Software developer building automation, backend services, web and desktop applications, and system integrations. Python, C#, C/C++.",
   "mainEntity": {
     "@type": "Person",
     "name": "Odell",
     "alternateName": "odell0111",
-    "description": "Software developer working in automation, systems integration and reverse engineering.",
+    "description": "Software developer building automation, backend services, web and desktop applications, and system integrations. Python, C#, C/C++.",
     "knowsLanguage": ["en", "es"],
     "knowsAbout": [
       "Python", "C#", "C++", "Java", "Kotlin", "JavaScript",
       "Automation", "Systems Integration", "Reverse Engineering",
+      "Backend Development", "Web Development", "API Development",
       "Desktop Application Development", "Cross-platform Development"
     ],
     "sameAs": [
@@ -651,25 +652,25 @@
 
             <p class="hero-sub">
               <span class="lang-en" lang="en">Since 2018, I've built
-                automation, integrations, and desktop tools, working across
-                Python, C#, backend systems, and web development. I enjoy
-                understanding how systems work under the hood and turning that
-                understanding into practical software.</span>
+                automation, integrations, and desktop tools with Python and C#,
+                alongside backend and web development. I enjoy understanding
+                how systems work under the hood and turning that understanding
+                into practical software.</span>
               <span class="lang-es" lang="es">Desde 2018, he desarrollado
-                automatizaciones, integraciones y herramientas de escritorio,
-                trabajando con Python, C#, sistemas backend y desarrollo web.
-                Disfruto entendiendo cómo funcionan los sistemas por dentro y
-                convirtiendo ese conocimiento en software práctico.</span>
+                automatizaciones, integraciones y herramientas de escritorio
+                con Python y C#, además de trabajar en desarrollo backend y
+                web. Disfruto entendiendo cómo funcionan los sistemas por
+                dentro y convirtiendo ese conocimiento en software práctico.</span>
             </p>
 
             <!-- The label sits outside the list it names. Inside, it was an <li>,
              and .visually-hidden clips rather than removes, so it stayed in
              the accessibility tree and counted as a seventh item -- a screen
-             reader announced "Primary languages, list, 7 items" and then read
+             reader announced "Programming languages, list, 7 items" and then read
              the label back as though it were one of the languages. -->
             <p class="visually-hidden" id="heroStackLabel">
-              <span class="lang-en" lang="en">Primary languages</span>
-              <span class="lang-es" lang="es">Lenguajes principales</span>
+              <span class="lang-en" lang="en">Programming languages</span>
+              <span class="lang-es" lang="es">Lenguajes de programación</span>
             </p>
             <!-- The alternative the linter wants -- dropping the ARIA name -- would
              leave the list anonymous, so the two errors are traded, not fixed:
@@ -725,8 +726,8 @@
 Software developer since 2018.
 
 $ cat focus.txt
-Automation, systems integration, reverse engineering.
-Python, C#, C++.
+Automation, backend and web development, systems integration, reverse engineering.
+Python, C#, C, C++, Java, Kotlin, JavaScript.
 
 $ ls projects/
 account-manager  custom-gui-sfx  turnstile-solver
@@ -773,7 +774,7 @@ image-in-terminal  workflow-automation</code></pre>
           <div class="work-grid">
 
             <!-- 1 — Account Manager -->
-            <article class="project project-featured">
+            <article class="project project-featured" id="project-account-manager">
               <div class="project-top">
                 <h3 class="project-title">Account Manager</h3>
                 <span class="pill pill-flag">
@@ -822,14 +823,17 @@ image-in-terminal  workflow-automation</code></pre>
               <p class="project-note">
                 <svg class="icon" aria-hidden="true"><use
                     href="#i-lock"></use></svg>
-                <span class="lang-en" lang="en"><strong>Source not
-                    published.</strong> Withheld deliberately, so the app can't
-                  be forked into insecure builds that put users' credentials at
-                  risk.</span>
-                <span class="lang-es" lang="es"><strong>Código no
-                    publicado.</strong> Retenido a propósito, para que la
-                  aplicación no pueda bifurcarse en versiones inseguras que
-                  pongan en riesgo las credenciales de los usuarios.</span>
+                <span class="lang-en" lang="en">Because it handles
+                  credentials, I keep the source private and retain control over
+                  the builds distributed under its name. Both official versions
+                  work entirely offline: neither connects to a server nor
+                  transmits account data over a network.</span>
+                <span class="lang-es" lang="es">Como maneja credenciales,
+                  mantengo el código privado y conservo el control sobre las
+                  versiones distribuidas bajo el nombre de la aplicación. Ambas
+                  versiones oficiales funcionan completamente sin conexión:
+                  ninguna se conecta a un servidor ni transmite datos de cuentas
+                  a través de la red.</span>
               </p>
 
               <div class="project-links">
@@ -849,7 +853,7 @@ image-in-terminal  workflow-automation</code></pre>
             </article>
 
             <!-- 2 — Custom GUI SFX -->
-            <article class="project">
+            <article class="project" id="project-custom-gui-sfx">
               <div class="project-top">
                 <h3 class="project-title">Custom GUI SFX</h3>
               </div>
@@ -878,20 +882,15 @@ image-in-terminal  workflow-automation</code></pre>
               </ul>
 
               <p class="project-aside">
-                <span class="lang-en" lang="en">The finished executable has to
-                  stay under 4 GB. The limit is in the Win64 format itself: the
-                  in-memory image is capped at 2 GB because AMD64 relative
-                  addressing keeps its offsets in a dword, and everything merged
-                  onto the binary pushes the file toward that ceiling. The
-                  constraint applies to the output binary, not the archive going
-                  in.</span>
-                <span class="lang-es" lang="es">El ejecutable final debe
-                  quedarse por debajo de 4 GB. El límite está en el propio
-                  formato Win64: la imagen en memoria está topada en 2 GB porque
-                  el direccionamiento relativo de AMD64 guarda los
-                  desplazamientos en un dword, y todo lo que se fusiona sobre el
-                  binario acerca el archivo a ese techo. La restricción aplica
-                  al binario de salida, no al archivo que se introduce.</span>
+                <span class="lang-en" lang="en">The generated executable
+                  must stay within Win64's size limits. Its in-memory image is
+                  capped at 2 GB by AMD64 relative addressing. This constrains
+                  the output executable, not the archive being packaged.</span>
+                <span class="lang-es" lang="es">El ejecutable generado debe
+                  mantenerse dentro de los límites de tamaño de Win64. Su
+                  imagen en memoria está limitada a 2 GB por el direccionamiento
+                  relativo de AMD64. Esta restricción afecta al ejecutable de
+                  salida, no al archivo que se está empaquetando.</span>
               </p>
 
               <div class="project-links">
@@ -905,23 +904,24 @@ image-in-terminal  workflow-automation</code></pre>
             </article>
 
             <!-- 3 — Turnstile Solver (kept deliberately understated) -->
-            <article class="project">
+            <article class="project" id="project-turnstile-solver">
               <div class="project-top">
                 <h3 class="project-title">Turnstile Solver</h3>
               </div>
 
               <p class="project-desc">
-                <span class="lang-en" lang="en">An async Python server that
-                  solves Cloudflare Turnstile challenges in a real browser and
-                  returns the token over a local REST endpoint. Proxy handling
-                  is first-class — global, via environment, or rotated per
-                  browser context.</span>
-                <span class="lang-es" lang="es">Un servidor asíncrono en Python
-                  que resuelve retos de Cloudflare Turnstile en un navegador
-                  real y devuelve el token a través de un endpoint REST local.
-                  El manejo de proxies es de primera clase — global, por
-                  variables de entorno o rotado por contexto de
-                  navegador.</span>
+                <span class="lang-en" lang="en">An asynchronous Python
+                  service that automates Cloudflare Turnstile challenge
+                  handling in a real browser and returns the resulting token
+                  through a local REST endpoint. Supports proxy configuration
+                  globally, through environment variables, or per browser
+                  context.</span>
+                <span class="lang-es" lang="es">Un servicio asíncrono en
+                  Python que automatiza la gestión de retos de Cloudflare
+                  Turnstile en un navegador real y devuelve el token resultante
+                  a través de un endpoint REST local. Admite la configuración
+                  de proxies de forma global, mediante variables de entorno o
+                  por contexto del navegador.</span>
               </p>
 
               <ul class="facts">
@@ -946,7 +946,7 @@ image-in-terminal  workflow-automation</code></pre>
             </article>
 
             <!-- 4 — Image in Terminal -->
-            <article class="project">
+            <article class="project" id="project-image-in-terminal">
               <div class="project-top">
                 <h3 class="project-title">image-in-terminal</h3>
               </div>
@@ -1062,11 +1062,11 @@ image-in-terminal  workflow-automation</code></pre>
               <span class="lang-es" lang="es">Capacidades técnicas</span>
             </h2>
             <p class="section-sub">
-              <span class="lang-en" lang="en">Every bar names the work behind it
-                — public where it can be shown, private where it can't.</span>
-              <span class="lang-es" lang="es">Cada barra nombra el trabajo que
-                tiene detrás — público cuando puede mostrarse, privado cuando
-                no.</span>
+              <span class="lang-en" lang="en">Languages, platforms, and tools
+                used across backend, web, desktop, and automation work.</span>
+              <span class="lang-es" lang="es">Lenguajes, plataformas y
+                herramientas que utilizo en desarrollo backend, web, de
+                escritorio y automatización.</span>
             </p>
           </header>
 
@@ -1077,61 +1077,54 @@ image-in-terminal  workflow-automation</code></pre>
                 <span class="lang-en" lang="en">Languages</span>
                 <span class="lang-es" lang="es">Lenguajes</span>
               </h3>
-              <ul class="skills" id="skills">
-                <li class="skill">
-                  <span class="skill-name">Python</span>
-                  <span class="skill-track"><span class="skill-bar"
-                      style="--level:92%"></span></span>
-                  <span class="skill-src">turnstile_solver · image-in-terminal ·
-                    <span class="skill-src--private"><span class="lang-en"
-                        lang="en">private client work</span><span
-                        class="lang-es" lang="es">trabajo privado con
-                        clientes</span></span></span>
-                </li>
-                <li class="skill">
-                  <span class="skill-name">C#</span>
-                  <span class="skill-track"><span class="skill-bar"
-                      style="--level:88%"></span></span>
-                  <span class="skill-src">custom-gui-sfx · Account
-                    Manager</span>
-                </li>
-                <li class="skill">
-                  <span class="skill-name">Java / Kotlin</span>
-                  <span class="skill-track"><span class="skill-bar"
-                      style="--level:76%"></span></span>
-                  <span class="skill-src"><span class="skill-src--private"><span
-                        class="lang-en" lang="en">private client
-                        work</span><span class="lang-es" lang="es">trabajo
-                        privado con clientes</span></span></span>
-                </li>
-                <li class="skill">
-                  <span class="skill-name">C / C++</span>
-                  <span class="skill-track"><span class="skill-bar"
-                      style="--level:74%"></span></span>
-                  <span class="skill-src"><span class="skill-src--private"><span
-                        class="lang-en" lang="en">private client
-                        work</span><span class="lang-es" lang="es">trabajo
-                        privado con clientes</span></span></span>
-                </li>
-                <li class="skill">
-                  <span class="skill-name">JavaScript</span>
-                  <span class="skill-track"><span class="skill-bar"
-                      style="--level:70%"></span></span>
-                  <span class="skill-src"><span class="skill-src--private"><span
-                        class="lang-en" lang="en">private client
-                        work</span><span class="lang-es" lang="es">trabajo
-                        privado con clientes</span></span></span>
-                </li>
-              </ul>
-              <p class="cap-foot">
-                <span class="lang-en" lang="en">Bars show relative strength, not
-                  a measured score. Two name repositories you can open; the rest
-                  is client work I can't publish.</span>
-                <span class="lang-es" lang="es">Las barras muestran fuerza
-                  relativa, no una puntuación medida. Dos nombran repositorios
-                  que puedes abrir; el resto es trabajo de cliente que no puedo
-                  publicar.</span>
-              </p>
+              <div class="language-groups" id="skills">
+                <div class="language-group">
+                  <h4 class="language-group-title">
+                    <span class="lang-en" lang="en">Primary languages</span>
+                    <span class="lang-es" lang="es">Lenguajes principales</span>
+                  </h4>
+                  <ul class="tags language-tags">
+                    <li class="tag">Python</li>
+                    <li class="tag">C#</li>
+                  </ul>
+                  <ul class="language-projects skill-src">
+                    <li>Python · <a class="link"
+                        href="#project-turnstile-solver">Turnstile Solver</a> ·
+                      <a class="link" href="#project-image-in-terminal">image-in-terminal</a>
+                    </li>
+                    <li>C# · <a class="link"
+                        href="#project-custom-gui-sfx">Custom GUI SFX</a> ·
+                      <a class="link" href="#project-account-manager">Account Manager</a>
+                    </li>
+                    <li class="skill-src--private">
+                      <span class="lang-en" lang="en">Both also appear in
+                        private client work.</span>
+                      <span class="lang-es" lang="es">Ambos también aparecen
+                        en trabajos privados para clientes.</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="language-group">
+                  <h4 class="language-group-title">
+                    <span class="lang-en" lang="en">Also work with</span>
+                    <span class="lang-es" lang="es">También trabajo con</span>
+                  </h4>
+                  <ul class="tags language-tags">
+                    <li class="tag">C</li>
+                    <li class="tag">C++</li>
+                    <li class="tag">Java</li>
+                    <li class="tag">Kotlin</li>
+                    <li class="tag">JavaScript</li>
+                  </ul>
+                  <p class="skill-src skill-src--private">
+                    <span class="lang-en" lang="en">Used in private client
+                      work.</span>
+                    <span class="lang-es" lang="es">Utilizados en trabajos
+                      privados para clientes.</span>
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div class="cap-col">
@@ -1255,6 +1248,19 @@ image-in-terminal  workflow-automation</code></pre>
                     Kotlin y Jetpack Compose, y builds de Unity para
                     ambas.</span></p>
               </li>
+              <li class="spec">
+                <h4><span class="lang-en" lang="en">Backend &amp; Web
+                    Development</span><span class="lang-es" lang="es">Desarrollo
+                    Backend y Web</span></h4>
+                <p><span class="lang-en" lang="en">Building backend
+                    services, REST APIs, and web applications. Working with
+                    databases, authentication, and integrations to connect
+                    systems and deliver reliable functionality.</span><span
+                    class="lang-es" lang="es">Desarrollo de servicios backend,
+                    APIs REST y aplicaciones web. Trabajo con bases de datos,
+                    autenticación e integraciones para conectar sistemas y
+                    ofrecer funcionalidades fiables.</span></p>
+              </li>
             </ul>
           </div>
         </div>
@@ -1277,21 +1283,19 @@ image-in-terminal  workflow-automation</code></pre>
                 <span class="lang-es" lang="es">Los fundamentos primero</span>
               </h3>
               <p>
-                <span class="lang-en" lang="en">I started in 2018, and I shipped
-                  Account Manager in March 2023 — nearly two years before the
-                  term <em>vibe coding</em> was coined, and with no AI writing
-                  any of it. That background is in memory management, protocol
-                  analysis and system architecture: the parts of software that
-                  don't have a shortcut. I use modern tooling deliberately, and
-                  I can tell you exactly what I would do without it.</span>
-                <span class="lang-es" lang="es">Empecé en 2018, y publiqué
-                  Account Manager en marzo de 2023 — casi dos años antes de que
-                  se acuñara el término <em>vibe coding</em>, y sin que ninguna
-                  IA escribiera nada de él. Esa base está en gestión de memoria,
-                  análisis de protocolos y arquitectura de sistemas: las partes
-                  del software que no tienen atajo. Uso herramientas modernas de
-                  forma deliberada, y puedo decirte exactamente qué haría sin
-                  ellas.</span>
+                <span class="lang-en" lang="en">I started building software
+                  in 2018. My foundation is in understanding how systems work —
+                  memory, protocols, APIs, and architecture — rather than simply
+                  using tools on top of them. I use modern tools, including
+                  AI-assisted development, to work more efficiently, but I
+                  review, test, and understand the code I ship.</span>
+                <span class="lang-es" lang="es">Empecé a desarrollar software
+                  en 2018. Mi base está en entender cómo funcionan los sistemas
+                  — memoria, protocolos, APIs y arquitectura — en lugar de
+                  limitarme a utilizar herramientas sobre ellos. Utilizo
+                  herramientas modernas, incluido el desarrollo asistido por IA,
+                  para trabajar con mayor eficiencia, pero reviso, pruebo y
+                  entiendo el código que entrego.</span>
               </p>
             </div>
 
@@ -1314,12 +1318,10 @@ image-in-terminal  workflow-automation</code></pre>
                     velocidad</span></h3>
                 <p><span class="lang-en" lang="en">I learn things all the way
                     down, which is why I can take on whatever a project needs —
-                    not only what I already know. Quality and reputation come
-                    before the money.</span><span class="lang-es"
+                    not only what I already know.</span><span class="lang-es"
                     lang="es">Aprendo las cosas hasta el fondo, y por eso puedo
-                    asumir lo que un proyecto necesite — no solo lo que ya sé.
-                    La calidad y la reputación van antes que el
-                    dinero.</span></p>
+                    asumir lo que un proyecto necesite — no solo lo que ya
+                    sé.</span></p>
               </li>
               <li class="principle">
                 <h3><span class="lang-en" lang="en">The code has to explain
@@ -1373,23 +1375,25 @@ image-in-terminal  workflow-automation</code></pre>
 
           <div class="about-body">
             <p>
-              <span class="lang-en" lang="en">I started building software
-                in 2018. I focus on understanding how a system works, from
-                its APIs and protocols to the software underneath.</span>
-              <span class="lang-es" lang="es">Empecé a desarrollar software
-                en 2018. Me centro en entender cómo funciona un sistema, desde
-                sus APIs y protocolos hasta el software que hay debajo.</span>
+              <span class="lang-en" lang="en">My experience spans
+                independent projects and private client work, covering
+                different areas of software development. I enjoy taking on
+                unfamiliar technical challenges, understanding existing
+                systems, and building tools that solve practical problems.</span>
+              <span class="lang-es" lang="es">Mi experiencia abarca
+                proyectos independientes y trabajos privados para clientes en
+                distintas áreas del desarrollo de software. Disfruto
+                enfrentando desafíos técnicos desconocidos, entendiendo
+                sistemas existentes y construyendo herramientas que resuelven
+                problemas prácticos.</span>
             </p>
             <p>
-              <span class="lang-en" lang="en">I work mainly in Python and C#,
-                with C and C++ where the problem calls for them. My projects
-                tend to be tools: something that automates a process, packages
-                a build, or reaches data that isn't exposed cleanly.</span>
-              <span class="lang-es" lang="es">Trabajo principalmente en Python
-                y C#, con C y C++ cuando el problema lo pide. Mis proyectos
-                suelen ser herramientas: algo que automatiza un proceso,
-                empaqueta una build u obtiene datos que no están expuestos de
-                forma limpia.</span>
+              <span class="lang-en" lang="en">I work primarily in Python and
+                C#, with C and C++ when a problem calls for lower-level
+                control.</span>
+              <span class="lang-es" lang="es">Trabajo principalmente con
+                Python y C#, utilizando C y C++ cuando un problema requiere un
+                control de más bajo nivel.</span>
             </p>
           </div>
         </div>

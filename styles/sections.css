@@ -239,61 +239,53 @@
   margin-top: 2.4rem;
 }
 
-/* ---- Skill bars ---------------------------------------------------------
-   Kept, because they are wanted — but each bar is paired with the work it
-   comes from. The bar shows relative strength; the caption under it is the
-   part a reader can actually check. */
-.skills {
-  display: flex;
-  flex-direction: column;
-  gap: 1.15rem;
-}
-
-.skill {
+/* ---- Language groups ---------------------------------------------------
+   The labels distinguish primary languages from other working languages
+   without implying a measured level. Public project links keep the evidence
+   close to the language list. */
+.language-groups {
   display: grid;
-  gap: 0.38rem;
+  gap: 1.25rem;
 }
 
-.skill-name {
+.language-group {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.language-group-title {
   font-family: var(--mono);
-  font-size: 0.9rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--text);
 }
 
-.skill-track {
-  height: 7px;
-  border-radius: 999px;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  overflow: hidden;
-}
-
-.skill-bar {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--grad-a), var(--grad-b));
-  /* The level lives on the element as --level (a percentage), so the correct
-     width renders with no JavaScript at all. The script only animates it. */
-  width: var(--level, 0%);
-  transition: width 0.95s var(--ease);
-}
-
-/* Collapse only when scripting is available, then grow on reveal. Without
-   JavaScript these rules never apply and the bars simply render at full
-   width. */
-.js .skill-bar {
-  width: 0;
-}
-
-.js .skill.is-visible .skill-bar {
-  width: var(--level, 0%);
+.language-projects {
+  display: grid;
+  gap: 0.3rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 .skill-src {
   font-size: 0.79rem;
   color: var(--faint);
+}
+
+.language-projects .link {
+  display: inline;
+  color: var(--muted);
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 0.15em;
+}
+
+.language-projects .link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent-line);
 }
 
 /* Work that exists but can't be linked — client projects that aren't public.
@@ -305,13 +297,6 @@
    a place to save contrast. */
 .skill-src--private {
   font-style: italic;
-}
-
-.cap-foot {
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-  color: var(--faint);
-  max-width: 52ch;
 }
 
 .tags {
@@ -360,12 +345,9 @@
   border-color: transparent;
 }
 
-/* Specialties sit below the two-column grid, not inside its right column:
-   with a 50-tag list above them the left column ran out long before they
-   started, leaving a dead gap the width of a column beside the heading.
-   Cards fill whatever width is going — two across, four once there is room.
-   Only 2 and 4 divide four cards evenly; a three-column middle state would
-   strand the fourth card alone on a second row. */
+/* Specialties sit below the two-column grid, not inside its right column.
+   The same card treatment is used at every width: one column on narrow
+   screens, two at tablet widths, and three on desktop. */
 .cap-specs {
   margin-top: 0.4rem;
 }
@@ -385,7 +367,7 @@
 
 @media (min-width: 1024px) {
   .spec-list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
